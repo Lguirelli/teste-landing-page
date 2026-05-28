@@ -34,69 +34,74 @@ function initServicesCarousel() {
 
   carousel.dataset.carouselInitialized = "true";
 
-  const originalSlides = [...carousel.querySelectorAll(".service-slide")];
+  const slides = [...carousel.querySelectorAll(".service-slide")];
 
-  if (!originalSlides.length) return;
+  if (!slides.length) return;
 
-  originalSlides.forEach((slide) => {
-    const clone = slide.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    clone.classList.add("service-slide-clone");
-    carousel.appendChild(clone);
-  });
+  let currentIndex = 0;
+  let isAnimating = false;
 
-  originalSlides.slice().reverse().forEach((slide) => {
-    const clone = slide.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    clone.classList.add("service-slide-clone");
-    carousel.insertBefore(clone, carousel.firstChild);
-  });
+  function getRelativePosition(index) {
+    const total = slides.length;
+    let position = index - currentIndex;
 
-  let slideStep = 0;
-  let originalStart = 0;
-  let originalEnd = 0;
-  let isMoving = false;
-
-  function calculateSizes() {
-    const slide = carousel.querySelector(".service-slide");
-    const style = window.getComputedStyle(carousel);
-    const gap = parseFloat(style.columnGap || style.gap) || 20;
-
-    slideStep = slide ? slide.getBoundingClientRect().width + gap : 340;
-    originalStart = slideStep * originalSlides.length;
-    originalEnd = originalStart + slideStep * originalSlides.length;
-  }
-
-  function jumpToOriginalPosition() {
-    calculateSizes();
-    carousel.scrollLeft = originalStart;
-  }
-
-  function normalizePosition() {
-    if (carousel.scrollLeft < originalStart - slideStep / 2) {
-      carousel.scrollLeft += slideStep * originalSlides.length;
+    if (position > total / 2) {
+      position -= total;
     }
 
-    if (carousel.scrollLeft >= originalEnd - slideStep / 2) {
-      carousel.scrollLeft -= slideStep * originalSlides.length;
+    if (position < -total / 2) {
+      position += total;
     }
+
+    return position;
+  }
+
+  function updateCarousel() {
+    slides.forEach((slide, index) => {
+      const position = getRelativePosition(index);
+
+      slide.classList.remove(
+        "is-active",
+        "is-prev",
+        "is-next",
+        "is-hidden-left",
+        "is-hidden-right"
+      );
+
+      if (position === 0) {
+        slide.classList.add("is-active");
+      } else if (position === -1) {
+        slide.classList.add("is-prev");
+      } else if (position === 1) {
+        slide.classList.add("is-next");
+      } else if (position < -1) {
+        slide.classList.add("is-hidden-left");
+      } else {
+        slide.classList.add("is-hidden-right");
+      }
+    });
   }
 
   function moveCarousel(direction) {
-    if (isMoving) return;
+    if (isAnimating) return;
 
-    isMoving = true;
-    calculateSizes();
+    isAnimating = true;
 
-    carousel.scrollBy({
-      left: slideStep * direction,
-      behavior: "smooth"
-    });
+    currentIndex += direction;
+
+    if (currentIndex < 0) {
+      currentIndex = slides.length - 1;
+    }
+
+    if (currentIndex >= slides.length) {
+      currentIndex = 0;
+    }
+
+    updateCarousel();
 
     window.setTimeout(() => {
-      normalizePosition();
-      isMoving = false;
-    }, 420);
+      isAnimating = false;
+    }, 560);
   }
 
   nextButton.addEventListener("click", () => {
@@ -107,21 +112,7 @@ function initServicesCarousel() {
     moveCarousel(-1);
   });
 
-  carousel.addEventListener("scroll", () => {
-    window.clearTimeout(carousel.scrollTimer);
-
-    carousel.scrollTimer = window.setTimeout(() => {
-      normalizePosition();
-    }, 120);
-  });
-
-  window.addEventListener("resize", () => {
-    jumpToOriginalPosition();
-  });
-
-  window.setTimeout(() => {
-    jumpToOriginalPosition();
-  }, 80);
+  updateCarousel();
 }
 
 document.addEventListener("sectionsLoaded", () => {
