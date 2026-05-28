@@ -1,15 +1,15 @@
 :root {
-  --bg: #f7f7f2;
-  --surface: #ffffff;
-  --surface-2: #efefe8;
-  --text: #141414;
-  --muted: #656565;
-  --line: #deded6;
-  --brand: #111111;
+  --bg: #0b0d12;
+  --surface: #141821;
+  --surface-2: #1b202b;
+  --text: #f5f7fb;
+  --muted: #aeb6c5;
+  --line: rgba(255, 255, 255, .12);
+  --brand: #ffffff;
   --accent: #ffd84d;
   --accent-2: #d9f99d;
   --radius: 24px;
-  --shadow: 0 24px 80px rgba(0, 0, 0, .08);
+  --shadow: 0 24px 80px rgba(0, 0, 0, .38);
   --max: 1160px;
 }
 
@@ -24,9 +24,62 @@ html {
 body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 216, 77, .08), transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(217, 249, 157, .06), transparent 34%),
+    var(--bg);
   color: var(--text);
   line-height: 1.5;
+}
+
+body,
+section,
+main,
+article,
+header,
+footer,
+.container,
+.card,
+.hero,
+.section,
+.service-slide,
+.service-page-content,
+.service-sidebar,
+.final-cta-box,
+.footer-grid,
+details,
+summary,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+li {
+  text-align: center;
+}
+
+.section-lead,
+.hero-lead,
+.microcopy,
+.service-page-content p,
+.service-sidebar p,
+.card p,
+.benefit-item p,
+details p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-row,
+.hero-proof,
+.logo,
+.header-actions,
+.service-category,
+.service-back-link {
+  justify-content: center;
 }
 
 img,
@@ -55,8 +108,8 @@ button {
   position: absolute;
   top: -48px;
   left: 16px;
-  background: var(--text);
-  color: #fff;
+  background: var(--accent);
+  color: #111111;
   padding: 10px 14px;
   border-radius: 10px;
   z-index: 999;
@@ -73,6 +126,11 @@ button {
 
 .section {
   padding: 88px 0;
+  background: transparent;
+}
+
+.section:nth-of-type(even) {
+  background: rgba(255, 255, 255, .015);
 }
 
 .section-tight {
@@ -88,7 +146,7 @@ button {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .12em;
-  color: var(--muted);
+  color: var(--accent);
 }
 
 .section-title {
@@ -96,11 +154,12 @@ button {
   font-size: clamp(32px, 5vw, 64px);
   line-height: .98;
   letter-spacing: -.05em;
+  color: var(--text);
 }
 
 .section-lead {
   max-width: 700px;
-  margin: 0;
+  margin: 0 auto;
   font-size: clamp(17px, 2vw, 21px);
   color: var(--muted);
 }
@@ -120,10 +179,19 @@ button {
 
 .card {
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 28px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .03);
+}
+
+.card:hover,
+.service-slide:hover,
+#how-it-works .how-step:hover,
+details:hover {
+  border-color: rgba(255, 216, 77, .42);
+  box-shadow: var(--shadow);
 }
 
 .card-soft {
@@ -138,9 +206,9 @@ button {
   min-height: 52px;
   padding: 0 22px;
   border-radius: 999px;
-  border: 1px solid var(--text);
-  background: var(--text);
-  color: #fff;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #111111;
   font-weight: 800;
   cursor: pointer;
   transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
@@ -152,13 +220,19 @@ button {
 }
 
 .btn-secondary {
+  border-color: var(--line);
   background: transparent;
   color: var(--text);
 }
 
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--accent);
+}
+
 .btn-accent {
   background: var(--accent);
-  color: var(--text);
+  color: #111111;
 }
 
 .btn-row {
@@ -177,12 +251,12 @@ button {
 
 .placeholder {
   min-height: 280px;
-  border: 1px dashed #b9b9ad;
+  border: 1px dashed rgba(255, 255, 255, .18);
   border-radius: var(--radius);
   background:
-    linear-gradient(135deg, rgba(255, 216, 77, .24), transparent 42%),
-    linear-gradient(315deg, rgba(217, 249, 157, .34), transparent 42%),
-    #fff;
+    linear-gradient(135deg, rgba(255, 216, 77, .14), transparent 42%),
+    linear-gradient(315deg, rgba(217, 249, 157, .10), transparent 42%),
+    var(--surface);
   display: grid;
   place-items: center;
   color: var(--muted);
@@ -195,12 +269,13 @@ button {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  border: 1px dashed #a9a99f;
+  border: 1px dashed rgba(255, 255, 255, .22);
   background: var(--accent);
   display: grid;
   place-items: center;
   font-size: 12px;
   font-weight: 800;
+  color: #111111;
 }
 
 /* =========================
@@ -211,9 +286,9 @@ button {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(247, 247, 242, .82);
+  background: rgba(11, 13, 18, .86);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(222, 222, 214, .75);
+  border-bottom: 1px solid var(--line);
 }
 
 .header-inner {
@@ -236,7 +311,7 @@ button {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: var(--text);
+  background: var(--accent);
 }
 
 .nav {
@@ -245,6 +320,10 @@ button {
   color: var(--muted);
   font-size: 14px;
   font-weight: 700;
+}
+
+.nav a:hover {
+  color: var(--accent);
 }
 
 .header-actions {
@@ -266,10 +345,11 @@ button {
   font-size: clamp(48px, 8vw, 96px);
   line-height: .9;
   letter-spacing: -.075em;
+  color: var(--text);
 }
 
 .hero-lead {
-  margin: 24px 0 0;
+  margin: 24px auto 0;
   max-width: 720px;
   color: var(--muted);
   font-size: clamp(18px, 2vw, 23px);
@@ -288,7 +368,7 @@ button {
   padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, .7);
+  background: rgba(255, 255, 255, .06);
 }
 
 .logo-strip {
@@ -306,7 +386,7 @@ button {
   place-items: center;
   color: var(--muted);
   font-weight: 800;
-  background: rgba(255, 255, 255, .6);
+  background: rgba(255, 255, 255, .05);
 }
 
 /* =========================
@@ -323,18 +403,19 @@ button {
   display: grid;
   grid-template-columns: 44px 1fr;
   gap: 14px;
-  align-items: start;
+  align-items: center;
 }
 
 .benefit-item h3,
 .card h3 {
   margin: 0 0 8px;
   letter-spacing: -.03em;
+  color: var(--text);
 }
 
 .benefit-item p,
 .card p {
-  margin: 0;
+  margin: 0 auto;
   color: var(--muted);
 }
 
@@ -344,6 +425,7 @@ button {
 
 #how-it-works .section-title {
   max-width: 980px;
+  margin-inline: auto;
 }
 
 #how-it-works .how-steps {
@@ -358,10 +440,10 @@ button {
   min-width: 0;
   min-height: 280px;
   padding: 26px 22px;
-  border: 1px solid rgba(20, 20, 20, .08);
+  border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--surface);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, .045);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .25);
   overflow: hidden;
   transition:
     transform .28s ease,
@@ -383,9 +465,9 @@ button {
 
 #how-it-works .how-step:hover {
   transform: translateY(-7px);
-  border-color: rgba(20, 20, 20, .18);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, .09);
-  background: #fff;
+  border-color: rgba(255, 216, 77, .42);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .42);
+  background: var(--surface);
 }
 
 #how-it-works .how-step:hover::before {
@@ -407,8 +489,8 @@ button {
   height: 52px;
   margin-bottom: 34px;
   border-radius: 999px;
-  background: var(--text);
-  color: #fff;
+  background: var(--accent);
+  color: #111111;
   font-size: 14px;
   font-weight: 900;
   line-height: 1;
@@ -424,13 +506,12 @@ button {
 }
 
 #how-it-works .how-step p {
-  margin: 0;
+  margin: 0 auto;
   color: var(--muted);
   font-size: 15px;
   line-height: 1.55;
 }
 
-/* Mantém compatibilidade caso existam outras seções usando .steps */
 .steps {
   counter-reset: step;
   display: grid;
@@ -442,7 +523,7 @@ button {
   display: grid;
   grid-template-columns: 56px 1fr;
   gap: 18px;
-  align-items: start;
+  align-items: center;
 }
 
 .step::before {
@@ -452,8 +533,8 @@ button {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--text);
-  color: #fff;
+  background: var(--accent);
+  color: #111111;
   font-weight: 900;
 }
 
@@ -474,13 +555,14 @@ button {
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--surface);
+  color: var(--text);
 }
 
 .comparison-table th,
 .comparison-table td {
   padding: 18px;
   border-bottom: 1px solid var(--line);
-  text-align: left;
+  text-align: center;
 }
 
 .comparison-table th {
@@ -493,7 +575,7 @@ button {
 }
 
 .price-card.featured {
-  border-color: var(--text);
+  border-color: var(--accent);
   box-shadow: var(--shadow);
 }
 
@@ -535,7 +617,7 @@ button {
   min-height: 380px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   opacity: 0;
   pointer-events: none;
   transform: translateX(-50%) scale(.92);
@@ -582,7 +664,7 @@ button {
 }
 
 .service-slide.featured {
-  border-color: var(--text);
+  border-color: var(--accent);
   box-shadow: var(--shadow);
 }
 
@@ -590,7 +672,7 @@ button {
   width: 72px;
   height: 72px;
   margin-bottom: 28px;
-  border: 1px dashed #a9a99f;
+  border: 1px dashed rgba(255, 255, 255, .22);
   border-radius: 18px;
   display: grid;
   place-items: center;
@@ -606,7 +688,7 @@ button {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: var(--bg);
+  background: rgba(255, 255, 255, .08);
   color: var(--text);
   font-size: 12px;
   font-weight: 900;
@@ -619,7 +701,7 @@ button {
   padding: 6px 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  color: var(--muted);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
@@ -631,10 +713,11 @@ button {
   font-size: 24px;
   line-height: 1;
   letter-spacing: -.04em;
+  color: var(--text);
 }
 
 .service-slide p {
-  margin: 0 0 28px;
+  margin: 0 auto 28px;
   color: var(--muted);
 }
 
@@ -651,7 +734,7 @@ button {
   padding: 0;
   border: 1px solid var(--text);
   border-radius: 999px;
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
   font-size: 34px;
   line-height: 1;
@@ -665,8 +748,8 @@ button {
 }
 
 .carousel-control:hover {
-  background: var(--text);
-  color: var(--bg);
+  background: var(--accent);
+  color: #111111;
   transform: translateY(-50%) scale(1.04);
 }
 
@@ -694,7 +777,7 @@ button {
   display: grid;
   grid-template-columns: 1fr .42fr;
   gap: 40px;
-  align-items: start;
+  align-items: center;
 }
 
 .service-page-content {
@@ -711,6 +794,7 @@ button {
   font-size: clamp(28px, 4vw, 44px);
   line-height: 1;
   letter-spacing: -.05em;
+  color: var(--text);
 }
 
 .service-page-content h3 {
@@ -718,10 +802,11 @@ button {
   font-size: 24px;
   line-height: 1.1;
   letter-spacing: -.04em;
+  color: var(--text);
 }
 
 .service-page-content p {
-  margin: 0 0 16px;
+  margin: 0 auto 16px;
   color: var(--muted);
   font-size: 18px;
 }
@@ -743,7 +828,7 @@ button {
   padding: 14px 16px 14px 42px;
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: rgba(255, 255, 255, .72);
+  background: rgba(255, 255, 255, .05);
   color: var(--text);
   font-weight: 700;
 }
@@ -757,7 +842,7 @@ button {
   height: 10px;
   border-radius: 999px;
   background: var(--accent);
-  border: 1px solid var(--text);
+  border: 1px solid var(--accent);
 }
 
 .service-sidebar {
@@ -775,10 +860,11 @@ button {
   font-size: 24px;
   line-height: 1;
   letter-spacing: -.04em;
+  color: var(--text);
 }
 
 .service-sidebar p {
-  margin: 0;
+  margin: 0 auto;
   color: var(--muted);
 }
 
@@ -793,7 +879,7 @@ button {
 }
 
 .service-back-link:hover {
-  color: var(--text);
+  color: var(--accent);
 }
 
 /* =========================
@@ -814,7 +900,7 @@ button {
 .form-field label {
   font-size: 13px;
   font-weight: 800;
-  color: var(--muted);
+  color: var(--accent);
 }
 
 .form-field input,
@@ -825,7 +911,14 @@ button {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 12px 14px;
-  background: #fff;
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(174, 182, 197, .72);
 }
 
 .form-field.full {
@@ -843,6 +936,7 @@ button {
 
 details {
   background: var(--surface);
+  color: var(--text);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 18px 20px;
@@ -865,13 +959,16 @@ details p {
 .final-cta-box {
   padding: clamp(36px, 6vw, 72px);
   border-radius: 36px;
-  background: var(--text);
-  color: #fff;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 216, 77, .16), transparent 46%),
+    var(--surface-2);
+  color: var(--text);
   text-align: center;
+  border: 1px solid var(--line);
 }
 
 .final-cta-box p {
-  color: rgba(255, 255, 255, .74);
+  color: var(--muted);
   margin-inline: auto;
 }
 
@@ -883,6 +980,7 @@ details p {
   border-top: 1px solid var(--line);
   padding: 40px 0;
   color: var(--muted);
+  background: #080a0f;
 }
 
 .footer-grid {
@@ -899,6 +997,10 @@ details p {
 .footer-grid a {
   display: block;
   margin: 8px 0;
+}
+
+.footer-grid a:hover {
+  color: var(--accent);
 }
 
 /* =========================
