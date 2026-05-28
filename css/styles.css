@@ -47,6 +47,10 @@ select {
   font: inherit;
 }
 
+button {
+  appearance: none;
+}
+
 .skip-link {
   position: absolute;
   top: -48px;
@@ -401,17 +405,21 @@ select {
 
 .carousel-wrapper {
   position: relative;
+  isolation: isolate;
   margin-top: 32px;
+  padding-inline: 8px;
 }
 
 .services-carousel {
   display: flex;
   gap: 20px;
   overflow-x: auto;
+  overflow-y: visible;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   padding: 4px 4px 18px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .services-carousel::-webkit-scrollbar {
@@ -422,6 +430,7 @@ select {
   flex: 0 0 calc((100% - 40px) / 3);
   min-height: 320px;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -491,9 +500,10 @@ select {
 .carousel-control {
   position: absolute;
   top: 50%;
-  z-index: 5;
+  z-index: 10;
   width: 44px;
   height: 44px;
+  padding: 0;
   border: 1px solid var(--text);
   border-radius: 999px;
   background: var(--bg);
@@ -504,7 +514,9 @@ select {
   place-items: center;
   cursor: pointer;
   transform: translateY(-50%);
-  transition: background .18s ease, color .18s ease, transform .18s ease;
+  transition: background .18s ease, color .18s ease, transform .18s ease, opacity .18s ease;
+  pointer-events: auto;
+  user-select: none;
 }
 
 .carousel-control:hover {
@@ -513,12 +525,16 @@ select {
   transform: translateY(-50%) scale(1.04);
 }
 
+.carousel-control:active {
+  transform: translateY(-50%) scale(.96);
+}
+
 .carousel-prev {
-  left: -22px;
+  left: -14px;
 }
 
 .carousel-next {
-  right: -22px;
+  right: -14px;
 }
 
 /* =========================
@@ -687,6 +703,10 @@ details p {
 
   .section-title {
     font-size: clamp(34px, 12vw, 52px);
+  }
+
+  .carousel-wrapper {
+    padding-inline: 0;
   }
 
   .carousel-control {
