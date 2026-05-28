@@ -26,61 +26,8 @@ async function includeSections() {
       console.error(error);
     }
   }));
+
+  document.dispatchEvent(new Event("sectionsLoaded"));
 }
 
-function initSmoothScroll() {
-  document.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href^="#"]');
-
-    if (!link) return;
-
-    const target = document.querySelector(link.getAttribute("href"));
-
-    if (!target) return;
-
-    event.preventDefault();
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
-}
-
-function initServicesCarousel() {
-  const servicesCarousel = document.querySelector("[data-services-carousel]");
-  const carouselPrev = document.querySelector(".carousel-prev");
-  const carouselNext = document.querySelector(".carousel-next");
-
-  if (!servicesCarousel || !carouselPrev || !carouselNext) return;
-
-  const getScrollAmount = () => {
-    const slide = servicesCarousel.querySelector(".service-slide");
-    const gap = parseInt(getComputedStyle(servicesCarousel).gap) || 24;
-
-    return slide ? slide.offsetWidth + gap : 320;
-  };
-
-  carouselNext.addEventListener("click", () => {
-    servicesCarousel.scrollBy({
-      left: getScrollAmount(),
-      behavior: "smooth"
-    });
-  });
-
-  carouselPrev.addEventListener("click", () => {
-    servicesCarousel.scrollBy({
-      left: -getScrollAmount(),
-      behavior: "smooth"
-    });
-  });
-}
-
-async function initPage() {
-  await includeSections();
-
-  initSmoothScroll();
-  initServicesCarousel();
-}
-
-initPage();
+includeSections();
