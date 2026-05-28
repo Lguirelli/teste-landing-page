@@ -1,5 +1,6 @@
 async function includeSections() {
   const targets = document.querySelectorAll("[data-section]");
+  const root = document.body?.dataset.root || "";
 
   await Promise.all([...targets].map(async (target) => {
     const path = target.getAttribute("data-section");
@@ -11,7 +12,8 @@ async function includeSections() {
         throw new Error(`Erro ao carregar ${path}`);
       }
 
-      target.innerHTML = await response.text();
+      const html = await response.text();
+      target.innerHTML = html.replaceAll("{{root}}", root);
     } catch (error) {
       target.innerHTML = `
         <section class="section">
