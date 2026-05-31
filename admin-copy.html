@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Editor de Copy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/admin-copy.css" />
+</head>
+<body>
+  <main class="copy-admin-shell">
+    <aside class="copy-admin-sidebar">
+      <a class="copy-admin-logo" href="index.html" aria-label="Voltar para a landing">
+        <span class="copy-admin-logo-mark"></span>
+        <span>Copy</span>
+      </a>
+
+      <p class="copy-admin-help">
+        Edite os textos por seção e salve. A landing real aplica o conteúdo salvo no navegador sem alterar o HTML.
+      </p>
+
+      <nav class="copy-admin-nav" id="copyAdminNav" aria-label="Seções de copy"></nav>
+    </aside>
+
+    <section class="copy-admin-workspace">
+      <header class="copy-admin-header">
+        <div>
+          <span class="copy-admin-kicker">Editor visual</span>
+          <h1>Página de copy por seções</h1>
+          <p>Use como um documento de texto conectado à landing page.</p>
+        </div>
+
+        <div class="copy-admin-actions">
+          <a class="copy-admin-button ghost" href="index.html" target="_blank" rel="noreferrer">Ver landing</a>
+          <button class="copy-admin-button ghost" type="button" id="copyExportButton">Exportar JSON</button>
+          <button class="copy-admin-button ghost" type="button" id="copyImportButton">Importar JSON</button>
+          <button class="copy-admin-button danger" type="button" id="copyResetButton">Resetar</button>
+          <button class="copy-admin-button primary" type="button" id="copySaveButton">Salvar alterações</button>
+        </div>
+      </header>
+
+      <div class="copy-admin-status" id="copyStatus" role="status" aria-live="polite">Carregando campos...</div>
+
+      <form class="copy-admin-form" id="copyAdminForm"></form>
+
+      <input id="copyImportInput" type="file" accept="application/json" hidden />
+    </section>
+  </main>
+
+  <script src="js/admin-copy.js" defer></script>
+</body>
+</html>

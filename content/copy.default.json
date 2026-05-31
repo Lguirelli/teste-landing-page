@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 1,
+  "storageKey": "landing_copy_v1",
+  "sections": [
+    {
+      "id": "brand",
+      "label": "Marca / Header / Footer",
+      "fields": [
+        { "path": "brand.name", "label": "Nome da marca", "type": "text" },
+        { "path": "footer.description", "label": "Descrição do rodapé", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "hero",
+      "label": "Hero",
+      "fields": [
+        { "path": "hero.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "hero.title", "label": "Título principal", "type": "textarea" },
+        { "path": "hero.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "hero.primaryButton", "label": "Botão principal", "type": "text" },
+        { "path": "hero.secondaryButton", "label": "Botão secundário", "type": "text" },
+        { "path": "hero.microcopy", "label": "Microcopy", "type": "text" },
+        { "path": "hero.proof1", "label": "Prova rápida 1", "type": "text" },
+        { "path": "hero.proof2", "label": "Prova rápida 2", "type": "text" },
+        { "path": "hero.proof3", "label": "Prova rápida 3", "type": "text" }
+      ]
+    },
+    {
+      "id": "trust",
+      "label": "Faixa de confiança",
+      "fields": [
+        { "path": "trust.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "trust.logo1", "label": "Logo 1", "type": "text" },
+        { "path": "trust.logo2", "label": "Logo 2", "type": "text" },
+        { "path": "trust.logo3", "label": "Logo 3", "type": "text" },
+        { "path": "trust.logo4", "label": "Logo 4", "type": "text" },
+        { "path": "trust.logo5", "label": "Logo 5", "type": "text" }
+      ]
+    },
+    {
+      "id": "problem",
+      "label": "Problema",
+      "fields": [
+        { "path": "problem.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "problem.title", "label": "Título", "type": "textarea" },
+        { "path": "problem.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "problem.cardTitle", "label": "Título do card", "type": "text" },
+        { "path": "problem.cardText", "label": "Texto do card", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "benefits",
+      "label": "Benefícios",
+      "fields": [
+        { "path": "benefits.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "benefits.title", "label": "Título", "type": "textarea" },
+        { "path": "benefits.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "benefits.item1Title", "label": "Benefício 1 — título", "type": "text" },
+        { "path": "benefits.item1Text", "label": "Benefício 1 — texto", "type": "textarea" },
+        { "path": "benefits.item2Title", "label": "Benefício 2 — título", "type": "text" },
+        { "path": "benefits.item2Text", "label": "Benefício 2 — texto", "type": "textarea" },
+        { "path": "benefits.item3Title", "label": "Benefício 3 — título", "type": "text" },
+        { "path": "benefits.item3Text", "label": "Benefício 3 — texto", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "how",
+      "label": "Como funciona",
+      "fields": [
+        { "path": "how.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "how.title", "label": "Título", "type": "textarea" },
+        { "path": "how.step1Title", "label": "Etapa 1 — título", "type": "text" },
+        { "path": "how.step1Text", "label": "Etapa 1 — texto", "type": "textarea" },
+        { "path": "how.step2Title", "label": "Etapa 2 — título", "type": "text" },
+        { "path": "how.step2Text", "label": "Etapa 2 — texto", "type": "textarea" },
+        { "path": "how.step3Title", "label": "Etapa 3 — título", "type": "text" },
+        { "path": "how.step3Text", "label": "Etapa 3 — texto", "type": "textarea" },
+        { "path": "how.step4Title", "label": "Etapa 4 — título", "type": "text" },
+        { "path": "how.step4Text", "label": "Etapa 4 — texto", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "features",
+      "label": "Recursos",
+      "fields": [
+        { "path": "features.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "features.title", "label": "Título", "type": "textarea" },
+        { "path": "features.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "features.card1Title", "label": "Card 1 — título", "type": "text" },
+        { "path": "features.card1Text", "label": "Card 1 — texto", "type": "textarea" },
+        { "path": "features.card2Title", "label": "Card 2 — título", "type": "text" },
+        { "path": "features.card2Text", "label": "Card 2 — texto", "type": "textarea" },
+        { "path": "features.card3Title", "label": "Card 3 — título", "type": "text" },
+        { "path": "features.card3Text", "label": "Card 3 — texto", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "proof",
+      "label": "Prova social",
+      "fields": [
+        { "path": "proof.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "proof.title", "label": "Título", "type": "textarea" },
+        { "path": "proof.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "proof.quote", "label": "Depoimento", "type": "textarea" },
+        { "path": "proof.author", "label": "Autor / empresa", "type": "text" }
+      ]
+    },
+    {
+      "id": "case",
+      "label": "Case",
+      "fields": [
+        { "path": "case.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "case.title", "label": "Título", "type": "textarea" },
+        { "path": "case.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "case.button", "label": "Botão", "type": "text" }
+      ]
+    },
+    {
+      "id": "comparison",
+      "label": "Comparativo",
+      "fields": [
+        { "path": "comparison.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "comparison.title", "label": "Título", "type": "textarea" },
+        { "path": "comparison.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "comparison.row1Criteria", "label": "Linha 1 — critério", "type": "text" },
+        { "path": "comparison.row1Traditional", "label": "Linha 1 — tradicional", "type": "text" },
+        { "path": "comparison.row1Ideal", "label": "Linha 1 — ideal", "type": "text" },
+        { "path": "comparison.row2Criteria", "label": "Linha 2 — critério", "type": "text" },
+        { "path": "comparison.row2Traditional", "label": "Linha 2 — tradicional", "type": "text" },
+        { "path": "comparison.row2Ideal", "label": "Linha 2 — ideal", "type": "text" },
+        { "path": "comparison.row3Criteria", "label": "Linha 3 — critério", "type": "text" },
+        { "path": "comparison.row3Traditional", "label": "Linha 3 — tradicional", "type": "text" },
+        { "path": "comparison.row3Ideal", "label": "Linha 3 — ideal", "type": "text" }
+      ]
+    },
+    {
+      "id": "services",
+      "label": "Serviços",
+      "fields": [
+        { "path": "services.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "services.title", "label": "Título", "type": "textarea" },
+        { "path": "services.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "services.card1Category", "label": "Serviço 1 — categoria", "type": "text" },
+        { "path": "services.card1Title", "label": "Serviço 1 — título", "type": "text" },
+        { "path": "services.card1Text", "label": "Serviço 1 — texto", "type": "textarea" },
+        { "path": "services.card1Button", "label": "Serviço 1 — botão", "type": "text" },
+        { "path": "services.card2Category", "label": "Serviço 2 — categoria", "type": "text" },
+        { "path": "services.card2Title", "label": "Serviço 2 — título", "type": "text" },
+        { "path": "services.card2Text", "label": "Serviço 2 — texto", "type": "textarea" },
+        { "path": "services.card2Button", "label": "Serviço 2 — botão", "type": "text" },
+        { "path": "services.card3Category", "label": "Serviço 3 — categoria", "type": "text" },
+        { "path": "services.card3Title", "label": "Serviço 3 — título", "type": "text" },
+        { "path": "services.card3Text", "label": "Serviço 3 — texto", "type": "textarea" },
+        { "path": "services.card3Button", "label": "Serviço 3 — botão", "type": "text" },
+        { "path": "services.card4Category", "label": "Serviço 4 — categoria", "type": "text" },
+        { "path": "services.card4Title", "label": "Serviço 4 — título", "type": "text" },
+        { "path": "services.card4Text", "label": "Serviço 4 — texto", "type": "textarea" },
+        { "path": "services.card4Button", "label": "Serviço 4 — botão", "type": "text" },
+        { "path": "services.card5Category", "label": "Serviço 5 — categoria", "type": "text" },
+        { "path": "services.card5Title", "label": "Serviço 5 — título", "type": "text" },
+        { "path": "services.card5Text", "label": "Serviço 5 — texto", "type": "textarea" },
+        { "path": "services.card5Button", "label": "Serviço 5 — botão", "type": "text" }
+      ]
+    },
+    {
+      "id": "lead",
+      "label": "Formulário / Qualificação",
+      "fields": [
+        { "path": "lead.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "lead.title", "label": "Título", "type": "textarea" },
+        { "path": "lead.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "lead.nameLabel", "label": "Campo nome — label", "type": "text" },
+        { "path": "lead.namePlaceholder", "label": "Campo nome — placeholder", "type": "text", "target": "placeholder" },
+        { "path": "lead.emailLabel", "label": "Campo email — label", "type": "text" },
+        { "path": "lead.selectLabel", "label": "Campo seleção — label", "type": "text" },
+        { "path": "lead.phoneLabel", "label": "Campo telefone — label", "type": "text" },
+        { "path": "lead.messageLabel", "label": "Mensagem — label", "type": "text" },
+        { "path": "lead.messagePlaceholder", "label": "Mensagem — placeholder", "type": "text", "target": "placeholder" },
+        { "path": "lead.button", "label": "Botão", "type": "text" },
+        { "path": "lead.microcopy", "label": "Microcopy", "type": "text" }
+      ]
+    },
+    {
+      "id": "faq",
+      "label": "FAQ",
+      "fields": [
+        { "path": "faq.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "faq.title", "label": "Título", "type": "textarea" },
+        { "path": "faq.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "faq.q1", "label": "Pergunta 1", "type": "text" },
+        { "path": "faq.a1", "label": "Resposta 1", "type": "textarea" },
+        { "path": "faq.q2", "label": "Pergunta 2", "type": "text" },
+        { "path": "faq.a2", "label": "Resposta 2", "type": "textarea" },
+        { "path": "faq.q3", "label": "Pergunta 3", "type": "text" },
+        { "path": "faq.a3", "label": "Resposta 3", "type": "textarea" },
+        { "path": "faq.q4", "label": "Pergunta 4", "type": "text" },
+        { "path": "faq.a4", "label": "Resposta 4", "type": "textarea" }
+      ]
+    },
+    {
+      "id": "finalCta",
+      "label": "CTA final",
+      "fields": [
+        { "path": "finalCta.kicker", "label": "Texto pequeno", "type": "text" },
+        { "path": "finalCta.title", "label": "Título", "type": "textarea" },
+        { "path": "finalCta.lead", "label": "Texto de apoio", "type": "textarea" },
+        { "path": "finalCta.primaryButton", "label": "Botão principal", "type": "text" },
+        { "path": "finalCta.secondaryButton", "label": "Botão secundário", "type": "text" }
+      ]
+    }
+  ],
+  "values": {
+    "brand": { "name": "Brand" },
+    "footer": { "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+    "hero": {
+      "kicker": "Lorem ipsum dolor",
+      "title": "Lorem ipsum dolor sit amet consectetur.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "primaryButton": "Lorem ipsum",
+      "secondaryButton": "Dolor sit amet",
+      "microcopy": "Lorem ipsum dolor sit amet • consectetur adipiscing • eiusmod tempor",
+      "proof1": "★★★★★ Lorem",
+      "proof2": "+000 Lorem ipsum",
+      "proof3": "00% Lorem dolor"
+    },
+    "trust": {
+      "kicker": "Lorem ipsum dolor sit",
+      "logo1": "Logo 01",
+      "logo2": "Logo 02",
+      "logo3": "Logo 03",
+      "logo4": "Logo 04",
+      "logo5": "Logo 05"
+    },
+    "problem": {
+      "kicker": "Problema",
+      "title": "Lorem ipsum dolor sit amet.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus.",
+      "cardTitle": "Lorem ipsum dolor",
+      "cardText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam."
+    },
+    "benefits": {
+      "kicker": "Benefícios",
+      "title": "Lorem ipsum dolor sit amet consectetur.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas faucibus mollis interdum.",
+      "item1Title": "Lorem ipsum dolor",
+      "item1Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "item2Title": "Lorem ipsum dolor",
+      "item2Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "item3Title": "Lorem ipsum dolor",
+      "item3Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    "how": {
+      "kicker": "Como funciona",
+      "title": "Um processo simples para transformar necessidade em solução.",
+      "step1Title": "Diagnóstico",
+      "step1Text": "Entendemos o cenário atual do negócio, os principais problemas da operação e onde existe oportunidade de melhoria.",
+      "step2Title": "Planejamento",
+      "step2Text": "Estruturamos a solução ideal, definindo o fluxo, as ferramentas necessárias e as etapas para colocar o projeto em prática.",
+      "step3Title": "Implementação",
+      "step3Text": "Criamos, configuramos e conectamos a solução ao processo do negócio, deixando tudo pronto para uso.",
+      "step4Title": "Otimização",
+      "step4Text": "Acompanhamos o funcionamento, analisamos os primeiros resultados e ajustamos a solução com base no uso real."
+    },
+    "features": {
+      "kicker": "Recursos",
+      "title": "Lorem ipsum dolor sit amet.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ullamcorper nulla non metus auctor fringilla.",
+      "card1Title": "Lorem ipsum",
+      "card1Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "card2Title": "Lorem ipsum",
+      "card2Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "card3Title": "Lorem ipsum",
+      "card3Text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    "proof": {
+      "kicker": "Prova social",
+      "title": "Lorem ipsum dolor sit.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras mattis consectetur purus sit amet fermentum.",
+      "quote": "“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.”",
+      "author": "Nome Sobrenome • Empresa"
+    },
+    "case": {
+      "kicker": "Case",
+      "title": "Lorem ipsum dolor sit amet.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id ligula porta felis euismod semper.",
+      "button": "Lorem ipsum"
+    },
+    "comparison": {
+      "kicker": "Comparativo",
+      "title": "Lorem ipsum dolor sit.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "row1Criteria": "Lorem ipsum",
+      "row1Traditional": "Lorem ipsum dolor",
+      "row1Ideal": "Lorem ipsum dolor",
+      "row2Criteria": "Lorem ipsum",
+      "row2Traditional": "Lorem ipsum dolor",
+      "row2Ideal": "Lorem ipsum dolor",
+      "row3Criteria": "Lorem ipsum",
+      "row3Traditional": "Lorem ipsum dolor",
+      "row3Ideal": "Lorem ipsum dolor"
+    },
+    "services": {
+      "kicker": "Serviços e produtos",
+      "title": "Soluções digitais para vender, atender e crescer com IA.",
+      "lead": "Soluções para automatizar atendimentos, criar páginas de conversão, organizar conteúdos, visualizar dados e personalizar a comunicação do seu negócio.",
+      "card1Category": "Automação",
+      "card1Title": "Agentes de IA para atendimento e vendas",
+      "card1Text": "Respondem clientes, qualificam leads e ajudam a conduzir oportunidades até a venda.",
+      "card1Button": "Saiba mais",
+      "card2Category": "Conversão",
+      "card2Title": "Criação de landing pages",
+      "card2Text": "Páginas estratégicas criadas para transformar visitantes em contatos, leads, agendamentos ou vendas.",
+      "card2Button": "Saiba mais",
+      "card3Category": "Conteúdo",
+      "card3Title": "Planejamento de conteúdo com IA",
+      "card3Text": "Organiza ideias, pautas e calendários para produzir conteúdo com mais consistência e estratégia.",
+      "card3Button": "Saiba mais",
+      "card4Category": "Dados",
+      "card4Title": "Análise de dados e dashboards para PMEs",
+      "card4Text": "Transforma dados espalhados em painéis claros para ajudar empresas a tomar melhores decisões.",
+      "card4Button": "Saiba mais",
+      "card5Category": "Personalização",
+      "card5Title": "Conteúdo personalizado por segmento",
+      "card5Text": "Criação de conteúdos adaptados ao nicho, linguagem, dores e objetivos de cada tipo de negócio.",
+      "card5Button": "Saiba mais"
+    },
+    "lead": {
+      "kicker": "Qualificação",
+      "title": "Lorem ipsum dolor sit amet.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere consectetur est at lobortis.",
+      "nameLabel": "Lorem",
+      "namePlaceholder": "Lorem ipsum",
+      "emailLabel": "Lorem",
+      "selectLabel": "Lorem",
+      "phoneLabel": "Lorem",
+      "messageLabel": "Lorem",
+      "messagePlaceholder": "Lorem ipsum dolor sit amet",
+      "button": "Lorem ipsum",
+      "microcopy": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Lorem ipsum dolor?",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "q1": "Lorem ipsum dolor sit amet?",
+      "a1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.",
+      "q2": "Lorem ipsum dolor sit amet?",
+      "a2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.",
+      "q3": "Lorem ipsum dolor sit amet?",
+      "a3": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.",
+      "q4": "Lorem ipsum dolor sit amet?",
+      "a4": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante."
+    },
+    "finalCta": {
+      "kicker": "Lorem ipsum",
+      "title": "Lorem ipsum dolor sit amet consectetur.",
+      "lead": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui.",
+      "primaryButton": "Lorem ipsum",
+      "secondaryButton": "Dolor sit amet"
+    }
+  }
+}
