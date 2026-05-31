@@ -23,8 +23,6 @@ html {
 
 body {
   margin: 0;
-  position: relative;
-  isolation: isolate;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
     radial-gradient(circle at 12% 0%, rgba(255, 216, 77, .08), transparent 34%),
@@ -514,8 +512,31 @@ details:hover {
   line-height: 1.55;
 }
 
+.steps {
+  counter-reset: step;
+  display: grid;
+  gap: 16px;
+}
 
+.step {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  align-items: center;
+}
 
+.step::before {
+  content: counter(step);
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #111111;
+  font-weight: 900;
+}
 
 /* =========================
    QUOTE / TABLE / PRICE
@@ -548,8 +569,22 @@ details:hover {
   background: var(--surface-2);
 }
 
+.price-card {
+  position: relative;
+  overflow: hidden;
+}
 
+.price-card.featured {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
 
+.price {
+  font-size: 52px;
+  font-weight: 900;
+  letter-spacing: -.06em;
+  margin: 12px 0;
+}
 
 /* =========================
    SERVICES / PRODUCTS CAROUSEL
@@ -1318,18 +1353,7 @@ details p {
 
 .hero-copy {
   position: relative;
-  z-index: 50;
-}
-
-.hero,
-.section {
-  position: relative;
-}
-
-.hero > .container,
-.section > .container {
-  position: relative;
-  z-index: 40;
+  z-index: 2;
 }
 
 .hero-model-wrap {
@@ -1343,25 +1367,19 @@ details p {
   background: transparent;
   border: 0;
   box-shadow: none;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .hero-model-stage {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 1px;
-  height: 1px;
+  position: absolute;
+  inset: -3%;
   display: block;
   background: transparent;
   border: 0;
   box-shadow: none;
   overflow: visible;
-  pointer-events: none;
+  pointer-events: auto;
   cursor: default;
-  z-index: 20;
-  transition: none;
-  will-change: left, top, width, height;
 }
 
 .hero-model-stage canvas {
@@ -1382,7 +1400,7 @@ details p {
   border-radius: 999px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%);
   filter: blur(10px);
-  opacity: .42;
+  opacity: .48;
   pointer-events: none;
 }
 
@@ -1475,30 +1493,14 @@ details p {
 }
 
 
-
-.hero-copy,
-.section-copy,
-.hero-proof,
-.btn-row,
-.microcopy,
-.problem-duck-target > * {
-  position: relative;
-  z-index: 60;
-}
-
-/* Duck scroll transition: global canvas behind content */
+/* Duck scroll transition: hero model -> problem card */
 .problem-duck-target {
   position: relative;
   min-height: 176px;
   overflow: hidden;
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, .12) !important;
-  box-shadow: none !important;
 }
 
 .problem-duck-target > * {
-  position: relative;
-  z-index: 3;
   transition: opacity .28s ease, transform .28s ease;
 }
 
@@ -1508,17 +1510,16 @@ details p {
   pointer-events: none;
 }
 
-.hero-model-stage.duck-global-stage {
+.hero-model-stage.is-scroll-traveling {
   position: fixed !important;
   inset: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  z-index: 20 !important;
-  pointer-events: none !important;
+  z-index: 18;
+  pointer-events: none;
+  transition: none;
 }
 
-.hero-model-stage.duck-global-stage.is-duck-arrived::before {
-  opacity: .34;
+.hero-model-stage.is-scroll-traveling::before {
+  opacity: .38;
 }
 
 @media (max-width: 980px) {
@@ -1526,10 +1527,145 @@ details p {
     min-height: 160px;
   }
 
-  .hero-model-stage.duck-global-stage {
-    position: fixed !important;
-    inset: auto !important;
-    right: auto !important;
-    bottom: auto !important;
+  .hero-model-stage.is-scroll-traveling {
+    position: absolute !important;
+    inset: -2% !important;
+    width: auto !important;
+    height: auto !important;
+    left: auto !important;
+    top: auto !important;
+  }
+}
+
+
+/* Duck global canvas: visible above page background, behind text/cards */
+.hero,
+.section {
+  position: relative;
+  isolation: auto;
+}
+
+.hero > .container,
+.section > .container {
+  position: relative;
+  z-index: 10;
+}
+
+.hero-model-wrap {
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+.hero-model-stage.duck-global-stage,
+#heroModelStage.duck-global-stage {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  z-index: 4 !important;
+  transform: translateZ(0);
+  will-change: left, top, width, height;
+}
+
+#heroModelStage.duck-global-stage canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+}
+
+#heroModelStage.duck-global-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 54%;
+  height: 14%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%);
+  filter: blur(10px);
+  opacity: .42;
+  pointer-events: none;
+}
+
+.problem-duck-target {
+  position: relative;
+  min-height: 176px;
+  overflow: hidden;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.problem-duck-target > * {
+  position: relative;
+  z-index: 12;
+  transition: opacity .28s ease, transform .28s ease;
+}
+
+.problem-duck-target.is-duck-arrived > * {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.site-header {
+  z-index: 900 !important;
+}
+
+@media (min-width: 981px) {
+  .hero-grid {
+    align-items: start;
+  }
+
+  .hero-model-wrap {
+    order: 1;
+    justify-self: start;
+    align-self: start;
+    margin-inline: 0;
+    margin-top: 26px;
+  }
+
+  .hero-copy {
+    order: 2;
+    align-self: start;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-model-wrap {
+    width: min(100%, 460px);
+    margin-top: 18px;
+  }
+
+  .problem-duck-target {
+    min-height: 160px;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-model-wrap {
+    width: min(100%, 360px);
+    margin-top: 8px;
   }
 }

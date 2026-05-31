@@ -420,10 +420,6 @@ async function initHeroModel() {
       : 1 - Math.pow(-2 * progress + 2, 3) / 2;
   }
 
-  function getViewportRect(element) {
-    return element.getBoundingClientRect();
-  }
-
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
     const width = Math.max(1, rect.width);
@@ -451,10 +447,14 @@ async function initHeroModel() {
     group.position.set(basePositionX, basePositionY, 0);
   }
 
-  function applyTravelRect(progress) {
-    if (!problemTarget || window.innerWidth <= 980) {
-      const source = getViewportRect(sourceWrap);
+  function getViewportRect(element) {
+    return element.getBoundingClientRect();
+  }
 
+  function applyTravelRect(progress) {
+    const source = getViewportRect(sourceWrap);
+
+    if (!problemTarget || window.innerWidth <= 980) {
       stage.classList.remove("is-duck-arrived");
       stage.style.left = `${source.left}px`;
       stage.style.top = `${source.top}px`;
@@ -466,11 +466,9 @@ async function initHeroModel() {
     }
 
     const easedProgress = easeInOutCubic(progress);
-    const source = getViewportRect(sourceWrap);
     const target = getViewportRect(problemTarget);
-
-    const targetWidth = target.width * 0.78;
-    const targetHeight = Math.max(target.height * 1.28, targetWidth * 0.72);
+    const targetWidth = target.width * 0.82;
+    const targetHeight = Math.max(target.height * 1.32, targetWidth * 0.72);
     const targetLeft = target.left + (target.width - targetWidth) / 2;
     const targetTop = target.top + (target.height - targetHeight) / 2;
 
@@ -493,8 +491,8 @@ async function initHeroModel() {
 
     const sourceDocumentTop = sourceWrap.getBoundingClientRect().top + window.scrollY;
     const targetDocumentTop = problemTarget.getBoundingClientRect().top + window.scrollY;
-    const start = sourceDocumentTop + sourceWrap.offsetHeight * 0.16;
-    const end = targetDocumentTop - window.innerHeight * 0.38;
+    const start = sourceDocumentTop + sourceWrap.offsetHeight * 0.12;
+    const end = targetDocumentTop - window.innerHeight * 0.42;
     const distance = Math.max(1, end - start);
 
     scrollProgress = clamp((window.scrollY - start) / distance, 0, 1);
