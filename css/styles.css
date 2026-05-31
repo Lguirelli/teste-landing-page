@@ -23,6 +23,8 @@ html {
 
 body {
   margin: 0;
+  position: relative;
+  isolation: isolate;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
     radial-gradient(circle at 12% 0%, rgba(255, 216, 77, .08), transparent 34%),
@@ -1316,7 +1318,7 @@ details p {
 
 .hero-copy {
   position: relative;
-  z-index: 3;
+  z-index: 50;
 }
 
 .hero,
@@ -1327,7 +1329,7 @@ details p {
 .hero > .container,
 .section > .container {
   position: relative;
-  z-index: 2;
+  z-index: 40;
 }
 
 .hero-model-wrap {
@@ -1357,7 +1359,7 @@ details p {
   overflow: visible;
   pointer-events: none;
   cursor: default;
-  z-index: 1;
+  z-index: 20;
   transition: none;
   will-change: left, top, width, height;
 }
@@ -1473,12 +1475,24 @@ details p {
 }
 
 
+
+.hero-copy,
+.section-copy,
+.hero-proof,
+.btn-row,
+.microcopy,
+.problem-duck-target > * {
+  position: relative;
+  z-index: 60;
+}
+
 /* Duck scroll transition: global canvas behind content */
 .problem-duck-target {
   position: relative;
   min-height: 176px;
   overflow: hidden;
   background: transparent !important;
+  border-color: rgba(255, 255, 255, .12) !important;
   box-shadow: none !important;
 }
 
@@ -1499,7 +1513,7 @@ details p {
   inset: auto !important;
   right: auto !important;
   bottom: auto !important;
-  z-index: 1 !important;
+  z-index: 20 !important;
   pointer-events: none !important;
 }
 
