@@ -1,14 +1,17 @@
 Correção do editor de copy:
 
-1. Substitua os arquivos/pastas deste patch na raiz do repositório.
-2. Faça commit e push.
-3. Abra admin-copy.html, edite e clique em Salvar alterações.
-4. Atualize index.html no mesmo domínio do GitHub Pages.
+Substitua estes arquivos na raiz do repositório:
+- admin-copy.html
+- index.html
+- js/admin-copy.js
+- js/copy-loader.js
 
-Correções aplicadas:
-- adiciona data-copy-section nos wrappers do index;
-- adiciona data-copy-section nas seções carregadas;
-- inclui sections/*.html com data-copy real;
-- corrige o botão duplicado da seção Serviços;
-- força o copy-loader a reaplicar a copy depois do carregamento dinâmico das seções;
-- evita cache no carregamento de content/copy.default.json e sections/*.html.
+O editor agora salva automaticamente ao digitar/marcar checkbox.
+O botão "Salvar alterações" também força o salvamento.
+O index recebeu cache busting para puxar os scripts novos no GitHub Pages.
+
+Depois de subir:
+1. Abra admin-copy.html.
+2. Digite qualquer texto.
+3. Aguarde aparecer "Alterações salvas automaticamente" ou clique em Salvar alterações.
+4. Abra/atualize index.html no mesmo domínio.

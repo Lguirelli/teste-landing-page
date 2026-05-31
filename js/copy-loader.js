@@ -29,13 +29,18 @@
   }
 
   function readSavedCopy(storageKey) {
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      return raw ? JSON.parse(raw) : {};
-    } catch (error) {
-      console.warn("Não foi possível ler a copy salva.", error);
-      return {};
+    const keysToTry = [storageKey, DEFAULT_STORAGE_KEY, "landingCopy", "landing-copy"];
+
+    for (const key of keysToTry) {
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw) return JSON.parse(raw);
+      } catch (error) {
+        console.warn("Não foi possível ler a copy salva em", key, error);
+      }
     }
+
+    return {};
   }
 
   async function loadCopyConfig() {
@@ -54,6 +59,11 @@
 
       if (target === "placeholder") {
         element.setAttribute("placeholder", value);
+        return;
+      }
+
+      if (target === "value") {
+        element.value = value;
         return;
       }
 
@@ -109,9 +119,10 @@
 
   function refreshSoon() {
     refreshLandingCopy();
-    window.setTimeout(refreshLandingCopy, 100);
-    window.setTimeout(refreshLandingCopy, 300);
-    window.setTimeout(refreshLandingCopy, 800);
+    window.setTimeout(refreshLandingCopy, 80);
+    window.setTimeout(refreshLandingCopy, 250);
+    window.setTimeout(refreshLandingCopy, 600);
+    window.setTimeout(refreshLandingCopy, 1200);
   }
 
   window.refreshLandingCopy = refreshLandingCopy;
@@ -122,8 +133,15 @@
   if (document.readyState !== "loading") refreshSoon();
 
   window.addEventListener("storage", (event) => {
-    if (!event.key || event.key === DEFAULT_STORAGE_KEY) refreshSoon();
+    if (!event.key || event.key === DEFAULT_STORAGE_KEY || event.key === "landing_copy_v1") refreshSoon();
   });
+
+  if ("BroadcastChannel" in window) {
+    const channel = new BroadcastChannel("landing-copy-channel");
+    channel.addEventListener("message", (event) => {
+      if (event.data?.type === "landing-copy-updated") refreshSoon();
+    });
+  }
 
   const observer = new MutationObserver(() => {
     window.clearTimeout(window.__landingCopyMutationTimer);

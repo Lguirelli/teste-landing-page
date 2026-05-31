@@ -13,6 +13,11 @@
   let currentValues = {};
   let currentVisibility = {};
   let storageKey = DEFAULT_STORAGE_KEY;
+  let autoSaveTimer = null;
+
+  function getRootPrefix() {
+    return document.body?.dataset.root || "";
+  }
 
   function isObject(value) {
     return value && typeof value === "object" && !Array.isArray(value);
@@ -65,16 +70,41 @@
   }
 
   function readSavedPayload() {
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      return raw ? JSON.parse(raw) : {};
-    } catch (error) {
-      showStatus("Não foi possível ler a copy salva.", "error");
-      return {};
+    const keysToTry = [storageKey, DEFAULT_STORAGE_KEY, "landingCopy", "landing-copy"];
+
+    for (const key of keysToTry) {
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw) return JSON.parse(raw);
+      } catch (error) {
+        console.warn("Não foi possível ler a copy salva em", key, error);
+      }
     }
+
+    return {};
   }
 
-  function savePayload(values, visibility) {
+  function collectValues() {
+    const values = {};
+
+    form.querySelectorAll("[data-copy-path]").forEach((field) => {
+      setByPath(values, field.dataset.copyPath, field.value.trim());
+    });
+
+    return values;
+  }
+
+  function collectVisibility() {
+    const visibility = buildDefaultVisibility();
+
+    form.querySelectorAll("[data-visibility-section]").forEach((field) => {
+      visibility[field.dataset.visibilitySection] = field.checked;
+    });
+
+    return visibility;
+  }
+
+  function savePayload(values, visibility, silent = false) {
     const payload = {
       schemaVersion: config?.schemaVersion || 1,
       savedAt: new Date().toISOString(),
@@ -82,7 +112,34 @@
       visibility
     };
 
-    window.localStorage.setItem(storageKey, JSON.stringify(payload));
+    const serialized = JSON.stringify(payload);
+
+    window.localStorage.setItem(storageKey, serialized);
+    window.localStorage.setItem(DEFAULT_STORAGE_KEY, serialized);
+
+    window.dispatchEvent(new StorageEvent("storage", {
+      key: storageKey,
+      newValue: serialized,
+      storageArea: window.localStorage
+    }));
+
+    if ("BroadcastChannel" in window) {
+      const channel = new BroadcastChannel("landing-copy-channel");
+      channel.postMessage({ type: "landing-copy-updated", payload });
+      channel.close();
+    }
+
+    if (!silent) {
+      showStatus("Alterações salvas. Atualize a landing para ver o texto aplicado.", "success");
+    }
+  }
+
+  function saveCurrentChanges(silent = false) {
+    if (!config) return;
+
+    currentValues = mergeDeep(config.values || {}, collectValues());
+    currentVisibility = collectVisibility();
+    savePayload(currentValues, currentVisibility, silent);
   }
 
   function showStatus(message, type = "default") {
@@ -91,7 +148,12 @@
   }
 
   function markUnsaved() {
-    showStatus("Alterações ainda não salvas.", "warning");
+    showStatus("Salvando automaticamente...", "warning");
+    window.clearTimeout(autoSaveTimer);
+    autoSaveTimer = window.setTimeout(() => {
+      saveCurrentChanges(true);
+      showStatus("Alterações salvas automaticamente. Atualize a landing para conferir.", "success");
+    }, 350);
   }
 
   function createField(field) {
@@ -177,29 +239,9 @@
     });
   }
 
-  function collectValues() {
-    const values = {};
-
-    form.querySelectorAll("[data-copy-path]").forEach((field) => {
-      setByPath(values, field.dataset.copyPath, field.value.trim());
-    });
-
-    return values;
-  }
-
-  function collectVisibility() {
-    const visibility = buildDefaultVisibility();
-
-    form.querySelectorAll("[data-visibility-section]").forEach((field) => {
-      visibility[field.dataset.visibilitySection] = field.checked;
-    });
-
-    return visibility;
-  }
-
   async function init() {
     try {
-      const response = await fetch("content/copy.default.json", { cache: "no-store" });
+      const response = await fetch(`${getRootPrefix()}content/copy.default.json?v=${Date.now()}`, { cache: "no-store" });
 
       if (!response.ok) {
         throw new Error("content/copy.default.json não encontrado");
@@ -213,7 +255,7 @@
       currentVisibility = mergeDeep(buildDefaultVisibility(), saved.visibility || {});
 
       render();
-      showStatus("Campos carregados. Edite, marque as seções e salve para aplicar na landing.", "success");
+      showStatus("Campos carregados. As alterações agora salvam automaticamente.", "success");
     } catch (error) {
       showStatus(`Erro ao carregar editor: ${error.message}`, "error");
     }
@@ -223,10 +265,8 @@
   form.addEventListener("change", markUnsaved);
 
   saveButton.addEventListener("click", () => {
-    currentValues = mergeDeep(config.values || {}, collectValues());
-    currentVisibility = collectVisibility();
-    savePayload(currentValues, currentVisibility);
-    showStatus("Alterações salvas. Abra ou atualize a landing para ver o texto e as seções aplicados.", "success");
+    window.clearTimeout(autoSaveTimer);
+    saveCurrentChanges(false);
   });
 
   resetButton.addEventListener("click", () => {
@@ -235,6 +275,7 @@
     if (!confirmReset) return;
 
     window.localStorage.removeItem(storageKey);
+    window.localStorage.removeItem(DEFAULT_STORAGE_KEY);
     currentValues = config.values || {};
     currentVisibility = buildDefaultVisibility();
     render();
@@ -242,6 +283,7 @@
   });
 
   exportButton.addEventListener("click", () => {
+    saveCurrentChanges(true);
     const values = collectValues();
     const visibility = collectVisibility();
     const blob = new Blob([JSON.stringify({ schemaVersion: config.schemaVersion || 1, values, visibility }, null, 2)], {
