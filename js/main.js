@@ -397,6 +397,11 @@ async function initHeroModel() {
   const baseRotationZ = -0.012;
   const basePositionX = 0;
   const basePositionY = 0.44;
+  const finalRotationY = baseRotationY + Math.PI;
+  const finalPositionY = 0.02;
+  const finalModelScale = 0.76;
+  const problemTarget = document.querySelector("[data-duck-scroll-target]");
+  let scrollProgress = 0;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -425,6 +430,91 @@ async function initHeroModel() {
     group.position.set(basePositionX, basePositionY, 0);
   }
 
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function lerp(start, end, progress) {
+    return start + (end - start) * progress;
+  }
+
+  function easeInOutCubic(progress) {
+    return progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+  }
+
+  function getDocumentRect(element) {
+    const rect = element.getBoundingClientRect();
+
+    return {
+      left: rect.left + window.scrollX,
+      top: rect.top + window.scrollY,
+      width: rect.width,
+      height: rect.height
+    };
+  }
+
+  function applyTravelRect(progress) {
+    if (!problemTarget || window.innerWidth <= 980) {
+      stage.classList.remove("is-scroll-traveling");
+      stage.style.left = "";
+      stage.style.top = "";
+      stage.style.width = "";
+      stage.style.height = "";
+      problemTarget?.classList.remove("is-duck-arrived");
+      return;
+    }
+
+    if (progress <= 0.01) {
+      stage.classList.remove("is-scroll-traveling");
+      stage.style.left = "";
+      stage.style.top = "";
+      stage.style.width = "";
+      stage.style.height = "";
+      problemTarget.classList.remove("is-duck-arrived");
+      return;
+    }
+
+    const easedProgress = easeInOutCubic(progress);
+    const source = getDocumentRect(stage.parentElement);
+    const target = getDocumentRect(problemTarget);
+
+    const targetWidth = target.width * 0.74;
+    const targetHeight = Math.max(target.height * 1.26, targetWidth * 0.72);
+    const sourceWidth = source.width;
+    const sourceHeight = source.height;
+
+    const sourceLeft = source.left - window.scrollX;
+    const sourceTop = source.top - window.scrollY;
+    const targetLeft = target.left - window.scrollX + (target.width - targetWidth) / 2;
+    const targetTop = target.top - window.scrollY + (target.height - targetHeight) / 2;
+
+    stage.classList.add("is-scroll-traveling");
+    stage.style.left = `${lerp(sourceLeft, targetLeft, easedProgress)}px`;
+    stage.style.top = `${lerp(sourceTop, targetTop, easedProgress)}px`;
+    stage.style.width = `${lerp(sourceWidth, targetWidth, easedProgress)}px`;
+    stage.style.height = `${lerp(sourceHeight, targetHeight, easedProgress)}px`;
+
+    problemTarget.classList.toggle("is-duck-arrived", progress > 0.82);
+    resizeRenderer();
+  }
+
+  function updateScrollTransition() {
+    if (!problemTarget || window.innerWidth <= 980) {
+      scrollProgress = 0;
+      applyTravelRect(0);
+      return;
+    }
+
+    const start = section.offsetTop + section.offsetHeight * 0.28;
+    const end = problemTarget.offsetTop - window.innerHeight * 0.42;
+    const distance = Math.max(1, end - start);
+
+    scrollProgress = clamp((window.scrollY - start) / distance, 0, 1);
+    applyTravelRect(scrollProgress);
+  }
+
   function animate() {
     animationId = window.requestAnimationFrame(animate);
 
@@ -433,13 +523,20 @@ async function initHeroModel() {
     mouseX += (targetMouseX - mouseX) * 0.075;
     mouseY += (targetMouseY - mouseY) * 0.075;
 
-    const influence = hoverActive ? 1 : 0.35;
-    group.rotation.x = baseRotationX + (mouseY * 0.11 * influence);
-    group.rotation.y = baseRotationY + (mouseX * 0.14 * influence);
-    group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
+    updateScrollTransition();
 
-    group.position.x = basePositionX + mouseX * 0.1 * influence;
-    group.position.y = basePositionY - mouseY * 0.08 * influence;
+    const hoverInfluence = (hoverActive ? 1 : 0.35) * (1 - scrollProgress);
+    const rotationY = lerp(baseRotationY, finalRotationY, easeInOutCubic(scrollProgress));
+    const positionY = lerp(basePositionY, finalPositionY, easeInOutCubic(scrollProgress));
+    const modelScale = lerp(1, finalModelScale, easeInOutCubic(scrollProgress));
+
+    group.rotation.x = baseRotationX + (mouseY * 0.11 * hoverInfluence);
+    group.rotation.y = rotationY + (mouseX * 0.14 * hoverInfluence);
+    group.rotation.z = baseRotationZ - (mouseX * 0.05 * hoverInfluence);
+
+    group.position.x = basePositionX + mouseX * 0.1 * hoverInfluence;
+    group.position.y = positionY - mouseY * 0.08 * hoverInfluence;
+    group.scale.setScalar(modelScale);
 
     renderer.render(scene, camera);
   }
@@ -486,6 +583,7 @@ async function initHeroModel() {
       group.add(model);
       fitModelToStage(model);
       resizeRenderer();
+      updateScrollTransition();
       renderer.render(scene, camera);
     },
     undefined,
@@ -519,7 +617,12 @@ async function initHeroModel() {
     targetMouseY = 0;
   });
 
-  window.addEventListener("resize", resizeRenderer);
+  window.addEventListener("resize", () => {
+    resizeRenderer();
+    updateScrollTransition();
+  });
+
+  window.addEventListener("scroll", updateScrollTransition, { passive: true });
 
   if ("ResizeObserver" in window) {
     const observer = new ResizeObserver(resizeRenderer);
