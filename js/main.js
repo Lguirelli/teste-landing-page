@@ -327,12 +327,16 @@ function initServicesCarousel() {
 
 async function initHeroModel() {
   const section = document.querySelector("[data-hero-model-section]");
+  const sourceWrap = document.querySelector(".hero-model-wrap");
   const stage = document.querySelector("#heroModelStage");
+  const problemTarget = document.querySelector("[data-duck-scroll-target]");
 
-  if (!section || !stage) return;
+  if (!section || !sourceWrap || !stage) return;
   if (stage.dataset.modelInitialized === "true") return;
 
   stage.dataset.modelInitialized = "true";
+  stage.classList.add("duck-global-stage");
+  document.body.appendChild(stage);
 
   const rootPrefix = document.body?.dataset.root || "";
   const modelSrc = `${rootPrefix}${stage.dataset.modelSrc || "assets/models/duck3d.glb"}`;
@@ -390,8 +394,9 @@ async function initHeroModel() {
   let mouseX = 0;
   let mouseY = 0;
   let hoverActive = false;
-  let isVisible = true;
   let animationId = null;
+  let scrollProgress = 0;
+
   const baseRotationX = -0.035;
   const baseRotationY = -0.02;
   const baseRotationZ = -0.012;
@@ -400,8 +405,24 @@ async function initHeroModel() {
   const finalRotationY = baseRotationY + Math.PI;
   const finalPositionY = 0.02;
   const finalModelScale = 0.76;
-  const problemTarget = document.querySelector("[data-duck-scroll-target]");
-  let scrollProgress = 0;
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function lerp(start, end, progress) {
+    return start + (end - start) * progress;
+  }
+
+  function easeInOutCubic(progress) {
+    return progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+  }
+
+  function getViewportRect(element) {
+    return element.getBoundingClientRect();
+  }
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -430,72 +451,35 @@ async function initHeroModel() {
     group.position.set(basePositionX, basePositionY, 0);
   }
 
-  function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-  }
-
-  function lerp(start, end, progress) {
-    return start + (end - start) * progress;
-  }
-
-  function easeInOutCubic(progress) {
-    return progress < 0.5
-      ? 4 * progress * progress * progress
-      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-  }
-
-  function getDocumentRect(element) {
-    const rect = element.getBoundingClientRect();
-
-    return {
-      left: rect.left + window.scrollX,
-      top: rect.top + window.scrollY,
-      width: rect.width,
-      height: rect.height
-    };
-  }
-
   function applyTravelRect(progress) {
     if (!problemTarget || window.innerWidth <= 980) {
-      stage.classList.remove("is-scroll-traveling");
-      stage.style.left = "";
-      stage.style.top = "";
-      stage.style.width = "";
-      stage.style.height = "";
-      problemTarget?.classList.remove("is-duck-arrived");
-      return;
-    }
+      const source = getViewportRect(sourceWrap);
 
-    if (progress <= 0.01) {
-      stage.classList.remove("is-scroll-traveling");
-      stage.style.left = "";
-      stage.style.top = "";
-      stage.style.width = "";
-      stage.style.height = "";
-      problemTarget.classList.remove("is-duck-arrived");
+      stage.classList.remove("is-duck-arrived");
+      stage.style.left = `${source.left}px`;
+      stage.style.top = `${source.top}px`;
+      stage.style.width = `${source.width}px`;
+      stage.style.height = `${source.height}px`;
+      problemTarget?.classList.remove("is-duck-arrived");
+      resizeRenderer();
       return;
     }
 
     const easedProgress = easeInOutCubic(progress);
-    const source = getDocumentRect(stage.parentElement);
-    const target = getDocumentRect(problemTarget);
+    const source = getViewportRect(sourceWrap);
+    const target = getViewportRect(problemTarget);
 
-    const targetWidth = target.width * 0.74;
-    const targetHeight = Math.max(target.height * 1.26, targetWidth * 0.72);
-    const sourceWidth = source.width;
-    const sourceHeight = source.height;
+    const targetWidth = target.width * 0.78;
+    const targetHeight = Math.max(target.height * 1.28, targetWidth * 0.72);
+    const targetLeft = target.left + (target.width - targetWidth) / 2;
+    const targetTop = target.top + (target.height - targetHeight) / 2;
 
-    const sourceLeft = source.left - window.scrollX;
-    const sourceTop = source.top - window.scrollY;
-    const targetLeft = target.left - window.scrollX + (target.width - targetWidth) / 2;
-    const targetTop = target.top - window.scrollY + (target.height - targetHeight) / 2;
+    stage.style.left = `${lerp(source.left, targetLeft, easedProgress)}px`;
+    stage.style.top = `${lerp(source.top, targetTop, easedProgress)}px`;
+    stage.style.width = `${lerp(source.width, targetWidth, easedProgress)}px`;
+    stage.style.height = `${lerp(source.height, targetHeight, easedProgress)}px`;
 
-    stage.classList.add("is-scroll-traveling");
-    stage.style.left = `${lerp(sourceLeft, targetLeft, easedProgress)}px`;
-    stage.style.top = `${lerp(sourceTop, targetTop, easedProgress)}px`;
-    stage.style.width = `${lerp(sourceWidth, targetWidth, easedProgress)}px`;
-    stage.style.height = `${lerp(sourceHeight, targetHeight, easedProgress)}px`;
-
+    stage.classList.toggle("is-duck-arrived", progress > 0.82);
     problemTarget.classList.toggle("is-duck-arrived", progress > 0.82);
     resizeRenderer();
   }
@@ -507,8 +491,10 @@ async function initHeroModel() {
       return;
     }
 
-    const start = section.offsetTop + section.offsetHeight * 0.28;
-    const end = problemTarget.offsetTop - window.innerHeight * 0.42;
+    const sourceDocumentTop = sourceWrap.getBoundingClientRect().top + window.scrollY;
+    const targetDocumentTop = problemTarget.getBoundingClientRect().top + window.scrollY;
+    const start = sourceDocumentTop + sourceWrap.offsetHeight * 0.16;
+    const end = targetDocumentTop - window.innerHeight * 0.38;
     const distance = Math.max(1, end - start);
 
     scrollProgress = clamp((window.scrollY - start) / distance, 0, 1);
@@ -518,17 +504,18 @@ async function initHeroModel() {
   function animate() {
     animationId = window.requestAnimationFrame(animate);
 
-    if (!isVisible || !model) return;
+    if (!model) return;
 
     mouseX += (targetMouseX - mouseX) * 0.075;
     mouseY += (targetMouseY - mouseY) * 0.075;
 
     updateScrollTransition();
 
+    const easedProgress = easeInOutCubic(scrollProgress);
     const hoverInfluence = (hoverActive ? 1 : 0.35) * (1 - scrollProgress);
-    const rotationY = lerp(baseRotationY, finalRotationY, easeInOutCubic(scrollProgress));
-    const positionY = lerp(basePositionY, finalPositionY, easeInOutCubic(scrollProgress));
-    const modelScale = lerp(1, finalModelScale, easeInOutCubic(scrollProgress));
+    const rotationY = lerp(baseRotationY, finalRotationY, easedProgress);
+    const positionY = lerp(basePositionY, finalPositionY, easedProgress);
+    const modelScale = lerp(1, finalModelScale, easedProgress);
 
     group.rotation.x = baseRotationX + (mouseY * 0.11 * hoverInfluence);
     group.rotation.y = rotationY + (mouseX * 0.14 * hoverInfluence);
@@ -582,7 +569,6 @@ async function initHeroModel() {
 
       group.add(model);
       fitModelToStage(model);
-      resizeRenderer();
       updateScrollTransition();
       renderer.render(scene, camera);
     },
@@ -617,27 +603,16 @@ async function initHeroModel() {
     targetMouseY = 0;
   });
 
-  window.addEventListener("resize", () => {
-    resizeRenderer();
-    updateScrollTransition();
-  });
-
+  window.addEventListener("resize", updateScrollTransition);
   window.addEventListener("scroll", updateScrollTransition, { passive: true });
 
   if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(resizeRenderer);
-    observer.observe(stage);
+    const observer = new ResizeObserver(updateScrollTransition);
+    observer.observe(sourceWrap);
+    problemTarget && observer.observe(problemTarget);
   }
 
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      isVisible = entries.some((entry) => entry.isIntersecting);
-    }, { threshold: 0.08 });
-
-    observer.observe(section);
-  }
-
-  resizeRenderer();
+  updateScrollTransition();
   animate();
 
   window.addEventListener("beforeunload", () => {
