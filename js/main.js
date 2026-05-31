@@ -126,56 +126,95 @@ function initHeroSequence() {
   section.dataset.sequenceInitialized = "true";
 
   const totalFrames = 300;
+  const fps = 30;
+  const frameDuration = 1000 / fps;
   const rootPrefix = document.body?.dataset.root || "";
   const imageFolder = `${rootPrefix}assets/hero-sequence`;
+
   let currentFrame = 1;
-  let ticking = false;
+  let lastFrameTime = 0;
+  let isVisible = true;
+  let rafId = null;
 
   function getFramePath(index) {
     const frame = String(index).padStart(4, "0");
     return `${imageFolder}/${frame}.png`;
   }
 
-  function preloadFrames() {
-    const framesToPreload = [1, 2, 3, 4, 5, 60, 120, 180, 240, 300];
+  function setFrame(index) {
+    if (index === currentFrame) return;
 
-    framesToPreload.forEach((frame) => {
+    currentFrame = index;
+    image.src = getFramePath(currentFrame);
+  }
+
+  function preloadPriorityFrames() {
+    const priorityFrames = [
+      1, 2, 3, 4, 5,
+      30, 60, 90, 120, 150,
+      180, 210, 240, 270, 300
+    ];
+
+    priorityFrames.forEach((frame) => {
       const preloaded = new Image();
       preloaded.src = getFramePath(frame);
     });
   }
 
-  function updateFrame() {
-    const viewportWidth = window.innerWidth;
-    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-    const scrollDistance = viewportWidth <= 680 ? 220 : 360;
-    const scrolledInsideHero = window.scrollY - sectionTop;
-    const progress = Math.min(Math.max(scrolledInsideHero / scrollDistance, 0), 1);
-    const nextFrame = Math.min(
-      totalFrames,
-      Math.max(1, Math.round(progress * (totalFrames - 1)) + 1)
-    );
+  function preloadAllFramesInBackground() {
+    let frame = 1;
 
-    if (nextFrame !== currentFrame) {
-      currentFrame = nextFrame;
-      image.src = getFramePath(currentFrame);
+    function preloadBatch() {
+      const batchSize = 12;
+      const end = Math.min(frame + batchSize, totalFrames + 1);
+
+      for (; frame < end; frame++) {
+        const preloaded = new Image();
+        preloaded.src = getFramePath(frame);
+      }
+
+      if (frame <= totalFrames) {
+        window.setTimeout(preloadBatch, 120);
+      }
     }
 
-    ticking = false;
+    window.setTimeout(preloadBatch, 600);
   }
 
-  function requestFrameUpdate() {
-    if (ticking) return;
+  function animateSequence(timestamp) {
+    if (!lastFrameTime) {
+      lastFrameTime = timestamp;
+    }
 
-    ticking = true;
-    window.requestAnimationFrame(updateFrame);
+    if (isVisible && timestamp - lastFrameTime >= frameDuration) {
+      const nextFrame = currentFrame >= totalFrames ? 1 : currentFrame + 1;
+      setFrame(nextFrame);
+      lastFrameTime = timestamp;
+    }
+
+    rafId = window.requestAnimationFrame(animateSequence);
   }
 
-  preloadFrames();
-  updateFrame();
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries.some((entry) => entry.isIntersecting);
+    }, {
+      threshold: 0.08
+    });
 
-  window.addEventListener("scroll", requestFrameUpdate, { passive: true });
-  window.addEventListener("resize", requestFrameUpdate);
+    observer.observe(section);
+  }
+
+  image.src = getFramePath(1);
+  preloadPriorityFrames();
+  preloadAllFramesInBackground();
+  rafId = window.requestAnimationFrame(animateSequence);
+
+  window.addEventListener("beforeunload", () => {
+    if (rafId) {
+      window.cancelAnimationFrame(rafId);
+    }
+  });
 }
 
 document.addEventListener("sectionsLoaded", () => {
