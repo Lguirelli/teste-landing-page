@@ -182,8 +182,10 @@ async function initHeroModel() {
   let isVisible = true;
   let animationId = null;
   const baseRotationX = -0.035;
-  const baseRotationY = -1.18;
+  const baseRotationY = -1.58;
   const baseRotationZ = 0.018;
+  const basePositionX = 0;
+  const basePositionY = 0.52;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -209,7 +211,7 @@ async function initHeroModel() {
     camera.position.set(0, 0.03, 6.35);
     camera.lookAt(0, 0.03, 0);
     group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
-    group.position.set(0, 0, 0);
+    group.position.set(basePositionX, basePositionY, 0);
   }
 
   function animate() {
@@ -225,8 +227,8 @@ async function initHeroModel() {
     group.rotation.y = baseRotationY + (mouseX * 0.18 * influence);
     group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
 
-    group.position.x = mouseX * 0.1 * influence;
-    group.position.y = -mouseY * 0.08 * influence;
+    group.position.x = basePositionX + mouseX * 0.1 * influence;
+    group.position.y = basePositionY - mouseY * 0.08 * influence;
 
     renderer.render(scene, camera);
   }
