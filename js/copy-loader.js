@@ -1,5 +1,5 @@
 (function () {
-  const DEFAULT_STORAGE_KEY = "landing_copy_v1";
+  const DEFAULT_STORAGE_KEY = "landing_copy_v2";
 
   function getRootPrefix() {
     return document.body?.dataset.root || "";
@@ -29,18 +29,13 @@
   }
 
   function readSavedCopy(storageKey) {
-    const keysToTry = [storageKey, DEFAULT_STORAGE_KEY, "landingCopy", "landing-copy"];
-
-    for (const key of keysToTry) {
-      try {
-        const raw = window.localStorage.getItem(key);
-        if (raw) return JSON.parse(raw);
-      } catch (error) {
-        console.warn("Não foi possível ler a copy salva em", key, error);
-      }
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      console.warn("Não foi possível ler a copy salva em", storageKey, error);
+      return {};
     }
-
-    return {};
   }
 
   async function loadCopyConfig() {
@@ -133,7 +128,7 @@
   if (document.readyState !== "loading") refreshSoon();
 
   window.addEventListener("storage", (event) => {
-    if (!event.key || event.key === DEFAULT_STORAGE_KEY || event.key === "landing_copy_v1") refreshSoon();
+    if (!event.key || event.key === DEFAULT_STORAGE_KEY) refreshSoon();
   });
 
   if ("BroadcastChannel" in window) {

@@ -1,5 +1,5 @@
 (function () {
-  const DEFAULT_STORAGE_KEY = "landing_copy_v1";
+  const DEFAULT_STORAGE_KEY = "landing_copy_v2";
   const form = document.querySelector("#copyAdminForm");
   const nav = document.querySelector("#copyAdminNav");
   const status = document.querySelector("#copyStatus");
@@ -70,18 +70,13 @@
   }
 
   function readSavedPayload() {
-    const keysToTry = [storageKey, DEFAULT_STORAGE_KEY, "landingCopy", "landing-copy"];
-
-    for (const key of keysToTry) {
-      try {
-        const raw = window.localStorage.getItem(key);
-        if (raw) return JSON.parse(raw);
-      } catch (error) {
-        console.warn("Não foi possível ler a copy salva em", key, error);
-      }
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      console.warn("Não foi possível ler a copy salva em", storageKey, error);
+      return {};
     }
-
-    return {};
   }
 
   function collectValues() {
@@ -115,7 +110,6 @@
     const serialized = JSON.stringify(payload);
 
     window.localStorage.setItem(storageKey, serialized);
-    window.localStorage.setItem(DEFAULT_STORAGE_KEY, serialized);
 
     window.dispatchEvent(new StorageEvent("storage", {
       key: storageKey,

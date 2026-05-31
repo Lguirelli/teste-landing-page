@@ -5,11 +5,10 @@ const HEADER_SECTIONS = [
   { id: "services", label: "Serviços" },
   { id: "problem", label: "Problema" },
   { id: "how-it-works", label: "Como funciona" },
-  { id: "features", label: "Recursos" },
+  { id: "features", label: "Soluções" },
   { id: "comparison", label: "Comparação" },
   { id: "case", label: "Caso de uso" },
-  { id: "proof", label: "Provas" },
-  { id: "lead", label: "Qualificação" },
+  { id: "lead", label: "Diagnóstico" },
   { id: "faq", label: "FAQ" }
 ];
 
