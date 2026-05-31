@@ -126,8 +126,9 @@ function initHeroSequence() {
   section.dataset.sequenceInitialized = "true";
 
   const totalFrames = 300;
-  const fps = 30;
+  const fps = 24;
   const frameDuration = 1000 / fps;
+  const preloadAhead = 72;
   const rootPrefix = document.body?.dataset.root || "";
   const imageFolder = `${rootPrefix}assets/hero-sequence`;
 
@@ -135,50 +136,140 @@ function initHeroSequence() {
   let lastFrameTime = 0;
   let isVisible = true;
   let rafId = null;
+  let isReady = false;
+
+  const frameCache = new Map();
+  const loadingFrames = new Set();
+
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d", { alpha: true });
+
+  canvas.className = "hero-sequence-canvas";
+  canvas.setAttribute("aria-label", image.getAttribute("alt") || "Sequência visual do produto");
+  canvas.setAttribute("role", "img");
+
+  image.style.display = "none";
+  image.parentNode.insertBefore(canvas, image.nextSibling);
 
   function getFramePath(index) {
     const frame = String(index).padStart(4, "0");
     return `${imageFolder}/${frame}.png`;
   }
 
-  function setFrame(index) {
-    if (index === currentFrame) return;
-
-    currentFrame = index;
-    image.src = getFramePath(currentFrame);
+  function normalizeFrame(index) {
+    if (index > totalFrames) return ((index - 1) % totalFrames) + 1;
+    if (index < 1) return totalFrames + index;
+    return index;
   }
 
-  function preloadPriorityFrames() {
-    const priorityFrames = [
-      1, 2, 3, 4, 5,
-      30, 60, 90, 120, 150,
-      180, 210, 240, 270, 300
-    ];
+  function resizeCanvasFromImage(img) {
+    const width = img.naturalWidth || 1080;
+    const height = img.naturalHeight || 1080;
 
-    priorityFrames.forEach((frame) => {
-      const preloaded = new Image();
-      preloaded.src = getFramePath(frame);
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+  }
+
+  function drawFrame(index) {
+    const frame = frameCache.get(index);
+
+    if (!frame || !frame.complete || !frame.naturalWidth) return false;
+
+    resizeCanvasFromImage(frame);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(frame, 0, 0, canvas.width, canvas.height);
+    currentFrame = index;
+
+    return true;
+  }
+
+  function loadFrame(index) {
+    const normalizedIndex = normalizeFrame(index);
+
+    if (frameCache.has(normalizedIndex) || loadingFrames.has(normalizedIndex)) {
+      return Promise.resolve(frameCache.get(normalizedIndex));
+    }
+
+    loadingFrames.add(normalizedIndex);
+
+    return new Promise((resolve) => {
+      const frame = new Image();
+
+      frame.decoding = "async";
+      frame.loading = "eager";
+      frame.src = getFramePath(normalizedIndex);
+
+      frame.onload = async () => {
+        try {
+          if (frame.decode) {
+            await frame.decode();
+          }
+        } catch (error) {
+          /* A imagem já carregada ainda pode ser desenhada no canvas. */
+        }
+
+        frameCache.set(normalizedIndex, frame);
+        loadingFrames.delete(normalizedIndex);
+        resolve(frame);
+      };
+
+      frame.onerror = () => {
+        loadingFrames.delete(normalizedIndex);
+        resolve(null);
+      };
     });
   }
 
-  function preloadAllFramesInBackground() {
-    let frame = 1;
+  function preloadWindow(fromFrame) {
+    for (let offset = 0; offset <= preloadAhead; offset++) {
+      loadFrame(fromFrame + offset);
+    }
+  }
 
-    function preloadBatch() {
-      const batchSize = 12;
+  async function preloadInitialFrames() {
+    await loadFrame(1);
+    drawFrame(1);
+
+    const firstBatch = [];
+
+    for (let frame = 2; frame <= 36; frame++) {
+      firstBatch.push(loadFrame(frame));
+    }
+
+    await Promise.all(firstBatch);
+    isReady = true;
+
+    let frame = 37;
+
+    function preloadRemainingBatch() {
+      const batchSize = 10;
       const end = Math.min(frame + batchSize, totalFrames + 1);
 
       for (; frame < end; frame++) {
-        const preloaded = new Image();
-        preloaded.src = getFramePath(frame);
+        loadFrame(frame);
       }
 
       if (frame <= totalFrames) {
-        window.setTimeout(preloadBatch, 120);
+        window.setTimeout(preloadRemainingBatch, 80);
       }
     }
 
-    window.setTimeout(preloadBatch, 600);
+    preloadRemainingBatch();
+  }
+
+  function getNextDrawableFrame(startFrame) {
+    for (let offset = 1; offset <= preloadAhead; offset++) {
+      const candidate = normalizeFrame(startFrame + offset);
+      const frame = frameCache.get(candidate);
+
+      if (frame && frame.complete && frame.naturalWidth) {
+        return candidate;
+      }
+    }
+
+    return startFrame;
   }
 
   function animateSequence(timestamp) {
@@ -186,9 +277,14 @@ function initHeroSequence() {
       lastFrameTime = timestamp;
     }
 
-    if (isVisible && timestamp - lastFrameTime >= frameDuration) {
-      const nextFrame = currentFrame >= totalFrames ? 1 : currentFrame + 1;
-      setFrame(nextFrame);
+    if (isVisible && isReady && timestamp - lastFrameTime >= frameDuration) {
+      const desiredFrame = normalizeFrame(currentFrame + 1);
+      preloadWindow(desiredFrame);
+
+      if (!drawFrame(desiredFrame)) {
+        drawFrame(getNextDrawableFrame(currentFrame));
+      }
+
       lastFrameTime = timestamp;
     }
 
@@ -205,9 +301,7 @@ function initHeroSequence() {
     observer.observe(section);
   }
 
-  image.src = getFramePath(1);
-  preloadPriorityFrames();
-  preloadAllFramesInBackground();
+  preloadInitialFrames();
   rafId = window.requestAnimationFrame(animateSequence);
 
   window.addEventListener("beforeunload", () => {
@@ -216,7 +310,6 @@ function initHeroSequence() {
     }
   });
 }
-
 document.addEventListener("sectionsLoaded", () => {
   initSmoothScroll();
   initServicesCarousel();
