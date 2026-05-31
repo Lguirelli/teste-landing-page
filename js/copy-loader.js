@@ -20,10 +20,10 @@
   }
 
   function mergeDeep(base, override) {
-    const output = { ...base };
+    const output = { ...(base || {}) };
 
     Object.keys(override || {}).forEach((key) => {
-      if (isObject(base[key]) && isObject(override[key])) {
+      if (isObject(base?.[key]) && isObject(override[key])) {
         output[key] = mergeDeep(base[key], override[key]);
         return;
       }
@@ -77,35 +77,67 @@
     });
   }
 
+  function buildDefaultVisibility(config) {
+    return (config.sections || []).reduce((acc, section) => {
+      acc[section.id] = section.visibleByDefault !== false;
+      return acc;
+    }, {});
+  }
+
+  function applySectionVisibility(visibility) {
+    document.querySelectorAll("[data-copy-section]").forEach((element) => {
+      const sectionId = element.getAttribute("data-copy-section");
+      const isVisible = visibility[sectionId] !== false;
+
+      element.hidden = !isVisible;
+      element.setAttribute("aria-hidden", String(!isVisible));
+      element.classList.toggle("copy-section-hidden", !isVisible);
+    });
+  }
+
   async function refreshLandingCopy() {
     try {
       const config = await loadCopyConfig();
       const storageKey = config.storageKey || DEFAULT_STORAGE_KEY;
       const saved = readSavedCopy(storageKey);
-      const values = mergeDeep(config.values || {}, saved.values || saved || {});
+      const savedValues = saved.values || saved || {};
+      const values = mergeDeep(config.values || {}, savedValues);
+      const visibility = mergeDeep(buildDefaultVisibility(config), saved.visibility || {});
 
       applyCopyValues(values);
+      applySectionVisibility(visibility);
+
       window.__landingCopyConfig = config;
       window.__landingCopyValues = values;
-      document.dispatchEvent(new CustomEvent("landingCopyApplied", { detail: { config, values } }));
+      window.__landingSectionVisibility = visibility;
+
+      document.dispatchEvent(new CustomEvent("landingCopyApplied", {
+        detail: { config, values, visibility }
+      }));
     } catch (error) {
       console.warn("Copy editável não aplicada.", error);
     }
   }
 
+  function refreshSoon() {
+    refreshLandingCopy();
+    window.setTimeout(refreshLandingCopy, 80);
+    window.setTimeout(refreshLandingCopy, 240);
+  }
+
   window.refreshLandingCopy = refreshLandingCopy;
 
-  document.addEventListener("sectionsLoaded", refreshLandingCopy);
+  document.addEventListener("sectionsLoaded", refreshSoon);
 
   if (document.readyState !== "loading") {
-    refreshLandingCopy();
+    refreshSoon();
   } else {
-    document.addEventListener("DOMContentLoaded", refreshLandingCopy, { once: true });
+    document.addEventListener("DOMContentLoaded", refreshSoon, { once: true });
   }
 
   window.addEventListener("storage", (event) => {
-    if (event.key === DEFAULT_STORAGE_KEY) {
-      refreshLandingCopy();
+    if (!event.key || event.key === DEFAULT_STORAGE_KEY) {
+      refreshSoon();
     }
   });
 })();

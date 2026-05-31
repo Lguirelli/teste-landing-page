@@ -219,6 +219,67 @@ textarea {
   letter-spacing: -0.03em;
 }
 
+
+.copy-section-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.copy-section-card-header h2 {
+  margin-bottom: 0;
+}
+
+.copy-section-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.copy-section-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.copy-section-toggle-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-section-toggle-box::after {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #111;
+  border-bottom: 2px solid #111;
+  transform: rotate(-45deg) translateY(-1px);
+  opacity: 0;
+}
+
+.copy-section-toggle input:checked + .copy-section-toggle-box {
+  background: var(--accent);
+  border-color: rgba(255, 209, 1, 0.9);
+}
+
+.copy-section-toggle input:checked + .copy-section-toggle-box::after {
+  opacity: 1;
+}
+
 .copy-field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

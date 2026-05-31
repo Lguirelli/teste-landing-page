@@ -11,6 +11,7 @@
 
   let config = null;
   let currentValues = {};
+  let currentVisibility = {};
   let storageKey = DEFAULT_STORAGE_KEY;
 
   function isObject(value) {
@@ -18,10 +19,10 @@
   }
 
   function mergeDeep(base, override) {
-    const output = { ...base };
+    const output = { ...(base || {}) };
 
     Object.keys(override || {}).forEach((key) => {
-      if (isObject(base[key]) && isObject(override[key])) {
+      if (isObject(base?.[key]) && isObject(override[key])) {
         output[key] = mergeDeep(base[key], override[key]);
         return;
       }
@@ -56,30 +57,41 @@
     target[lastKey] = value;
   }
 
-  function readSavedValues() {
+  function buildDefaultVisibility() {
+    return (config?.sections || []).reduce((acc, section) => {
+      acc[section.id] = section.visibleByDefault !== false;
+      return acc;
+    }, {});
+  }
+
+  function readSavedPayload() {
     try {
       const raw = window.localStorage.getItem(storageKey);
-      const parsed = raw ? JSON.parse(raw) : {};
-      return parsed.values || parsed || {};
+      return raw ? JSON.parse(raw) : {};
     } catch (error) {
       showStatus("Não foi possível ler a copy salva.", "error");
       return {};
     }
   }
 
-  function saveValues(values) {
+  function savePayload(values, visibility) {
     const payload = {
       schemaVersion: config?.schemaVersion || 1,
       savedAt: new Date().toISOString(),
-      values
+      values,
+      visibility
     };
 
-    window.localStorage.setItem(storageKey, JSON.stringify(payload, null, 2));
+    window.localStorage.setItem(storageKey, JSON.stringify(payload));
   }
 
   function showStatus(message, type = "default") {
     status.textContent = message;
     status.dataset.type = type;
+  }
+
+  function markUnsaved() {
+    showStatus("Alterações ainda não salvas.", "warning");
   }
 
   function createField(field) {
@@ -98,13 +110,35 @@
     input.dataset.copyPath = field.path;
 
     if (field.type === "textarea") {
-      input.rows = Math.max(3, Math.min(8, String(value).length / 68));
+      input.rows = Math.max(3, Math.min(8, Math.ceil(String(value).length / 68)));
     } else {
       input.type = "text";
     }
 
     wrapper.appendChild(input);
     return wrapper;
+  }
+
+  function createVisibilityToggle(section) {
+    const label = document.createElement("label");
+    label.className = "copy-section-toggle";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.dataset.visibilitySection = section.id;
+    input.checked = currentVisibility[section.id] !== false;
+
+    const fake = document.createElement("span");
+    fake.className = "copy-section-toggle-box";
+
+    const text = document.createElement("span");
+    text.textContent = "Exibir seção na landing";
+
+    label.appendChild(input);
+    label.appendChild(fake);
+    label.appendChild(text);
+
+    return label;
   }
 
   function render() {
@@ -121,9 +155,15 @@
       block.className = "copy-section-card";
       block.id = `section-${section.id}`;
 
+      const header = document.createElement("div");
+      header.className = "copy-section-card-header";
+
       const title = document.createElement("h2");
       title.textContent = section.label;
-      block.appendChild(title);
+      header.appendChild(title);
+      header.appendChild(createVisibilityToggle(section));
+
+      block.appendChild(header);
 
       const grid = document.createElement("div");
       grid.className = "copy-field-grid";
@@ -135,10 +175,6 @@
       block.appendChild(grid);
       form.appendChild(block);
     });
-
-    form.addEventListener("input", () => {
-      showStatus("Alterações ainda não salvas.", "warning");
-    }, { once: true });
   }
 
   function collectValues() {
@@ -151,6 +187,16 @@
     return values;
   }
 
+  function collectVisibility() {
+    const visibility = buildDefaultVisibility();
+
+    form.querySelectorAll("[data-visibility-section]").forEach((field) => {
+      visibility[field.dataset.visibilitySection] = field.checked;
+    });
+
+    return visibility;
+  }
+
   async function init() {
     try {
       const response = await fetch("content/copy.default.json", { cache: "no-store" });
@@ -161,35 +207,44 @@
 
       config = await response.json();
       storageKey = config.storageKey || DEFAULT_STORAGE_KEY;
-      currentValues = mergeDeep(config.values || {}, readSavedValues());
+
+      const saved = readSavedPayload();
+      currentValues = mergeDeep(config.values || {}, saved.values || saved || {});
+      currentVisibility = mergeDeep(buildDefaultVisibility(), saved.visibility || {});
 
       render();
-      showStatus("Campos carregados. Edite e salve para aplicar na landing.", "success");
+      showStatus("Campos carregados. Edite, marque as seções e salve para aplicar na landing.", "success");
     } catch (error) {
       showStatus(`Erro ao carregar editor: ${error.message}`, "error");
     }
   }
 
+  form.addEventListener("input", markUnsaved);
+  form.addEventListener("change", markUnsaved);
+
   saveButton.addEventListener("click", () => {
     currentValues = mergeDeep(config.values || {}, collectValues());
-    saveValues(currentValues);
-    showStatus("Alterações salvas. Abra ou atualize a landing para ver o texto aplicado.", "success");
+    currentVisibility = collectVisibility();
+    savePayload(currentValues, currentVisibility);
+    showStatus("Alterações salvas. Abra ou atualize a landing para ver o texto e as seções aplicados.", "success");
   });
 
   resetButton.addEventListener("click", () => {
-    const confirmReset = window.confirm("Resetar todos os textos editados e voltar para o padrão do arquivo JSON?");
+    const confirmReset = window.confirm("Resetar todos os textos e voltar todas as seções para o padrão?");
 
     if (!confirmReset) return;
 
     window.localStorage.removeItem(storageKey);
     currentValues = config.values || {};
+    currentVisibility = buildDefaultVisibility();
     render();
-    showStatus("Textos resetados para o padrão.", "success");
+    showStatus("Textos e visibilidade resetados para o padrão.", "success");
   });
 
   exportButton.addEventListener("click", () => {
     const values = collectValues();
-    const blob = new Blob([JSON.stringify({ schemaVersion: config.schemaVersion || 1, values }, null, 2)], {
+    const visibility = collectVisibility();
+    const blob = new Blob([JSON.stringify({ schemaVersion: config.schemaVersion || 1, values, visibility }, null, 2)], {
       type: "application/json"
     });
     const url = URL.createObjectURL(blob);
@@ -215,7 +270,8 @@
     try {
       const parsed = JSON.parse(await file.text());
       currentValues = mergeDeep(config.values || {}, parsed.values || parsed || {});
-      saveValues(currentValues);
+      currentVisibility = mergeDeep(buildDefaultVisibility(), parsed.visibility || {});
+      savePayload(currentValues, currentVisibility);
       render();
       showStatus("JSON importado e salvo.", "success");
     } catch (error) {
