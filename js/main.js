@@ -333,14 +333,7 @@ async function initHeroModel() {
   if (stage.dataset.modelInitialized === "true") return;
 
   stage.dataset.modelInitialized = "true";
-  stage.classList.add("duck-global-stage");
 
-  const sourceAnchor = stage.closest(".hero-model-wrap") || stage.parentElement;
-  const problemTarget = document.querySelector("[data-duck-scroll-target]");
-
-  if (sourceAnchor) {
-    sourceAnchor.classList.add("duck-source-anchor");
-  }
   const rootPrefix = document.body?.dataset.root || "";
   const modelSrc = `${rootPrefix}${stage.dataset.modelSrc || "assets/models/duck3d.glb"}`;
 
@@ -354,11 +347,6 @@ async function initHeroModel() {
     stage.classList.add("is-model-error");
     return;
   }
-
-  document.body.appendChild(stage);
-  stage.style.display = "block";
-  stage.style.visibility = "visible";
-  stage.style.opacity = "1";
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
@@ -402,47 +390,13 @@ async function initHeroModel() {
   let mouseX = 0;
   let mouseY = 0;
   let hoverActive = false;
+  let isVisible = true;
   let animationId = null;
-  let scrollProgress = 0;
-
   const baseRotationX = -0.035;
   const baseRotationY = -0.02;
   const baseRotationZ = -0.012;
   const basePositionX = 0;
   const basePositionY = 0.44;
-  const finalRotationY = baseRotationY + Math.PI;
-  const finalPositionY = 0.02;
-  const finalModelScale = 0.76;
-
-  function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-  }
-
-  function lerp(start, end, progress) {
-    return start + (end - start) * progress;
-  }
-
-  function easeInOutCubic(progress) {
-    return progress < 0.5
-      ? 4 * progress * progress * progress
-      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-  }
-
-  function getViewportRect(element) {
-    const rect = element?.getBoundingClientRect?.();
-
-    if (!rect || rect.width <= 1 || rect.height <= 1) {
-      const fallbackSize = Math.min(window.innerWidth * 0.42, 560);
-      return {
-        left: window.innerWidth * 0.12,
-        top: Math.max(120, window.innerHeight * 0.22),
-        width: fallbackSize,
-        height: fallbackSize
-      };
-    }
-
-    return rect;
-  }
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -471,80 +425,21 @@ async function initHeroModel() {
     group.position.set(basePositionX, basePositionY, 0);
   }
 
-  function applyGlobalRect(progress) {
-    if (!sourceAnchor || window.innerWidth <= 980) {
-      stage.style.left = "";
-      stage.style.top = "";
-      stage.style.width = "";
-      stage.style.height = "";
-      resizeRenderer();
-      return;
-    }
-
-    const easedProgress = easeInOutCubic(progress);
-    const source = getViewportRect(sourceAnchor);
-    const target = problemTarget ? getViewportRect(problemTarget) : source;
-
-    const targetWidth = target.width * 0.9;
-    const targetHeight = Math.max(target.height * 1.3, targetWidth * 0.74);
-
-    const sourceWidth = source.width;
-    const sourceHeight = source.height;
-    const sourceLeft = source.left;
-    const sourceTop = source.top;
-    const targetLeft = target.left + (target.width - targetWidth) / 2;
-    const targetTop = target.top + (target.height - targetHeight) / 2;
-
-    stage.style.left = `${lerp(sourceLeft, targetLeft, easedProgress)}px`;
-    stage.style.top = `${lerp(sourceTop, targetTop, easedProgress)}px`;
-    stage.style.width = `${lerp(sourceWidth, targetWidth, easedProgress)}px`;
-    stage.style.height = `${lerp(sourceHeight, targetHeight, easedProgress)}px`;
-
-    resizeRenderer();
-  }
-
-  function updateScrollTransition() {
-    if (!problemTarget || window.innerWidth <= 980) {
-      scrollProgress = 0;
-      applyGlobalRect(0);
-      return;
-    }
-
-    const sourceRect = getViewportRect(sourceAnchor);
-    const targetRect = getViewportRect(problemTarget);
-    const sourceTop = sourceRect.top + window.scrollY;
-    const targetTop = targetRect.top + window.scrollY;
-    const start = sourceTop + sourceAnchor.offsetHeight * 0.22;
-    const end = targetTop - window.innerHeight * 0.46;
-    const distance = Math.max(1, end - start);
-
-    scrollProgress = clamp((window.scrollY - start) / distance, 0, 1);
-    applyGlobalRect(scrollProgress);
-  }
-
   function animate() {
     animationId = window.requestAnimationFrame(animate);
 
-    if (!model) return;
+    if (!isVisible || !model) return;
 
     mouseX += (targetMouseX - mouseX) * 0.075;
     mouseY += (targetMouseY - mouseY) * 0.075;
 
-    updateScrollTransition();
+    const influence = hoverActive ? 1 : 0.35;
+    group.rotation.x = baseRotationX + (mouseY * 0.11 * influence);
+    group.rotation.y = baseRotationY + (mouseX * 0.14 * influence);
+    group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
 
-    const easedProgress = easeInOutCubic(scrollProgress);
-    const hoverInfluence = (hoverActive ? 1 : 0.35) * (1 - scrollProgress);
-    const rotationY = lerp(baseRotationY, finalRotationY, easedProgress);
-    const positionY = lerp(basePositionY, finalPositionY, easedProgress);
-    const modelScale = lerp(1, finalModelScale, easedProgress);
-
-    group.rotation.x = baseRotationX + (mouseY * 0.11 * hoverInfluence);
-    group.rotation.y = rotationY + (mouseX * 0.14 * hoverInfluence);
-    group.rotation.z = baseRotationZ - (mouseX * 0.05 * hoverInfluence);
-
-    group.position.x = basePositionX + mouseX * 0.1 * hoverInfluence;
-    group.position.y = positionY - mouseY * 0.08 * hoverInfluence;
-    group.scale.setScalar(modelScale);
+    group.position.x = basePositionX + mouseX * 0.1 * influence;
+    group.position.y = basePositionY - mouseY * 0.08 * influence;
 
     renderer.render(scene, camera);
   }
@@ -590,12 +485,8 @@ async function initHeroModel() {
 
       group.add(model);
       fitModelToStage(model);
-      updateScrollTransition();
-      updateScrollTransition();
       resizeRenderer();
       renderer.render(scene, camera);
-      window.requestAnimationFrame(updateScrollTransition);
-      window.setTimeout(updateScrollTransition, 250);
     },
     undefined,
     () => {
@@ -628,16 +519,22 @@ async function initHeroModel() {
     targetMouseY = 0;
   });
 
-  window.addEventListener("resize", updateScrollTransition);
-  window.addEventListener("scroll", updateScrollTransition, { passive: true });
+  window.addEventListener("resize", resizeRenderer);
 
   if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(updateScrollTransition);
-    if (sourceAnchor) observer.observe(sourceAnchor);
-    if (problemTarget) observer.observe(problemTarget);
+    const observer = new ResizeObserver(resizeRenderer);
+    observer.observe(stage);
   }
 
-  updateScrollTransition();
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries.some((entry) => entry.isIntersecting);
+    }, { threshold: 0.08 });
+
+    observer.observe(section);
+  }
+
+  resizeRenderer();
   animate();
 
   window.addEventListener("beforeunload", () => {
