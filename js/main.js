@@ -146,12 +146,11 @@ function initHeroSequence() {
   }
 
   function updateFrame() {
-    const rect = section.getBoundingClientRect();
-    const sectionHeight = section.offsetHeight;
-    const viewportHeight = window.innerHeight;
-    const maxScroll = Math.max(sectionHeight - viewportHeight, 1);
-    const scrolled = Math.min(Math.max(-rect.top, 0), maxScroll);
-    const progress = scrolled / maxScroll;
+    const viewportWidth = window.innerWidth;
+    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+    const scrollDistance = viewportWidth <= 680 ? 220 : 360;
+    const scrolledInsideHero = window.scrollY - sectionTop;
+    const progress = Math.min(Math.max(scrolledInsideHero / scrollDistance, 0), 1);
     const nextFrame = Math.min(
       totalFrames,
       Math.max(1, Math.round(progress * (totalFrames - 1)) + 1)

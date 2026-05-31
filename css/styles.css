@@ -341,8 +341,8 @@ details:hover {
 }
 
 .hero-sequence-section {
-  min-height: 220vh;
-  padding: 92px 0 64px;
+  min-height: auto;
+  padding: 92px 0 72px;
 }
 
 .hero-sequence-grid {
@@ -355,12 +355,12 @@ details:hover {
 
 .hero-sequence-wrap {
   position: relative;
-  min-height: calc(100vh - 144px);
+  min-height: auto;
 }
 
 .hero-sequence-box {
-  position: sticky;
-  top: 118px;
+  position: relative;
+  top: auto;
   width: min(100%, 460px);
   aspect-ratio: 1 / 1;
   margin-left: auto;
