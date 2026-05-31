@@ -7,10 +7,7 @@
 
   function getByPath(source, path) {
     return path.split(".").reduce((current, key) => {
-      if (current && Object.prototype.hasOwnProperty.call(current, key)) {
-        return current[key];
-      }
-
+      if (current && Object.prototype.hasOwnProperty.call(current, key)) return current[key];
       return undefined;
     }, source);
   }
@@ -21,16 +18,13 @@
 
   function mergeDeep(base, override) {
     const output = { ...(base || {}) };
-
     Object.keys(override || {}).forEach((key) => {
       if (isObject(base?.[key]) && isObject(override[key])) {
         output[key] = mergeDeep(base[key], override[key]);
         return;
       }
-
       output[key] = override[key];
     });
-
     return output;
   }
 
@@ -46,12 +40,8 @@
 
   async function loadCopyConfig() {
     const rootPrefix = getRootPrefix();
-    const response = await fetch(`${rootPrefix}content/copy.default.json`, { cache: "no-store" });
-
-    if (!response.ok) {
-      throw new Error("Não foi possível carregar content/copy.default.json");
-    }
-
+    const response = await fetch(`${rootPrefix}content/copy.default.json?v=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error("Não foi possível carregar content/copy.default.json");
     return response.json();
   }
 
@@ -60,7 +50,6 @@
       const path = element.getAttribute("data-copy");
       const target = element.getAttribute("data-copy-target") || "text";
       const value = getByPath(values, path);
-
       if (value === undefined || value === null) return;
 
       if (target === "placeholder") {
@@ -88,7 +77,6 @@
     document.querySelectorAll("[data-copy-section]").forEach((element) => {
       const sectionId = element.getAttribute("data-copy-section");
       const isVisible = visibility[sectionId] !== false;
-
       element.hidden = !isVisible;
       element.setAttribute("aria-hidden", String(!isVisible));
       element.classList.toggle("copy-section-hidden", !isVisible);
@@ -121,23 +109,29 @@
 
   function refreshSoon() {
     refreshLandingCopy();
-    window.setTimeout(refreshLandingCopy, 80);
-    window.setTimeout(refreshLandingCopy, 240);
+    window.setTimeout(refreshLandingCopy, 100);
+    window.setTimeout(refreshLandingCopy, 300);
+    window.setTimeout(refreshLandingCopy, 800);
   }
 
   window.refreshLandingCopy = refreshLandingCopy;
 
   document.addEventListener("sectionsLoaded", refreshSoon);
+  document.addEventListener("DOMContentLoaded", refreshSoon, { once: true });
 
-  if (document.readyState !== "loading") {
-    refreshSoon();
-  } else {
-    document.addEventListener("DOMContentLoaded", refreshSoon, { once: true });
-  }
+  if (document.readyState !== "loading") refreshSoon();
 
   window.addEventListener("storage", (event) => {
-    if (!event.key || event.key === DEFAULT_STORAGE_KEY) {
-      refreshSoon();
-    }
+    if (!event.key || event.key === DEFAULT_STORAGE_KEY) refreshSoon();
+  });
+
+  const observer = new MutationObserver(() => {
+    window.clearTimeout(window.__landingCopyMutationTimer);
+    window.__landingCopyMutationTimer = window.setTimeout(refreshLandingCopy, 60);
+  });
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
   });
 })();

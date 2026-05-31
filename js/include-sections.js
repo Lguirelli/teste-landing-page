@@ -4,12 +4,13 @@ async function includeSections() {
 
   await Promise.all([...targets].map(async (target) => {
     const path = target.getAttribute("data-section");
+    const fetchPath = path.startsWith("http") || path.startsWith("/") ? path : `${root}${path}`;
 
     try {
-      const response = await fetch(path);
+      const response = await fetch(fetchPath, { cache: "no-store" });
 
       if (!response.ok) {
-        throw new Error(`Erro ao carregar ${path}`);
+        throw new Error(`Erro ao carregar ${fetchPath}`);
       }
 
       const html = await response.text();
@@ -29,7 +30,9 @@ async function includeSections() {
     }
   }));
 
-  document.dispatchEvent(new Event("sectionsLoaded"));
+  document.dispatchEvent(new CustomEvent("sectionsLoaded", {
+    detail: { total: targets.length }
+  }));
 }
 
 includeSections();
