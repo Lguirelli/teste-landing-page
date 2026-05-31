@@ -340,6 +340,63 @@ details:hover {
   padding: 92px 0 64px;
 }
 
+.hero-sequence-section {
+  min-height: 220vh;
+  padding: 92px 0 64px;
+}
+
+.hero-sequence-grid {
+  align-items: start;
+}
+
+.hero-copy {
+  padding-top: 8px;
+}
+
+.hero-sequence-wrap {
+  position: relative;
+  min-height: calc(100vh - 144px);
+}
+
+.hero-sequence-box {
+  position: sticky;
+  top: 118px;
+  width: min(100%, 460px);
+  aspect-ratio: 1 / 1;
+  margin-left: auto;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, .14);
+  background:
+    linear-gradient(135deg, rgba(255, 216, 77, .10), transparent 42%),
+    linear-gradient(315deg, rgba(217, 249, 157, .08), transparent 42%),
+    rgba(20, 24, 33, .92);
+  box-shadow: var(--shadow);
+  transform: translateZ(0);
+}
+
+.hero-sequence-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .14), transparent 32%),
+    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, .14), transparent 24%);
+  mix-blend-mode: screen;
+  opacity: .45;
+}
+
+.hero-sequence-box img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+
 .hero-title {
   margin: 0;
   font-size: clamp(48px, 8vw, 96px);
@@ -1069,6 +1126,22 @@ details p {
     padding-top: 64px;
   }
 
+  .hero-sequence-section {
+    min-height: auto;
+    padding-top: 64px;
+  }
+
+  .hero-sequence-wrap {
+    min-height: auto;
+  }
+
+  .hero-sequence-box {
+    position: relative;
+    top: auto;
+    margin: 0 auto;
+    width: min(100%, 520px);
+  }
+
   .logo-strip {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1100,6 +1173,10 @@ details p {
   }
 
   .hero {
+    padding: 56px 0 48px;
+  }
+
+  .hero-sequence-section {
     padding: 56px 0 48px;
   }
 

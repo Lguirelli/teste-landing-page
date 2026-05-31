@@ -115,7 +115,72 @@ function initServicesCarousel() {
   updateCarousel();
 }
 
+
+function initHeroSequence() {
+  const section = document.querySelector("[data-hero-sequence-section]");
+  const image = document.querySelector("#heroSequenceImage");
+
+  if (!section || !image) return;
+  if (section.dataset.sequenceInitialized === "true") return;
+
+  section.dataset.sequenceInitialized = "true";
+
+  const totalFrames = 300;
+  const rootPrefix = document.body?.dataset.root || "";
+  const imageFolder = `${rootPrefix}assets/hero-sequence`;
+  let currentFrame = 1;
+  let ticking = false;
+
+  function getFramePath(index) {
+    const frame = String(index).padStart(4, "0");
+    return `${imageFolder}/${frame}.png`;
+  }
+
+  function preloadFrames() {
+    const framesToPreload = [1, 2, 3, 4, 5, 60, 120, 180, 240, 300];
+
+    framesToPreload.forEach((frame) => {
+      const preloaded = new Image();
+      preloaded.src = getFramePath(frame);
+    });
+  }
+
+  function updateFrame() {
+    const rect = section.getBoundingClientRect();
+    const sectionHeight = section.offsetHeight;
+    const viewportHeight = window.innerHeight;
+    const maxScroll = Math.max(sectionHeight - viewportHeight, 1);
+    const scrolled = Math.min(Math.max(-rect.top, 0), maxScroll);
+    const progress = scrolled / maxScroll;
+    const nextFrame = Math.min(
+      totalFrames,
+      Math.max(1, Math.round(progress * (totalFrames - 1)) + 1)
+    );
+
+    if (nextFrame !== currentFrame) {
+      currentFrame = nextFrame;
+      image.src = getFramePath(currentFrame);
+    }
+
+    ticking = false;
+  }
+
+  function requestFrameUpdate() {
+    if (ticking) return;
+
+    ticking = true;
+    window.requestAnimationFrame(updateFrame);
+  }
+
+  preloadFrames();
+  updateFrame();
+
+  window.addEventListener("scroll", requestFrameUpdate, { passive: true });
+  window.addEventListener("resize", requestFrameUpdate);
+}
+
 document.addEventListener("sectionsLoaded", () => {
   initSmoothScroll();
   initServicesCarousel();
+  initHeroSequence();
 });

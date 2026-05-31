@@ -1,6 +1,6 @@
-<section class="hero">
-  <div class="container grid-2">
-    <div>
+<section class="hero hero-sequence-section" data-hero-sequence-section>
+  <div class="container grid-2 hero-sequence-grid">
+    <div class="hero-copy">
       <span class="section-kicker">Lorem ipsum dolor</span>
       <h1 class="hero-title">Lorem ipsum dolor sit amet consectetur.</h1>
       <p class="hero-lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -16,8 +16,18 @@
       </div>
     </div>
 
-    <div class="placeholder">
-      Placeholder de imagem principal / mockup / vídeo do produto
+    <div class="hero-sequence-wrap" aria-label="Demonstração visual do produto">
+      <div class="hero-sequence-box">
+        <img
+          id="heroSequenceImage"
+          src="{{root}}assets/hero-sequence/0001.png"
+          alt="Sequência visual do produto"
+          width="1080"
+          height="1080"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
     </div>
   </div>
 </section>
