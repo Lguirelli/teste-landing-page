@@ -182,7 +182,7 @@ async function initHeroModel() {
   let isVisible = true;
   let animationId = null;
   const baseRotationX = -0.035;
-  const baseRotationY = -1.58;
+  const baseRotationY = -3.15;
   const baseRotationZ = 0.018;
   const basePositionX = 0;
   const basePositionY = 0.52;
