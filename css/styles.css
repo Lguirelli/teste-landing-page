@@ -1482,3 +1482,80 @@ details p {
     inset: -1%;
   }
 }
+
+/* =========================
+   CORREÇÃO PATCH ERRADO
+   - remove comportamento desktop do botão Mais
+   - mantém menu hambúrguer apenas no mobile
+   - estabiliza hero 3D na hero section
+========================= */
+
+@media (min-width: 1101px) {
+  .site-header .header-inner {
+    grid-template-columns: minmax(140px, 210px) minmax(0, 1fr) auto !important;
+  }
+
+  .site-header .header-more,
+  .site-header .header-more.has-items {
+    display: none !important;
+  }
+
+  .site-header .nav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: clamp(10px, 1.15vw, 18px) !important;
+    overflow: hidden !important;
+  }
+
+  .site-header .nav a {
+    max-width: 138px !important;
+    font-size: 13px !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  .site-header .header-actions {
+    display: flex !important;
+  }
+}
+
+.hero {
+  position: relative;
+  overflow: visible;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-model-wrap,
+.hero-model-stage,
+.hero-model-stage canvas {
+  background: transparent !important;
+}
+
+.hero-model-wrap {
+  min-height: min(560px, 80vw);
+  z-index: 1;
+  isolation: isolate;
+}
+
+.hero-model-stage {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-copy {
+  z-index: 2;
+}
+
+.hero-model-stage.is-model-error::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  background: url("../assets/icons/pato.svg") center / contain no-repeat;
+  opacity: 1;
+  pointer-events: none;
+}

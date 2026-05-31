@@ -140,50 +140,13 @@ function renderHeaderNav() {
     return;
   }
 
-  moreButton.textContent = "Mais";
-  moreButton.setAttribute("aria-label", "Abrir mais seções");
-
-  const headerInner = document.querySelector(".site-header .header-inner");
-  const availableWidth = headerInner?.getBoundingClientRect().width || window.innerWidth;
-  const maxVisible = availableWidth >= 1440 ? 6 : availableWidth >= 1280 ? 5 : 4;
-  const visibleSections = sections.slice(0, maxVisible);
-  const hiddenSections = sections.slice(maxVisible);
-
-  visibleSections.forEach((section) => {
+  sections.forEach((section) => {
     nav.appendChild(buildHeaderLink(section));
   });
-
-  hiddenSections.forEach((section) => {
-    moreMenu.appendChild(buildHeaderLink(section));
-  });
-
-  if (hiddenSections.length) {
-    moreWrapper.classList.add("has-items");
-  }
-
-  window.requestAnimationFrame(adjustDesktopHeaderNav);
 }
 
 function adjustDesktopHeaderNav() {
-  const nav = document.querySelector("#siteNav");
-  const moreWrapper = document.querySelector("[data-header-more]");
-  const moreMenu = document.querySelector("[data-header-more-menu]");
-
-  if (!nav || !moreWrapper || !moreMenu) return;
-  if (window.matchMedia(HEADER_MOBILE_QUERY).matches) return;
-
-  let safety = 0;
-
-  while (nav.scrollWidth > nav.clientWidth + 2 && safety < 40) {
-    const links = [...nav.querySelectorAll("a")];
-    const lastLink = links.at(-1);
-
-    if (!lastLink) break;
-
-    moreMenu.prepend(lastLink);
-    moreWrapper.classList.add("has-items");
-    safety += 1;
-  }
+  return;
 }
 
 function initHeaderNav() {
