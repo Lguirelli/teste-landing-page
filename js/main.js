@@ -178,8 +178,12 @@ async function initHeroModel() {
   let targetMouseY = 0;
   let mouseX = 0;
   let mouseY = 0;
+  let hoverActive = false;
   let isVisible = true;
   let animationId = null;
+  const baseRotationX = -0.035;
+  const baseRotationY = -1.18;
+  const baseRotationZ = 0.018;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -198,12 +202,14 @@ async function initHeroModel() {
     const maxDimension = Math.max(size.x, size.y, size.z) || 1;
 
     object.position.sub(center);
-    object.position.y -= size.y * 0.02;
-    object.scale.setScalar(1.58 / maxDimension);
-    object.rotation.set(-0.04, -0.62, 0.025);
+    object.position.y -= size.y * 0.01;
+    object.scale.setScalar(1.54 / maxDimension);
+    object.rotation.set(0, 0, 0);
 
-    camera.position.set(0, 0.08, 6.15);
-    camera.lookAt(0, 0.02, 0);
+    camera.position.set(0, 0.03, 6.35);
+    camera.lookAt(0, 0.03, 0);
+    group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
+    group.position.set(0, 0, 0);
   }
 
   function animate() {
@@ -211,12 +217,16 @@ async function initHeroModel() {
 
     if (!isVisible || !model) return;
 
-    mouseX += (targetMouseX - mouseX) * 0.045;
-    mouseY += (targetMouseY - mouseY) * 0.045;
+    mouseX += (targetMouseX - mouseX) * 0.075;
+    mouseY += (targetMouseY - mouseY) * 0.075;
 
-    group.rotation.y += 0.0046;
-    group.rotation.x = mouseY * 0.09;
-    group.rotation.z = -mouseX * 0.03;
+    const influence = hoverActive ? 1 : 0.35;
+    group.rotation.x = baseRotationX + (mouseY * 0.11 * influence);
+    group.rotation.y = baseRotationY + (mouseX * 0.18 * influence);
+    group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
+
+    group.position.x = mouseX * 0.1 * influence;
+    group.position.y = -mouseY * 0.08 * influence;
 
     renderer.render(scene, camera);
   }
@@ -271,13 +281,29 @@ async function initHeroModel() {
     }
   );
 
-  window.addEventListener("mousemove", (event) => {
-    const rect = section.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+  function updatePointerInfluence(clientX, clientY) {
+    const rect = stage.getBoundingClientRect();
+    const normalizedX = ((clientX - rect.left) / rect.width) * 2 - 1;
+    const normalizedY = ((clientY - rect.top) / rect.height) * 2 - 1;
 
-    targetMouseX = Math.max(-1, Math.min(1, (event.clientX - centerX) / rect.width));
-    targetMouseY = Math.max(-1, Math.min(1, (event.clientY - centerY) / rect.height));
+    targetMouseX = Math.max(-1, Math.min(1, normalizedX));
+    targetMouseY = Math.max(-1, Math.min(1, normalizedY));
+  }
+
+  stage.addEventListener("pointerenter", (event) => {
+    hoverActive = true;
+    updatePointerInfluence(event.clientX, event.clientY);
+  });
+
+  stage.addEventListener("pointermove", (event) => {
+    hoverActive = true;
+    updatePointerInfluence(event.clientX, event.clientY);
+  });
+
+  stage.addEventListener("pointerleave", () => {
+    hoverActive = false;
+    targetMouseX = 0;
+    targetMouseY = 0;
   });
 
   window.addEventListener("resize", resizeRenderer);
