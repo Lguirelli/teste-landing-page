@@ -441,8 +441,8 @@ async function initHeroModel() {
 
     mouseX += (targetMouseX - mouseX) * 0.075;
     mouseY += (targetMouseY - mouseY) * 0.075;
-    dragX += (targetDragX - dragX) * 0.12;
-    dragY += (targetDragY - dragY) * 0.12;
+    dragX += (targetDragX - dragX) * 0.16;
+    dragY += (targetDragY - dragY) * 0.16;
 
     const influence = hoverActive || isDragging ? 1 : 0.35;
     const dragInfluence = isDragging ? 1 : 0.72;
@@ -556,6 +556,10 @@ async function initHeroModel() {
     if (!isDragging) return;
 
     isDragging = false;
+    targetDragX = 0;
+    targetDragY = 0;
+    dragOriginX = 0;
+    dragOriginY = 0;
     stage.classList.remove("is-dragging");
     stage.releasePointerCapture?.(event.pointerId);
   }
@@ -567,6 +571,11 @@ async function initHeroModel() {
     hoverActive = false;
     targetMouseX = 0;
     targetMouseY = 0;
+
+    if (!isDragging) {
+      targetDragX = 0;
+      targetDragY = 0;
+    }
   });
 
   window.addEventListener("resize", resizeRenderer);
