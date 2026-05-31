@@ -1364,7 +1364,13 @@ details p {
   box-shadow: none;
   overflow: visible;
   pointer-events: auto;
-  cursor: default;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.hero-model-stage.is-dragging {
+  cursor: grabbing;
 }
 
 .hero-model-stage canvas {

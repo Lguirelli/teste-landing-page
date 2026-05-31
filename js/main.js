@@ -389,6 +389,15 @@ async function initHeroModel() {
   let targetMouseY = 0;
   let mouseX = 0;
   let mouseY = 0;
+  let dragX = 0;
+  let dragY = 0;
+  let targetDragX = 0;
+  let targetDragY = 0;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragOriginX = 0;
+  let dragOriginY = 0;
   let hoverActive = false;
   let isVisible = true;
   let animationId = null;
@@ -432,14 +441,18 @@ async function initHeroModel() {
 
     mouseX += (targetMouseX - mouseX) * 0.075;
     mouseY += (targetMouseY - mouseY) * 0.075;
+    dragX += (targetDragX - dragX) * 0.12;
+    dragY += (targetDragY - dragY) * 0.12;
 
-    const influence = hoverActive ? 1 : 0.35;
-    group.rotation.x = baseRotationX + (mouseY * 0.11 * influence);
-    group.rotation.y = baseRotationY + (mouseX * 0.14 * influence);
-    group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
+    const influence = hoverActive || isDragging ? 1 : 0.35;
+    const dragInfluence = isDragging ? 1 : 0.72;
 
-    group.position.x = basePositionX + mouseX * 0.1 * influence;
-    group.position.y = basePositionY - mouseY * 0.08 * influence;
+    group.rotation.x = baseRotationX + (mouseY * 0.11 * influence) + (dragY * 0.32 * dragInfluence);
+    group.rotation.y = baseRotationY + (mouseX * 0.14 * influence) + (dragX * 0.72 * dragInfluence);
+    group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence) - (dragX * 0.1 * dragInfluence);
+
+    group.position.x = basePositionX + (mouseX * 0.1 * influence) + (dragX * 0.22 * dragInfluence);
+    group.position.y = basePositionY - (mouseY * 0.08 * influence) - (dragY * 0.12 * dragInfluence);
 
     renderer.render(scene, camera);
   }
@@ -511,7 +524,44 @@ async function initHeroModel() {
   stage.addEventListener("pointermove", (event) => {
     hoverActive = true;
     updatePointerInfluence(event.clientX, event.clientY);
+
+    if (!isDragging) return;
+
+    event.preventDefault();
+
+    const rect = stage.getBoundingClientRect();
+    const deltaX = (event.clientX - dragStartX) / Math.max(1, rect.width);
+    const deltaY = (event.clientY - dragStartY) / Math.max(1, rect.height);
+
+    targetDragX = Math.max(-1, Math.min(1, dragOriginX + deltaX * 2.2));
+    targetDragY = Math.max(-1, Math.min(1, dragOriginY + deltaY * 2.2));
   });
+
+  stage.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+
+    isDragging = true;
+    hoverActive = true;
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+    dragOriginX = targetDragX;
+    dragOriginY = targetDragY;
+    stage.classList.add("is-dragging");
+    stage.setPointerCapture?.(event.pointerId);
+    updatePointerInfluence(event.clientX, event.clientY);
+    event.preventDefault();
+  });
+
+  function finishDrag(event) {
+    if (!isDragging) return;
+
+    isDragging = false;
+    stage.classList.remove("is-dragging");
+    stage.releasePointerCapture?.(event.pointerId);
+  }
+
+  stage.addEventListener("pointerup", finishDrag);
+  stage.addEventListener("pointercancel", finishDrag);
 
   stage.addEventListener("pointerleave", () => {
     hoverActive = false;
