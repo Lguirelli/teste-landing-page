@@ -138,8 +138,8 @@ async function initHeroModel() {
   }
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(25, 1, 0.01, 1000);
-  camera.position.set(0, 0.06, 4.35);
+  const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
+  camera.position.set(0, 0.08, 6.25);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -199,10 +199,10 @@ async function initHeroModel() {
 
     object.position.sub(center);
     object.position.y -= size.y * 0.02;
-    object.scale.setScalar(1.72 / maxDimension);
+    object.scale.setScalar(1.58 / maxDimension);
     object.rotation.set(-0.04, -0.62, 0.025);
 
-    camera.position.set(0, 0.05, 4.25);
+    camera.position.set(0, 0.08, 6.15);
     camera.lookAt(0, 0.02, 0);
   }
 
