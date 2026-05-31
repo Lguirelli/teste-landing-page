@@ -90,6 +90,40 @@ function getAvailableHeaderSections() {
   return HEADER_SECTIONS.filter((section) => document.getElementById(section.id));
 }
 
+function appendHeaderMoreSections(sections) {
+  const moreMenu = document.querySelector("[data-header-more-menu]");
+
+  if (!moreMenu || !sections.length) return;
+
+  const sectionGroup = document.createElement("div");
+  sectionGroup.className = "header-more-sections";
+
+  sections.forEach((section) => {
+    sectionGroup.appendChild(buildHeaderLink(section));
+  });
+
+  moreMenu.appendChild(sectionGroup);
+}
+
+function appendHeaderMoreActions(actions) {
+  const moreMenu = document.querySelector("[data-header-more-menu]");
+
+  if (!moreMenu || !actions) return;
+
+  const actionLinks = [...actions.querySelectorAll("a")];
+
+  if (!actionLinks.length) return;
+
+  const actionGroup = document.createElement("div");
+  actionGroup.className = "header-more-actions";
+
+  actionLinks.forEach((link) => {
+    actionGroup.appendChild(buildHeaderActionLink(link));
+  });
+
+  moreMenu.appendChild(actionGroup);
+}
+
 function renderHeaderNav() {
   const nav = document.querySelector("#siteNav");
   const moreWrapper = document.querySelector("[data-header-more]");
@@ -114,38 +148,53 @@ function renderHeaderNav() {
   if (isHeaderMobile) {
     moreButton.textContent = "☰";
     moreButton.setAttribute("aria-label", "Abrir menu da página");
-
-    const sectionGroup = document.createElement("div");
-    sectionGroup.className = "header-more-sections";
-
-    sections.forEach((section) => {
-      sectionGroup.appendChild(buildHeaderLink(section));
-    });
-
-    moreMenu.appendChild(sectionGroup);
-
-    if (actions) {
-      const actionGroup = document.createElement("div");
-      actionGroup.className = "header-more-actions";
-
-      actions.querySelectorAll("a").forEach((link) => {
-        actionGroup.appendChild(buildHeaderActionLink(link));
-      });
-
-      moreMenu.appendChild(actionGroup);
-    }
-
+    appendHeaderMoreSections(sections);
+    appendHeaderMoreActions(actions);
     moreWrapper.classList.add("has-items");
     return;
   }
 
+  moreButton.textContent = "Mais";
+  moreButton.setAttribute("aria-label", "Abrir mais seções");
+
   sections.forEach((section) => {
     nav.appendChild(buildHeaderLink(section));
   });
+
+  adjustDesktopHeaderNav(sections);
 }
 
-function adjustDesktopHeaderNav() {
-  return;
+function adjustDesktopHeaderNav(sections = getAvailableHeaderSections()) {
+  const nav = document.querySelector("#siteNav");
+  const moreWrapper = document.querySelector("[data-header-more]");
+  const moreMenu = document.querySelector("[data-header-more-menu]");
+
+  if (!nav || !moreWrapper || !moreMenu) return;
+  if (window.matchMedia(HEADER_MOBILE_QUERY).matches) return;
+
+  const hiddenSections = [];
+
+  const navFits = () => nav.scrollWidth <= nav.clientWidth + 1;
+
+  while (!navFits() && nav.children.length > 1) {
+    const hiddenIndex = nav.children.length - 1;
+    const hiddenSection = sections[hiddenIndex];
+    const lastLink = nav.lastElementChild;
+
+    if (!hiddenSection || !lastLink) break;
+
+    hiddenSections.unshift(hiddenSection);
+    nav.removeChild(lastLink);
+    moreWrapper.classList.add("has-items");
+  }
+
+  if (hiddenSections.length) {
+    moreMenu.innerHTML = "";
+    appendHeaderMoreSections(hiddenSections);
+  } else {
+    moreWrapper.classList.remove("has-items");
+    moreMenu.innerHTML = "";
+  }
 }
 
 function initHeaderNav() {
