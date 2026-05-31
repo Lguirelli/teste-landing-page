@@ -383,7 +383,7 @@ details:hover {
 
 .hero-model-wrap {
   position: relative;
-  width: min(100%, 520px);
+  width: min(100%, 380px);
   aspect-ratio: 1 / 1;
   margin-inline: auto;
   display: grid;
@@ -397,7 +397,7 @@ details:hover {
 
 .hero-model-stage {
   position: absolute;
-  inset: 1%;
+  inset: 0;
   display: block;
   background: transparent;
   border: 0;
@@ -416,13 +416,13 @@ details:hover {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: 11%;
-  width: 48%;
-  height: 12%;
+  bottom: 14%;
+  width: 42%;
+  height: 10%;
   transform: translateX(-50%);
   border-radius: 999px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%);
-  filter: blur(9px);
+  filter: blur(8px);
   opacity: .48;
   pointer-events: none;
 }
@@ -1248,18 +1248,18 @@ details p {
 
 @media (max-width: 980px) {
   .hero-model-wrap {
-    width: min(100%, 430px);
+    width: min(100%, 380px);
     margin-top: 18px;
   }
 
   .hero-model-stage {
-    inset: 1%;
+    inset: 0;
   }
 }
 
 @media (max-width: 680px) {
   .hero-model-wrap {
-    width: min(100%, 330px);
+    width: min(100%, 300px);
     margin-top: 8px;
   }
 

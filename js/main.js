@@ -139,7 +139,7 @@ async function initHeroModel() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(25, 1, 0.01, 1000);
-  camera.position.set(0, 0.04, 3.32);
+  camera.position.set(0, 0.06, 4.35);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -154,18 +154,18 @@ async function initHeroModel() {
   renderer.toneMappingExposure = 1.0;
   stage.appendChild(renderer.domElement);
 
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x6b4a00, 1.95);
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x6b4a00, 1.7);
   scene.add(hemiLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 2.1);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.65);
   keyLight.position.set(-2.6, 2.8, 4.2);
   scene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0xffe08a, 1.38);
+  const fillLight = new THREE.DirectionalLight(0xffe08a, 1.1);
   fillLight.position.set(2.8, 1.6, 3.2);
   scene.add(fillLight);
 
-  const rimLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  const rimLight = new THREE.DirectionalLight(0xffffff, 0.82);
   rimLight.position.set(2.4, 2.2, -2.8);
   scene.add(rimLight);
 
@@ -198,11 +198,11 @@ async function initHeroModel() {
     const maxDimension = Math.max(size.x, size.y, size.z) || 1;
 
     object.position.sub(center);
-    object.position.y -= size.y * 0.038;
-    object.scale.setScalar(2.62 / maxDimension);
-    object.rotation.set(-0.06, -0.64, 0.035);
+    object.position.y -= size.y * 0.02;
+    object.scale.setScalar(1.72 / maxDimension);
+    object.rotation.set(-0.04, -0.62, 0.025);
 
-    camera.position.set(0, 0.03, 3.28);
+    camera.position.set(0, 0.05, 4.25);
     camera.lookAt(0, 0.02, 0);
   }
 
@@ -234,7 +234,8 @@ async function initHeroModel() {
         child.receiveShadow = false;
 
         if (child.geometry) {
-          child.geometry.computeVertexNormals();
+          child.geometry.computeBoundingBox();
+          child.geometry.computeBoundingSphere();
         }
 
         if (child.material) {
@@ -247,16 +248,15 @@ async function initHeroModel() {
 
         child.material = new THREE.MeshPhysicalMaterial({
           color: 0xffd101,
-          roughness: 0.32,
+          roughness: 0.42,
           metalness: 0.0,
-          clearcoat: 0.46,
-          clearcoatRoughness: 0.2,
-          specularIntensity: 0.58,
-          reflectivity: 0.52,
+          clearcoat: 0.28,
+          clearcoatRoughness: 0.34,
+          specularIntensity: 0.42,
+          reflectivity: 0.36,
           transmission: 0,
           ior: 1.45,
-          emissive: 0x2a1c00,
-          emissiveIntensity: 0.035
+          flatShading: false
         });
       });
 
