@@ -361,7 +361,7 @@ async function initHeroModel() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
-  camera.position.set(0, -0.58, 6.25);
+  camera.position.set(0, -0.72, 5.85);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -416,7 +416,7 @@ async function initHeroModel() {
   const baseRotationY = -0.02;
   const baseRotationZ = -0.012;
   const basePositionX = 0;
-  const basePositionY = 0.44;
+  const basePositionY = 0.52;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -439,8 +439,8 @@ async function initHeroModel() {
     object.scale.setScalar(1.54 / maxDimension);
     object.rotation.set(0, 0, 0);
 
-    camera.position.set(0, -0.58, 6.35);
-    camera.lookAt(0, -0.32, 0);
+    camera.position.set(0, -0.72, 5.85);
+    camera.lookAt(0, -0.4, 0);
     group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
     group.position.set(basePositionX, basePositionY, 0);
   }
