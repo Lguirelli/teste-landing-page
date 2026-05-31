@@ -337,6 +337,10 @@ async function initHeroModel() {
 
   const sourceAnchor = stage.closest(".hero-model-wrap") || stage.parentElement;
   const problemTarget = document.querySelector("[data-duck-scroll-target]");
+
+  if (sourceAnchor) {
+    sourceAnchor.classList.add("duck-source-anchor");
+  }
   const rootPrefix = document.body?.dataset.root || "";
   const modelSrc = `${rootPrefix}${stage.dataset.modelSrc || "assets/models/duck3d.glb"}`;
 
@@ -352,6 +356,9 @@ async function initHeroModel() {
   }
 
   document.body.appendChild(stage);
+  stage.style.display = "block";
+  stage.style.visibility = "visible";
+  stage.style.opacity = "1";
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
@@ -422,7 +429,19 @@ async function initHeroModel() {
   }
 
   function getViewportRect(element) {
-    return element.getBoundingClientRect();
+    const rect = element?.getBoundingClientRect?.();
+
+    if (!rect || rect.width <= 1 || rect.height <= 1) {
+      const fallbackSize = Math.min(window.innerWidth * 0.42, 560);
+      return {
+        left: window.innerWidth * 0.12,
+        top: Math.max(120, window.innerHeight * 0.22),
+        width: fallbackSize,
+        height: fallbackSize
+      };
+    }
+
+    return rect;
   }
 
   function resizeRenderer() {
@@ -491,8 +510,10 @@ async function initHeroModel() {
       return;
     }
 
-    const sourceTop = sourceAnchor.getBoundingClientRect().top + window.scrollY;
-    const targetTop = problemTarget.getBoundingClientRect().top + window.scrollY;
+    const sourceRect = getViewportRect(sourceAnchor);
+    const targetRect = getViewportRect(problemTarget);
+    const sourceTop = sourceRect.top + window.scrollY;
+    const targetTop = targetRect.top + window.scrollY;
     const start = sourceTop + sourceAnchor.offsetHeight * 0.22;
     const end = targetTop - window.innerHeight * 0.46;
     const distance = Math.max(1, end - start);
@@ -570,8 +591,11 @@ async function initHeroModel() {
       group.add(model);
       fitModelToStage(model);
       updateScrollTransition();
+      updateScrollTransition();
       resizeRenderer();
       renderer.render(scene, camera);
+      window.requestAnimationFrame(updateScrollTransition);
+      window.setTimeout(updateScrollTransition, 250);
     },
     undefined,
     () => {
@@ -609,7 +633,7 @@ async function initHeroModel() {
 
   if ("ResizeObserver" in window) {
     const observer = new ResizeObserver(updateScrollTransition);
-    observer.observe(sourceAnchor);
+    if (sourceAnchor) observer.observe(sourceAnchor);
     if (problemTarget) observer.observe(problemTarget);
   }
 
