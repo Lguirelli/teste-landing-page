@@ -245,10 +245,8 @@ function initSmoothScroll() {
 
 function initServicesCarousel() {
   const carousel = document.querySelector("[data-services-carousel]");
-  const prevButton = document.querySelector(".carousel-prev");
-  const nextButton = document.querySelector(".carousel-next");
 
-  if (!carousel || !prevButton || !nextButton) return;
+  if (!carousel) return;
   if (carousel.dataset.carouselInitialized === "true") return;
 
   carousel.dataset.carouselInitialized = "true";
@@ -258,7 +256,8 @@ function initServicesCarousel() {
   if (!slides.length) return;
 
   let currentIndex = 0;
-  let isAnimating = false;
+  let autoplayId = null;
+  const autoplayDelay = 2400;
 
   function getRelativePosition(index) {
     const total = slides.length;
@@ -278,14 +277,21 @@ function initServicesCarousel() {
   function updateCarousel() {
     slides.forEach((slide, index) => {
       const position = getRelativePosition(index);
+      const button = slide.querySelector(".btn");
 
       slide.classList.remove(
+        "featured",
         "is-active",
         "is-prev",
         "is-next",
         "is-hidden-left",
         "is-hidden-right"
       );
+
+      if (button) {
+        button.classList.toggle("btn-accent", position === 0);
+        button.classList.toggle("btn-secondary", position !== 0);
+      }
 
       if (position === 0) {
         slide.classList.add("is-active");
@@ -301,37 +307,18 @@ function initServicesCarousel() {
     });
   }
 
-  function moveCarousel(direction) {
-    if (isAnimating) return;
-
-    isAnimating = true;
-
-    currentIndex += direction;
-
-    if (currentIndex < 0) {
-      currentIndex = slides.length - 1;
-    }
-
-    if (currentIndex >= slides.length) {
-      currentIndex = 0;
-    }
-
+  function moveCarousel(direction = 1) {
+    currentIndex = (currentIndex + direction + slides.length) % slides.length;
     updateCarousel();
-
-    window.setTimeout(() => {
-      isAnimating = false;
-    }, 560);
   }
 
-  nextButton.addEventListener("click", () => {
-    moveCarousel(1);
-  });
-
-  prevButton.addEventListener("click", () => {
-    moveCarousel(-1);
-  });
+  function startAutoplay() {
+    window.clearInterval(autoplayId);
+    autoplayId = window.setInterval(() => moveCarousel(1), autoplayDelay);
+  }
 
   updateCarousel();
+  startAutoplay();
 }
 
 

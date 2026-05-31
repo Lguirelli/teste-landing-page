@@ -584,7 +584,7 @@ details:hover {
   isolation: isolate;
   margin-top: 40px;
   min-height: 460px;
-  padding-inline: 36px;
+  padding-inline: 0;
 }
 
 .services-carousel {
@@ -592,65 +592,68 @@ details:hover {
   width: 100%;
   min-height: 430px;
   overflow: visible;
+  perspective: 1200px;
 }
 
 .service-slide {
   position: absolute;
   top: 0;
   left: 50%;
-  width: calc((100% - 72px) / 3);
+  width: calc((100% - 96px) / 3);
   min-height: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) scale(.92);
+  transform: translateX(-50%) scale(.86) rotateY(0deg);
   transition:
-    transform .56s cubic-bezier(.22, 1, .36, 1),
-    opacity .56s ease,
-    filter .56s ease;
-  will-change: transform, opacity;
+    transform .82s cubic-bezier(.22, 1, .36, 1),
+    opacity .82s ease,
+    filter .82s ease,
+    border-color .82s ease,
+    box-shadow .82s ease;
+  will-change: transform, opacity, filter;
 }
 
 .service-slide.is-active {
-  z-index: 3;
+  z-index: 4;
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(-50%) scale(1);
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: translateX(-50%) scale(1) rotateY(0deg);
+  filter: blur(0) saturate(1) brightness(1);
 }
 
 .service-slide.is-prev {
   z-index: 2;
-  opacity: .72;
-  pointer-events: auto;
-  transform: translateX(calc(-50% - 365px)) scale(.94);
-  filter: saturate(.9);
+  opacity: .34;
+  pointer-events: none;
+  transform: translateX(calc(-50% - 365px)) scale(.9) rotateY(-8deg);
+  filter: blur(1.6px) saturate(.72) brightness(.72);
 }
 
 .service-slide.is-next {
   z-index: 2;
-  opacity: .72;
-  pointer-events: auto;
-  transform: translateX(calc(-50% + 365px)) scale(.94);
-  filter: saturate(.9);
+  opacity: .34;
+  pointer-events: none;
+  transform: translateX(calc(-50% + 365px)) scale(.9) rotateY(8deg);
+  filter: blur(1.6px) saturate(.72) brightness(.72);
 }
 
 .service-slide.is-hidden-left {
   z-index: 1;
   opacity: 0;
-  transform: translateX(calc(-50% - 730px)) scale(.88);
+  transform: translateX(calc(-50% - 730px)) scale(.82) rotateY(-14deg);
+  filter: blur(3px) saturate(.6) brightness(.62);
 }
 
 .service-slide.is-hidden-right {
   z-index: 1;
   opacity: 0;
-  transform: translateX(calc(-50% + 730px)) scale(.88);
-}
-
-.service-slide.featured {
-  border-color: var(--accent);
-  box-shadow: var(--shadow);
+  transform: translateX(calc(-50% + 730px)) scale(.82) rotateY(14deg);
+  filter: blur(3px) saturate(.6) brightness(.62);
 }
 
 .service-placeholder-icon {
@@ -711,43 +714,7 @@ details:hover {
 }
 
 .carousel-control {
-  position: absolute;
-  top: 45%;
-  z-index: 10;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--text);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 34px;
-  line-height: 1;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transform: translateY(-50%);
-  transition: background .18s ease, color .18s ease, transform .18s ease;
-  pointer-events: auto;
-  user-select: none;
-}
-
-.carousel-control:hover {
-  background: var(--accent);
-  color: #111111;
-  transform: translateY(-50%) scale(1.04);
-}
-
-.carousel-control:active {
-  transform: translateY(-50%) scale(.96);
-}
-
-.carousel-prev {
-  left: 0;
-}
-
-.carousel-next {
-  right: 0;
+  display: none !important;
 }
 
 /* =========================
@@ -1005,7 +972,6 @@ details p {
 @media (max-width: 980px) {
   .carousel-wrapper {
     min-height: 460px;
-    padding-inline: 32px;
   }
 
   .services-carousel {
@@ -1013,24 +979,24 @@ details p {
   }
 
   .service-slide {
-    width: calc((100% - 40px) / 2);
+    width: min(360px, 44vw);
     min-height: 380px;
   }
 
   .service-slide.is-prev {
-    transform: translateX(calc(-50% - 300px)) scale(.94);
+    transform: translateX(calc(-50% - 280px)) scale(.9) rotateY(-8deg);
   }
 
   .service-slide.is-next {
-    transform: translateX(calc(-50% + 300px)) scale(.94);
+    transform: translateX(calc(-50% + 280px)) scale(.9) rotateY(8deg);
   }
 
   .service-slide.is-hidden-left {
-    transform: translateX(calc(-50% - 600px)) scale(.88);
+    transform: translateX(calc(-50% - 560px)) scale(.82) rotateY(-14deg);
   }
 
   .service-slide.is-hidden-right {
-    transform: translateX(calc(-50% + 600px)) scale(.88);
+    transform: translateX(calc(-50% + 560px)) scale(.82) rotateY(14deg);
   }
 }
 
@@ -1112,40 +1078,42 @@ details p {
   }
 
   .carousel-wrapper {
-    min-height: 450px;
+    min-height: 430px;
     padding-inline: 0;
   }
 
   .services-carousel {
-    min-height: 420px;
-    overflow: hidden;
+    min-height: 410px;
+    overflow: visible;
   }
 
   .carousel-control {
-    display: none;
+    display: none !important;
   }
 
   .service-slide {
-    width: 84vw;
+    width: 78vw;
     min-height: 370px;
   }
 
   .service-slide.is-prev {
-    opacity: 0;
-    transform: translateX(calc(-50% - 92vw)) scale(.92);
+    opacity: .2;
+    transform: translateX(calc(-50% - 76vw)) scale(.86) rotateY(-8deg);
+    filter: blur(1.8px) saturate(.68) brightness(.7);
   }
 
   .service-slide.is-next {
-    opacity: 0;
-    transform: translateX(calc(-50% + 92vw)) scale(.92);
+    opacity: .2;
+    transform: translateX(calc(-50% + 76vw)) scale(.86) rotateY(8deg);
+    filter: blur(1.8px) saturate(.68) brightness(.7);
   }
 
   .service-slide.is-hidden-left {
-    transform: translateX(calc(-50% - 180vw)) scale(.88);
+    transform: translateX(calc(-50% - 152vw)) scale(.8) rotateY(-14deg);
   }
 
   .service-slide.is-hidden-right {
-    transform: translateX(calc(-50% + 180vw)) scale(.88);
+    transform: translateX(calc(-50% + 152vw)) scale(.8) rotateY(14deg);
   }
 
   .card {
