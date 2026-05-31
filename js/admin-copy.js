@@ -261,15 +261,31 @@
     }
   }
 
-  form.addEventListener("input", markUnsaved);
-  form.addEventListener("change", markUnsaved);
-
-  saveButton.addEventListener("click", () => {
+  function forceSaveFromButton() {
     window.clearTimeout(autoSaveTimer);
-    saveCurrentChanges(false);
-  });
 
-  resetButton.addEventListener("click", () => {
+    if (!config) {
+      showStatus("O editor ainda está carregando. Aguarde alguns segundos e tente novamente.", "warning");
+      return;
+    }
+
+    saveCurrentChanges(false);
+    showStatus("Alterações salvas. Atualize a landing para ver o texto aplicado.", "success");
+  }
+
+  window.copyAdminSave = forceSaveFromButton;
+
+  if (form) {
+    form.addEventListener("input", markUnsaved);
+    form.addEventListener("change", markUnsaved);
+  }
+
+  if (saveButton) {
+    saveButton.onclick = forceSaveFromButton;
+    saveButton.addEventListener("click", forceSaveFromButton);
+  }
+
+  if (resetButton) resetButton.addEventListener("click", () => {
     const confirmReset = window.confirm("Resetar todos os textos e voltar todas as seções para o padrão?");
 
     if (!confirmReset) return;
@@ -282,7 +298,7 @@
     showStatus("Textos e visibilidade resetados para o padrão.", "success");
   });
 
-  exportButton.addEventListener("click", () => {
+  if (exportButton) exportButton.addEventListener("click", () => {
     saveCurrentChanges(true);
     const values = collectValues();
     const visibility = collectVisibility();
@@ -300,11 +316,11 @@
     showStatus("JSON exportado.", "success");
   });
 
-  importButton.addEventListener("click", () => {
+  if (importButton) importButton.addEventListener("click", () => {
     importInput.click();
   });
 
-  importInput.addEventListener("change", async () => {
+  if (importInput) importInput.addEventListener("change", async () => {
     const file = importInput.files?.[0];
 
     if (!file) return;
@@ -322,6 +338,16 @@
       importInput.value = "";
     }
   });
+
+  window.copyAdminDebug = function copyAdminDebug() {
+    return {
+      hasConfig: Boolean(config),
+      storageKey,
+      saved: window.localStorage.getItem(storageKey) || window.localStorage.getItem(DEFAULT_STORAGE_KEY),
+      fields: form ? form.querySelectorAll("[data-copy-path]").length : 0,
+      visibility: form ? form.querySelectorAll("[data-visibility-section]").length : 0
+    };
+  };
 
   init();
 })();
