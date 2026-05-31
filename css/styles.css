@@ -327,7 +327,7 @@ details:hover {
 
 .hero-title {
   margin: 0;
-  font-size: clamp(24px, 4vw, 48px);
+  font-size: clamp(30px, 5vw, 60px);
   line-height: .9;
   letter-spacing: -.075em;
   color: var(--text);
@@ -1089,7 +1089,7 @@ details p {
   }
 
   .hero-title {
-    font-size: clamp(22px, 7.5vw, 36px);
+    font-size: clamp(26px, 9vw, 42px);
   }
 
   .section-title {
@@ -1190,7 +1190,7 @@ details p {
   width: min(100% - 32px, var(--max)) !important;
   min-height: 76px !important;
   display: grid !important;
-  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) auto auto !important;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) auto !important;
   align-items: center !important;
   gap: clamp(14px, 2vw, 28px) !important;
   margin-inline: auto !important;
@@ -1495,9 +1495,12 @@ details p {
     grid-template-columns: minmax(140px, 210px) minmax(0, 1fr) auto !important;
   }
 
-  .site-header .header-more,
-  .site-header .header-more.has-items {
+  .site-header .header-more {
     display: none !important;
+  }
+
+  .site-header .header-more.has-items {
+    display: block !important;
   }
 
   .site-header .nav {
@@ -1509,7 +1512,8 @@ details p {
   }
 
   .site-header .nav a {
-    max-width: 138px !important;
+    max-width: none !important;
+    min-width: max-content !important;
     font-size: 13px !important;
     letter-spacing: -0.015em !important;
   }
@@ -1558,4 +1562,28 @@ details p {
   background: url("../assets/icons/pato.svg") center / contain no-repeat;
   opacity: 1;
   pointer-events: none;
+}
+
+
+/* =========================
+   HEADER MAIS DESKTOP
+========================= */
+
+@media (min-width: 1101px) {
+  .header-center-nav {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .site-header .nav {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .site-header .header-menu-button {
+    min-width: max-content !important;
+  }
 }
