@@ -307,12 +307,11 @@ details:hover {
   letter-spacing: -.04em;
 }
 
-.logo-icon {
+.logo-mark {
   width: 34px;
   height: 34px;
-  display: block;
-  object-fit: contain;
-  flex: 0 0 34px;
+  border-radius: 10px;
+  background: var(--accent);
 }
 
 .nav {
@@ -370,6 +369,73 @@ details:hover {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: rgba(255, 255, 255, .06);
+}
+
+
+.hero-grid {
+  align-items: center;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-model-wrap {
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 1 / 1;
+  margin-inline: auto;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.hero-model-stage {
+  position: absolute;
+  inset: -3%;
+  display: block;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.hero-model-stage canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  background: transparent;
+}
+
+.hero-model-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 54%;
+  height: 14%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%);
+  filter: blur(10px);
+  opacity: .48;
+  pointer-events: auto;
+}
+
+.hero-sequence-section,
+.hero-visual-wrap,
+.hero-visual-box,
+.hero-sequence-canvas {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 .logo-strip {
@@ -608,6 +674,8 @@ details:hover {
   width: 100%;
   min-height: 430px;
   overflow: visible;
+  pointer-events: auto;
+  cursor: default;
 }
 
 .service-slide {
@@ -620,7 +688,7 @@ details:hover {
   flex-direction: column;
   align-items: center;
   opacity: 0;
-  pointer-events: none;
+  pointer-events: auto;
   transform: translateX(-50%) scale(.92);
   transition:
     transform .56s cubic-bezier(.22, 1, .36, 1),
@@ -1018,6 +1086,26 @@ details p {
   }
 }
 
+
+@media (min-width: 981px) {
+  .hero-grid {
+    align-items: start;
+  }
+
+  .hero-model-wrap {
+    order: 1;
+    justify-self: start;
+    align-self: start;
+    margin-inline: 0;
+    margin-top: 26px;
+  }
+
+  .hero-copy {
+    order: 2;
+    align-self: start;
+  }
+}
+
 @media (max-width: 980px) {
   .carousel-wrapper {
     min-height: 460px;
@@ -1178,5 +1266,28 @@ details p {
 
   .comparison-table {
     min-width: 680px;
+  }
+}
+
+
+@media (max-width: 980px) {
+  .hero-model-wrap {
+    width: min(100%, 460px);
+    margin-top: 18px;
+  }
+
+  .hero-model-stage {
+    inset: -2%;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-model-wrap {
+    width: min(100%, 360px);
+    margin-top: 8px;
+  }
+
+  .hero-model-stage {
+    inset: -1%;
   }
 }

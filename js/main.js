@@ -182,10 +182,10 @@ async function initHeroModel() {
   let isVisible = true;
   let animationId = null;
   const baseRotationX = -0.035;
-  const baseRotationY = -3.15;
-  const baseRotationZ = 0.018;
+  const baseRotationY = -0.02;
+  const baseRotationZ = -0.012;
   const basePositionX = 0;
-  const basePositionY = 0.52;
+  const basePositionY = 0.44;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -224,7 +224,7 @@ async function initHeroModel() {
 
     const influence = hoverActive ? 1 : 0.35;
     group.rotation.x = baseRotationX + (mouseY * 0.11 * influence);
-    group.rotation.y = baseRotationY + (mouseX * 0.18 * influence);
+    group.rotation.y = baseRotationY + (mouseX * 0.14 * influence);
     group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence);
 
     group.position.x = basePositionX + mouseX * 0.1 * influence;
