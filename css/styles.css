@@ -104,6 +104,20 @@ button {
   appearance: none;
 }
 
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 16px;
+  background: var(--accent);
+  color: #111111;
+  padding: 10px 14px;
+  border-radius: 10px;
+  z-index: 999;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
 
 .container {
   width: min(100% - 32px, var(--max));
@@ -1479,46 +1493,110 @@ details p {
 }
 
 
-/* Duck scroll transition: hero model -> problem card */
+
+/* Duck global canvas behind content */
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.section,
+.section:nth-of-type(even),
+.hero {
+  background: transparent !important;
+}
+
+.section > .container,
+.hero-copy,
+.card,
+.section-copy,
+.logo-strip,
+.btn-row,
+.hero-proof,
+.site-header {
+  position: relative;
+  z-index: 5;
+}
+
+.site-header {
+  z-index: 900 !important;
+}
+
+.hero-model-wrap {
+  position: relative;
+  min-height: min(52vw, 520px);
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+.hero-model-stage.duck-global-stage,
+#heroModelStage.duck-global-stage {
+  position: fixed !important;
+  inset: auto !important;
+  display: block !important;
+  z-index: 2 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+  will-change: left, top, width, height;
+}
+
+#heroModelStage.duck-global-stage canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  background: transparent !important;
+}
+
+#heroModelStage.duck-global-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 48%;
+  height: 12%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%);
+  filter: blur(10px);
+  opacity: .32;
+  pointer-events: none;
+}
+
 .problem-duck-target {
   position: relative;
   min-height: 176px;
-  overflow: hidden;
+  overflow: visible;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
 }
 
 .problem-duck-target > * {
-  transition: opacity .28s ease, transform .28s ease;
-}
-
-.problem-duck-target.is-duck-arrived > * {
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-}
-
-.hero-model-stage.is-scroll-traveling {
-  position: fixed !important;
-  inset: auto !important;
-  z-index: 18;
-  pointer-events: none;
-  transition: none;
-}
-
-.hero-model-stage.is-scroll-traveling::before {
-  opacity: .38;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 @media (max-width: 980px) {
-  .problem-duck-target {
-    min-height: 160px;
-  }
-
-  .hero-model-stage.is-scroll-traveling {
+  .hero-model-stage.duck-global-stage,
+  #heroModelStage.duck-global-stage {
     position: absolute !important;
     inset: -2% !important;
-    width: auto !important;
-    height: auto !important;
     left: auto !important;
     top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    z-index: 1 !important;
+  }
+
+  .problem-duck-target {
+    min-height: 0;
+    display: none;
   }
 }

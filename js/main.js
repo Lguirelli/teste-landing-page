@@ -327,17 +327,16 @@ function initServicesCarousel() {
 
 async function initHeroModel() {
   const section = document.querySelector("[data-hero-model-section]");
-  const sourceWrap = document.querySelector(".hero-model-wrap");
   const stage = document.querySelector("#heroModelStage");
-  const problemTarget = document.querySelector("[data-duck-scroll-target]");
 
-  if (!section || !sourceWrap || !stage) return;
+  if (!section || !stage) return;
   if (stage.dataset.modelInitialized === "true") return;
 
   stage.dataset.modelInitialized = "true";
   stage.classList.add("duck-global-stage");
-  document.body.appendChild(stage);
 
+  const sourceAnchor = stage.closest(".hero-model-wrap") || stage.parentElement;
+  const problemTarget = document.querySelector("[data-duck-scroll-target]");
   const rootPrefix = document.body?.dataset.root || "";
   const modelSrc = `${rootPrefix}${stage.dataset.modelSrc || "assets/models/duck3d.glb"}`;
 
@@ -351,6 +350,8 @@ async function initHeroModel() {
     stage.classList.add("is-model-error");
     return;
   }
+
+  document.body.appendChild(stage);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
@@ -420,6 +421,10 @@ async function initHeroModel() {
       : 1 - Math.pow(-2 * progress + 2, 3) / 2;
   }
 
+  function getViewportRect(element) {
+    return element.getBoundingClientRect();
+  }
+
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
     const width = Math.max(1, rect.width);
@@ -447,56 +452,53 @@ async function initHeroModel() {
     group.position.set(basePositionX, basePositionY, 0);
   }
 
-  function getViewportRect(element) {
-    return element.getBoundingClientRect();
-  }
-
-  function applyTravelRect(progress) {
-    const source = getViewportRect(sourceWrap);
-
-    if (!problemTarget || window.innerWidth <= 980) {
-      stage.classList.remove("is-duck-arrived");
-      stage.style.left = `${source.left}px`;
-      stage.style.top = `${source.top}px`;
-      stage.style.width = `${source.width}px`;
-      stage.style.height = `${source.height}px`;
-      problemTarget?.classList.remove("is-duck-arrived");
+  function applyGlobalRect(progress) {
+    if (!sourceAnchor || window.innerWidth <= 980) {
+      stage.style.left = "";
+      stage.style.top = "";
+      stage.style.width = "";
+      stage.style.height = "";
       resizeRenderer();
       return;
     }
 
     const easedProgress = easeInOutCubic(progress);
-    const target = getViewportRect(problemTarget);
-    const targetWidth = target.width * 0.82;
-    const targetHeight = Math.max(target.height * 1.32, targetWidth * 0.72);
+    const source = getViewportRect(sourceAnchor);
+    const target = problemTarget ? getViewportRect(problemTarget) : source;
+
+    const targetWidth = target.width * 0.9;
+    const targetHeight = Math.max(target.height * 1.3, targetWidth * 0.74);
+
+    const sourceWidth = source.width;
+    const sourceHeight = source.height;
+    const sourceLeft = source.left;
+    const sourceTop = source.top;
     const targetLeft = target.left + (target.width - targetWidth) / 2;
     const targetTop = target.top + (target.height - targetHeight) / 2;
 
-    stage.style.left = `${lerp(source.left, targetLeft, easedProgress)}px`;
-    stage.style.top = `${lerp(source.top, targetTop, easedProgress)}px`;
-    stage.style.width = `${lerp(source.width, targetWidth, easedProgress)}px`;
-    stage.style.height = `${lerp(source.height, targetHeight, easedProgress)}px`;
+    stage.style.left = `${lerp(sourceLeft, targetLeft, easedProgress)}px`;
+    stage.style.top = `${lerp(sourceTop, targetTop, easedProgress)}px`;
+    stage.style.width = `${lerp(sourceWidth, targetWidth, easedProgress)}px`;
+    stage.style.height = `${lerp(sourceHeight, targetHeight, easedProgress)}px`;
 
-    stage.classList.toggle("is-duck-arrived", progress > 0.82);
-    problemTarget.classList.toggle("is-duck-arrived", progress > 0.82);
     resizeRenderer();
   }
 
   function updateScrollTransition() {
     if (!problemTarget || window.innerWidth <= 980) {
       scrollProgress = 0;
-      applyTravelRect(0);
+      applyGlobalRect(0);
       return;
     }
 
-    const sourceDocumentTop = sourceWrap.getBoundingClientRect().top + window.scrollY;
-    const targetDocumentTop = problemTarget.getBoundingClientRect().top + window.scrollY;
-    const start = sourceDocumentTop + sourceWrap.offsetHeight * 0.12;
-    const end = targetDocumentTop - window.innerHeight * 0.42;
+    const sourceTop = sourceAnchor.getBoundingClientRect().top + window.scrollY;
+    const targetTop = problemTarget.getBoundingClientRect().top + window.scrollY;
+    const start = sourceTop + sourceAnchor.offsetHeight * 0.22;
+    const end = targetTop - window.innerHeight * 0.46;
     const distance = Math.max(1, end - start);
 
     scrollProgress = clamp((window.scrollY - start) / distance, 0, 1);
-    applyTravelRect(scrollProgress);
+    applyGlobalRect(scrollProgress);
   }
 
   function animate() {
@@ -568,6 +570,7 @@ async function initHeroModel() {
       group.add(model);
       fitModelToStage(model);
       updateScrollTransition();
+      resizeRenderer();
       renderer.render(scene, camera);
     },
     undefined,
@@ -606,8 +609,8 @@ async function initHeroModel() {
 
   if ("ResizeObserver" in window) {
     const observer = new ResizeObserver(updateScrollTransition);
-    observer.observe(sourceWrap);
-    problemTarget && observer.observe(problemTarget);
+    observer.observe(sourceAnchor);
+    if (problemTarget) observer.observe(problemTarget);
   }
 
   updateScrollTransition();
