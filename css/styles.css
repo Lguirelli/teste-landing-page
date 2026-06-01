@@ -1784,13 +1784,29 @@ details p {
 }
 
 
-/* Header Mais alinhado com seções */
+
+
+
+/* Header Mais centralizado com seções */
 @media (min-width: 901px) {
+  .header-inner {
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) auto minmax(210px, 1fr);
+    align-items: center;
+    column-gap: 18px;
+  }
+
+  .brand {
+    justify-self: start;
+  }
+
   .nav {
+    justify-self: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(14px, 1.35vw, 24px);
+    gap: clamp(13px, 1.15vw, 21px);
+    min-width: 0;
   }
 
   .nav a,
@@ -1810,6 +1826,7 @@ details p {
     letter-spacing: -0.03em;
     appearance: none;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .nav-more {
@@ -1844,9 +1861,49 @@ details p {
   }
 
   .header-actions {
-    margin-left: 18px;
+    justify-self: end;
+    margin-left: 0;
     display: flex;
     align-items: center;
+    gap: 10px;
+  }
+
+  .header-actions .btn {
+    min-height: 38px;
+    padding: 0 18px;
+    font-size: 13px;
+    line-height: 1;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .header-actions .btn-secondary {
+    padding-inline: 17px;
+  }
+
+  .header-actions .btn-accent {
+    padding-inline: 18px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  .header-inner {
+    grid-template-columns: minmax(100px, .8fr) auto minmax(190px, .9fr);
+    column-gap: 14px;
+  }
+
+  .nav {
     gap: 12px;
+  }
+
+  .nav a,
+  .nav-more-toggle {
+    font-size: 11px;
+  }
+
+  .header-actions .btn {
+    min-height: 36px;
+    padding-inline: 14px;
+    font-size: 12px;
   }
 }
