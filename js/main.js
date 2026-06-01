@@ -346,10 +346,6 @@ function initServicesCarousel() {
 }
 
 
-
-async function initHeroModel
-
-
 async function initHeroModel() {
   const section = document.querySelector("[data-hero-model-section]");
   const stage = document.querySelector("#heroModelStage");
