@@ -606,13 +606,15 @@ details:hover {
   align-items: center;
   opacity: 0;
   pointer-events: none;
+  cursor: default;
   transform: translateX(-50%) scale(.86) rotateY(0deg);
   transition:
     transform .82s cubic-bezier(.22, 1, .36, 1),
     opacity .82s ease,
     filter .82s ease,
     border-color .82s ease,
-    box-shadow .82s ease;
+    box-shadow .82s ease,
+    background .82s ease;
   will-change: transform, opacity, filter;
 }
 
@@ -620,16 +622,50 @@ details:hover {
   z-index: 4;
   opacity: 1;
   pointer-events: auto;
-  border-color: var(--accent);
-  box-shadow: var(--shadow);
+  border-color: rgba(255, 216, 77, .95);
+  box-shadow:
+    0 0 0 1px rgba(255, 216, 77, .42),
+    0 0 18px rgba(255, 216, 77, .42),
+    0 0 44px rgba(255, 216, 77, .18),
+    var(--shadow);
   transform: translateX(-50%) scale(1) rotateY(0deg);
   filter: blur(0) saturate(1) brightness(1);
+}
+
+.service-slide.is-active.is-neon-pulse {
+  animation: serviceNeonPulse .82s ease both;
+}
+
+@keyframes serviceNeonPulse {
+  0% {
+    border-color: rgba(255, 216, 77, .12);
+    box-shadow: 0 0 0 rgba(255, 216, 77, 0);
+  }
+
+  45% {
+    border-color: rgba(255, 216, 77, 1);
+    box-shadow:
+      0 0 0 1px rgba(255, 216, 77, .58),
+      0 0 24px rgba(255, 216, 77, .58),
+      0 0 64px rgba(255, 216, 77, .24),
+      var(--shadow);
+  }
+
+  100% {
+    border-color: rgba(255, 216, 77, .95);
+    box-shadow:
+      0 0 0 1px rgba(255, 216, 77, .42),
+      0 0 18px rgba(255, 216, 77, .42),
+      0 0 44px rgba(255, 216, 77, .18),
+      var(--shadow);
+  }
 }
 
 .service-slide.is-prev {
   z-index: 2;
   opacity: .34;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   transform: translateX(calc(-50% - 365px)) scale(.9) rotateY(-8deg);
   filter: blur(1.6px) saturate(.72) brightness(.72);
 }
@@ -637,7 +673,8 @@ details:hover {
 .service-slide.is-next {
   z-index: 2;
   opacity: .34;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   transform: translateX(calc(-50% + 365px)) scale(.9) rotateY(8deg);
   filter: blur(1.6px) saturate(.72) brightness(.72);
 }
@@ -645,6 +682,7 @@ details:hover {
 .service-slide.is-hidden-left {
   z-index: 1;
   opacity: 0;
+  cursor: default;
   transform: translateX(calc(-50% - 730px)) scale(.82) rotateY(-14deg);
   filter: blur(3px) saturate(.6) brightness(.62);
 }
@@ -652,6 +690,7 @@ details:hover {
 .service-slide.is-hidden-right {
   z-index: 1;
   opacity: 0;
+  cursor: default;
   transform: translateX(calc(-50% + 730px)) scale(.82) rotateY(14deg);
   filter: blur(3px) saturate(.6) brightness(.62);
 }

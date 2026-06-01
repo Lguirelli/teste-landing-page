@@ -257,6 +257,7 @@ function initServicesCarousel() {
 
   let currentIndex = 0;
   let autoplayId = null;
+  let pulseTimeoutId = null;
   const autoplayDelay = 2400;
 
   function getRelativePosition(index) {
@@ -285,7 +286,8 @@ function initServicesCarousel() {
         "is-prev",
         "is-next",
         "is-hidden-left",
-        "is-hidden-right"
+        "is-hidden-right",
+        "is-neon-pulse"
       );
 
       if (button) {
@@ -294,7 +296,7 @@ function initServicesCarousel() {
       }
 
       if (position === 0) {
-        slide.classList.add("is-active");
+        slide.classList.add("is-active", "is-neon-pulse");
       } else if (position === -1) {
         slide.classList.add("is-prev");
       } else if (position === 1) {
@@ -305,12 +307,34 @@ function initServicesCarousel() {
         slide.classList.add("is-hidden-right");
       }
     });
+
+    window.clearTimeout(pulseTimeoutId);
+    pulseTimeoutId = window.setTimeout(() => {
+      slides.forEach((slide) => slide.classList.remove("is-neon-pulse"));
+    }, 840);
   }
 
   function moveCarousel(direction = 1) {
     currentIndex = (currentIndex + direction + slides.length) % slides.length;
     updateCarousel();
   }
+
+  function goToSlide(index) {
+    if (index === currentIndex) return;
+
+    currentIndex = index;
+    updateCarousel();
+    startAutoplay();
+  }
+
+  slides.forEach((slide, index) => {
+    slide.addEventListener("click", (event) => {
+      if (index === currentIndex) return;
+
+      event.preventDefault();
+      goToSlide(index);
+    });
+  });
 
   function startAutoplay() {
     window.clearInterval(autoplayId);
@@ -321,6 +345,9 @@ function initServicesCarousel() {
   startAutoplay();
 }
 
+
+
+async function initHeroModel
 
 
 async function initHeroModel() {
