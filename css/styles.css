@@ -1782,3 +1782,71 @@ details p {
     transform: none !important;
   }
 }
+
+
+/* Header Mais alinhado com seções */
+@media (min-width: 901px) {
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(14px, 1.35vw, 24px);
+  }
+
+  .nav a,
+  .nav-more-toggle {
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .nav-more {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-more-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav a:hover,
+  .nav-more-toggle:hover,
+  .nav-more.is-open .nav-more-toggle {
+    color: var(--text);
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .nav-more-toggle::after {
+    display: none;
+    content: none;
+  }
+
+  .header-actions {
+    margin-left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
