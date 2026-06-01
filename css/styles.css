@@ -1740,3 +1740,45 @@ details p {
 .service-slide.is-active.is-neon-pulse {
   animation: serviceNeonPulse .82s ease both !important;
 }
+
+/* =========================
+   AJUSTE HEADER DESKTOP — MAIS COMO ITEM DAS SEÇÕES
+   Faz o botão "Mais" parecer parte da navegação, não um CTA.
+========================= */
+
+@media (min-width: 1101px) {
+  .site-header .header-center-nav {
+    gap: clamp(10px, 1.15vw, 18px) !important;
+  }
+
+  .site-header .header-more {
+    align-self: center !important;
+    margin: 0 !important;
+  }
+
+  .site-header .header-menu-button {
+    width: auto !important;
+    min-width: max-content !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--muted) !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.015em !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .site-header .header-menu-button:hover,
+  .site-header .header-menu-button[aria-expanded="true"] {
+    background: transparent !important;
+    color: var(--accent) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
