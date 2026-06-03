@@ -1,10 +1,23 @@
+function resolveSectionPath(path, root = "") {
+  if (!path) return "";
+
+  const isAbsolutePath = path.startsWith("http") || path.startsWith("/");
+  const isAlreadyRelativePath = path.startsWith("./") || path.startsWith("../");
+
+  if (isAbsolutePath || isAlreadyRelativePath) {
+    return path;
+  }
+
+  return `${root}${path}`;
+}
+
 async function includeSections() {
   const targets = document.querySelectorAll("[data-section]");
   const root = document.body?.dataset.root || "";
 
   await Promise.all([...targets].map(async (target) => {
     const path = target.getAttribute("data-section");
-    const fetchPath = path.startsWith("http") || path.startsWith("/") ? path : `${root}${path}`;
+    const fetchPath = resolveSectionPath(path, root);
 
     try {
       const response = await fetch(fetchPath, { cache: "no-store" });
