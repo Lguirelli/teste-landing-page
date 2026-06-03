@@ -1,6 +1,7 @@
 const HEADER_MOBILE_QUERY = "(max-width: 1100px)";
 
 const HEADER_SECTIONS = [
+  { id: "main", label: "Home", isHome: true },
   { id: "benefits", label: "Benefícios" },
   { id: "services", label: "Serviços" },
   { id: "problem", label: "Problema" },
@@ -11,6 +12,24 @@ const HEADER_SECTIONS = [
   { id: "lead", label: "Diagnóstico" },
   { id: "faq", label: "FAQ" }
 ];
+
+function getPageRoot() {
+  return document.body?.dataset.root || "";
+}
+
+function getIndexHref(section) {
+  const root = getPageRoot();
+
+  if (section.isHome) {
+    return `${root}index.html`;
+  }
+
+  if (!root) {
+    return `#${section.id}`;
+  }
+
+  return `${root}index.html#${section.id}`;
+}
 
 function closeHeaderMenu() {
   const button = document.querySelector("[data-header-menu-button]");
@@ -46,7 +65,7 @@ function toggleHeaderMenu() {
 
 function buildHeaderLink(section) {
   const link = document.createElement("a");
-  link.href = `#${section.id}`;
+  link.href = getIndexHref(section);
   link.textContent = section.label;
   link.className = "header-nav-link";
   return link;
@@ -87,7 +106,7 @@ function ensureHeaderMenuEvents() {
 }
 
 function getAvailableHeaderSections() {
-  return HEADER_SECTIONS.filter((section) => document.getElementById(section.id));
+  return HEADER_SECTIONS;
 }
 
 function appendHeaderMoreSections(sections) {
@@ -220,13 +239,13 @@ function initSmoothScroll() {
   window.__smoothScrollInitialized = true;
 
   document.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href^="#"]');
+    const link = event.target.closest('a[href]');
 
     if (!link) return;
 
     const href = link.getAttribute("href");
 
-    if (!href || href === "#") return;
+    if (!href || href === "#" || !href.startsWith("#")) return;
 
     const target = document.querySelector(href);
 
