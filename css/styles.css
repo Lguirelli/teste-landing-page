@@ -1944,13 +1944,35 @@ details p {
   pointer-events: none !important;
 }
 
-.problem-grid {
-  align-items: center !important;
+.problem-section-inner {
+  position: relative !important;
 }
 
-.problem-copy {
+.problem-grid {
+  align-items: center !important;
+  gap: clamp(32px, 6vw, 72px) !important;
+}
+
+.problem-copy,
+.problem-main-copy {
   position: relative !important;
   z-index: 2 !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.problem-main-copy .section-title {
+  margin-bottom: 0 !important;
+}
+
+.problem-lead-centered {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 900px !important;
+  margin: clamp(20px, 3vw, 36px) auto 0 !important;
+  text-align: center !important;
 }
 
 .problem-duck-target {
@@ -2032,13 +2054,21 @@ details p {
     display: none !important;
   }
 
+  .problem-grid {
+    gap: 20px !important;
+  }
+
   .problem-duck-target {
     min-height: 340px !important;
-    margin-top: 24px !important;
+    margin-top: 8px !important;
   }
 
   .problem-model-wrap {
     width: min(100%, 380px) !important;
     min-height: 340px !important;
+  }
+
+  .problem-lead-centered {
+    margin-top: 18px !important;
   }
 }
