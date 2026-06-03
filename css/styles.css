@@ -317,6 +317,13 @@ details:hover {
   align-items: center;
 }
 
+
+.site-header .nav a[aria-current="page"],
+.header-more-menu a[aria-current="page"] {
+  color: var(--text) !important;
+}
+
+
 /* =========================
    HERO
 ========================= */

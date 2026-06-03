@@ -1,17 +1,14 @@
-function normalizeSectionPath(path = "") {
-  return path
-    .replace(/^\.\//, "")
-    .replace(/^(\.\.\/)+/, "");
-}
-
-function resolveSectionPath(path, root = "") {
+function buildSectionPath(path, root) {
   if (!path) return "";
+  if (path.startsWith("http") || path.startsWith("/")) return path;
 
-  if (path.startsWith("http") || path.startsWith("/")) {
+  const cleanRoot = root || "";
+
+  if (cleanRoot && (path.startsWith("../") || path.startsWith("./"))) {
     return path;
   }
 
-  return `${root}${normalizeSectionPath(path)}`;
+  return `${cleanRoot}${path}`;
 }
 
 async function includeSections() {
@@ -19,8 +16,8 @@ async function includeSections() {
   const root = document.body?.dataset.root || "";
 
   await Promise.all([...targets].map(async (target) => {
-    const path = target.getAttribute("data-section") || "";
-    const fetchPath = resolveSectionPath(path, root);
+    const path = target.getAttribute("data-section");
+    const fetchPath = buildSectionPath(path, root);
 
     try {
       const response = await fetch(fetchPath, { cache: "no-store" });
@@ -36,7 +33,7 @@ async function includeSections() {
         <section class="section">
           <div class="container">
             <div class="card">
-              <strong>Seção não carregada:</strong> ${fetchPath || path}
+              <strong>Seção não carregada:</strong> ${path}
             </div>
           </div>
         </section>

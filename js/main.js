@@ -1,34 +1,29 @@
 const HEADER_MOBILE_QUERY = "(max-width: 1100px)";
 
-const HEADER_SECTIONS = [
-  { id: "main", label: "Home", isHome: true },
-  { id: "benefits", label: "Benefícios" },
-  { id: "services", label: "Serviços" },
-  { id: "problem", label: "Problema" },
-  { id: "how-it-works", label: "Como funciona" },
-  { id: "features", label: "Soluções" },
-  { id: "comparison", label: "Comparação" },
-  { id: "case", label: "Caso de uso" },
-  { id: "lead", label: "Diagnóstico" },
-  { id: "faq", label: "FAQ" }
+const HEADER_LINKS = [
+  { label: "Home", href: "index.html" },
+  { label: "Serviços", href: "index.html#services" },
+  { label: "Agentes de automação", href: "servicos/agentes-ia.html" },
+  { label: "Landing pages", href: "servicos/landing-pages.html" },
+  { label: "Conteúdo com IA", href: "servicos/planejamento-conteudo-ia.html" },
+  { label: "Dashboards", href: "servicos/dashboards-pmes.html" },
+  { label: "Conteúdo personalizado", href: "servicos/conteudo-personalizado.html" }
 ];
 
-function getPageRoot() {
+function getSiteRoot() {
   return document.body?.dataset.root || "";
 }
 
-function getIndexHref(section) {
-  const root = getPageRoot();
-
-  if (section.isHome) {
-    return `${root}index.html`;
+function resolveHeaderHref(href = "") {
+  if (!href) return "#";
+  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("/")) {
+    return href;
+  }
+  if (href.startsWith("#")) {
+    return href;
   }
 
-  if (!root) {
-    return `#${section.id}`;
-  }
-
-  return `${root}index.html#${section.id}`;
+  return `${getSiteRoot()}${href}`;
 }
 
 function closeHeaderMenu() {
@@ -63,11 +58,24 @@ function toggleHeaderMenu() {
   }
 }
 
-function buildHeaderLink(section) {
+function isCurrentHeaderLink(href = "") {
+  const currentPath = window.location.pathname.replace(/\/$/, "/index.html");
+  const target = new URL(resolveHeaderHref(href), window.location.href);
+  const targetPath = target.pathname.replace(/\/$/, "/index.html");
+
+  return currentPath === targetPath && (!target.hash || window.location.hash === target.hash);
+}
+
+function buildHeaderLink(item) {
   const link = document.createElement("a");
-  link.href = getIndexHref(section);
-  link.textContent = section.label;
+  link.href = resolveHeaderHref(item.href);
+  link.textContent = item.label;
   link.className = "header-nav-link";
+
+  if (isCurrentHeaderLink(item.href)) {
+    link.setAttribute("aria-current", "page");
+  }
+
   return link;
 }
 
@@ -105,20 +113,20 @@ function ensureHeaderMenuEvents() {
   });
 }
 
-function getAvailableHeaderSections() {
-  return HEADER_SECTIONS;
+function getHeaderLinks() {
+  return HEADER_LINKS;
 }
 
-function appendHeaderMoreSections(sections) {
+function appendHeaderMoreSections(links) {
   const moreMenu = document.querySelector("[data-header-more-menu]");
 
-  if (!moreMenu || !sections.length) return;
+  if (!moreMenu || !links.length) return;
 
   const sectionGroup = document.createElement("div");
   sectionGroup.className = "header-more-sections";
 
-  sections.forEach((section) => {
-    sectionGroup.appendChild(buildHeaderLink(section));
+  links.forEach((item) => {
+    sectionGroup.appendChild(buildHeaderLink(item));
   });
 
   moreMenu.appendChild(sectionGroup);
@@ -154,7 +162,7 @@ function renderHeaderNav() {
 
   ensureHeaderMenuEvents();
 
-  const sections = getAvailableHeaderSections();
+  const links = getHeaderLinks();
   const isHeaderMobile = window.matchMedia(HEADER_MOBILE_QUERY).matches;
 
   document.body.classList.toggle("is-header-mobile", isHeaderMobile);
@@ -167,23 +175,23 @@ function renderHeaderNav() {
   if (isHeaderMobile) {
     moreButton.textContent = "☰";
     moreButton.setAttribute("aria-label", "Abrir menu da página");
-    appendHeaderMoreSections(sections);
+    appendHeaderMoreSections(links);
     appendHeaderMoreActions(actions);
     moreWrapper.classList.add("has-items");
     return;
   }
 
   moreButton.textContent = "Mais";
-  moreButton.setAttribute("aria-label", "Abrir mais seções");
+  moreButton.setAttribute("aria-label", "Abrir mais páginas");
 
-  sections.forEach((section) => {
-    nav.appendChild(buildHeaderLink(section));
+  links.forEach((item) => {
+    nav.appendChild(buildHeaderLink(item));
   });
 
-  adjustDesktopHeaderNav(sections);
+  adjustDesktopHeaderNav(links);
 }
 
-function adjustDesktopHeaderNav(sections = getAvailableHeaderSections()) {
+function adjustDesktopHeaderNav(links = getHeaderLinks()) {
   const nav = document.querySelector("#siteNav");
   const moreWrapper = document.querySelector("[data-header-more]");
   const moreMenu = document.querySelector("[data-header-more-menu]");
@@ -191,25 +199,25 @@ function adjustDesktopHeaderNav(sections = getAvailableHeaderSections()) {
   if (!nav || !moreWrapper || !moreMenu) return;
   if (window.matchMedia(HEADER_MOBILE_QUERY).matches) return;
 
-  const hiddenSections = [];
+  const hiddenLinks = [];
 
   const navFits = () => nav.scrollWidth <= nav.clientWidth + 1;
 
   while (!navFits() && nav.children.length > 1) {
     const hiddenIndex = nav.children.length - 1;
-    const hiddenSection = sections[hiddenIndex];
+    const hiddenItem = links[hiddenIndex];
     const lastLink = nav.lastElementChild;
 
-    if (!hiddenSection || !lastLink) break;
+    if (!hiddenItem || !lastLink) break;
 
-    hiddenSections.unshift(hiddenSection);
+    hiddenLinks.unshift(hiddenItem);
     nav.removeChild(lastLink);
     moreWrapper.classList.add("has-items");
   }
 
-  if (hiddenSections.length) {
+  if (hiddenLinks.length) {
     moreMenu.innerHTML = "";
-    appendHeaderMoreSections(hiddenSections);
+    appendHeaderMoreSections(hiddenLinks);
   } else {
     moreWrapper.classList.remove("has-items");
     moreMenu.innerHTML = "";
@@ -239,13 +247,13 @@ function initSmoothScroll() {
   window.__smoothScrollInitialized = true;
 
   document.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href]');
+    const link = event.target.closest('a[href^="#"]');
 
     if (!link) return;
 
     const href = link.getAttribute("href");
 
-    if (!href || href === "#" || !href.startsWith("#")) return;
+    if (!href || href === "#") return;
 
     const target = document.querySelector(href);
 
