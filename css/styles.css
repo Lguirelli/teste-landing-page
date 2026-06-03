@@ -1971,7 +1971,7 @@ details p {
   position: relative !important;
   z-index: 2 !important;
   max-width: 900px !important;
-  margin: clamp(20px, 3vw, 36px) auto 0 !important;
+  margin: clamp(10px, 1.4vw, 18px) auto 0 !important;
   text-align: center !important;
 }
 
@@ -2069,7 +2069,7 @@ details p {
   }
 
   .problem-lead-centered {
-    margin-top: 18px !important;
+    margin-top: 10px !important;
   }
 }
 
@@ -2113,12 +2113,12 @@ details p {
 .problem-model-wrap {
   justify-self: start !important;
   margin-left: 0 !important;
-  transform: translateY(-2%) !important;
+  transform: translateY(-8%) !important;
 }
 
 .problem-lead-centered {
   width: min(100%, 940px) !important;
-  margin-top: clamp(24px, 3.2vw, 42px) !important;
+  margin-top: clamp(10px, 1.4vw, 18px) !important;
   text-align: center !important;
 }
 
