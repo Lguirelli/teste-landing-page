@@ -1,23 +1,24 @@
-function buildSectionPath(path, root) {
-  if (!path) return "";
-  if (path.startsWith("http") || path.startsWith("/")) return path;
-
-  const cleanRoot = root || "";
-
-  if (cleanRoot && (path.startsWith("../") || path.startsWith("./"))) {
-    return path;
-  }
-
-  return `${cleanRoot}${path}`;
-}
-
 async function includeSections() {
   const targets = document.querySelectorAll("[data-section]");
   const root = document.body?.dataset.root || "";
 
+  function resolveSectionPath(path) {
+    if (!path) return "";
+    if (path.startsWith("http") || path.startsWith("/")) return path;
+
+    const normalizedPath = path.replace(/^\.\//, "");
+    const normalizedRoot = root.replace(/\/$/, "");
+
+    if (!normalizedRoot) return normalizedPath;
+    if (normalizedPath.startsWith(`${normalizedRoot}/`)) return normalizedPath;
+    if (normalizedPath.startsWith("../") || normalizedPath.startsWith("./")) return normalizedPath;
+
+    return `${normalizedRoot}/${normalizedPath}`;
+  }
+
   await Promise.all([...targets].map(async (target) => {
     const path = target.getAttribute("data-section");
-    const fetchPath = buildSectionPath(path, root);
+    const fetchPath = resolveSectionPath(path);
 
     try {
       const response = await fetch(fetchPath, { cache: "no-store" });

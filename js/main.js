@@ -1,30 +1,13 @@
 const HEADER_MOBILE_QUERY = "(max-width: 1100px)";
 
 const HEADER_LINKS = [
-  { label: "Home", href: "index.html" },
-  { label: "Serviços", href: "index.html#services" },
-  { label: "Agentes de automação", href: "servicos/agentes-ia.html" },
-  { label: "Landing pages", href: "servicos/landing-pages.html" },
-  { label: "Conteúdo com IA", href: "servicos/planejamento-conteudo-ia.html" },
-  { label: "Dashboards", href: "servicos/dashboards-pmes.html" },
-  { label: "Conteúdo personalizado", href: "servicos/conteudo-personalizado.html" }
+  { href: "index.html#main", label: "Home" },
+  { href: "servicos/landing-pages.html", label: "Landing pages" },
+  { href: "servicos/agentes-ia.html", label: "Agentes de automação" },
+  { href: "servicos/conteudo-personalizado.html", label: "Conteúdo" },
+  { href: "servicos/dashboards-pmes.html", label: "Dashboards" },
+  { href: "servicos/planejamento-conteudo-ia.html", label: "Planejamento" }
 ];
-
-function getSiteRoot() {
-  return document.body?.dataset.root || "";
-}
-
-function resolveHeaderHref(href = "") {
-  if (!href) return "#";
-  if (href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("/")) {
-    return href;
-  }
-  if (href.startsWith("#")) {
-    return href;
-  }
-
-  return `${getSiteRoot()}${href}`;
-}
 
 function closeHeaderMenu() {
   const button = document.querySelector("[data-header-menu-button]");
@@ -58,24 +41,12 @@ function toggleHeaderMenu() {
   }
 }
 
-function isCurrentHeaderLink(href = "") {
-  const currentPath = window.location.pathname.replace(/\/$/, "/index.html");
-  const target = new URL(resolveHeaderHref(href), window.location.href);
-  const targetPath = target.pathname.replace(/\/$/, "/index.html");
-
-  return currentPath === targetPath && (!target.hash || window.location.hash === target.hash);
-}
-
 function buildHeaderLink(item) {
+  const root = document.body?.dataset.root || "";
   const link = document.createElement("a");
-  link.href = resolveHeaderHref(item.href);
+  link.href = `${root}${item.href}`;
   link.textContent = item.label;
   link.className = "header-nav-link";
-
-  if (isCurrentHeaderLink(item.href)) {
-    link.setAttribute("aria-current", "page");
-  }
-
   return link;
 }
 
@@ -117,16 +88,16 @@ function getHeaderLinks() {
   return HEADER_LINKS;
 }
 
-function appendHeaderMoreSections(links) {
+function appendHeaderMoreSections(sections) {
   const moreMenu = document.querySelector("[data-header-more-menu]");
 
-  if (!moreMenu || !links.length) return;
+  if (!moreMenu || !sections.length) return;
 
   const sectionGroup = document.createElement("div");
   sectionGroup.className = "header-more-sections";
 
-  links.forEach((item) => {
-    sectionGroup.appendChild(buildHeaderLink(item));
+  sections.forEach((section) => {
+    sectionGroup.appendChild(buildHeaderLink(section));
   });
 
   moreMenu.appendChild(sectionGroup);
@@ -162,7 +133,7 @@ function renderHeaderNav() {
 
   ensureHeaderMenuEvents();
 
-  const links = getHeaderLinks();
+  const sections = getHeaderLinks();
   const isHeaderMobile = window.matchMedia(HEADER_MOBILE_QUERY).matches;
 
   document.body.classList.toggle("is-header-mobile", isHeaderMobile);
@@ -175,23 +146,23 @@ function renderHeaderNav() {
   if (isHeaderMobile) {
     moreButton.textContent = "☰";
     moreButton.setAttribute("aria-label", "Abrir menu da página");
-    appendHeaderMoreSections(links);
+    appendHeaderMoreSections(sections);
     appendHeaderMoreActions(actions);
     moreWrapper.classList.add("has-items");
     return;
   }
 
   moreButton.textContent = "Mais";
-  moreButton.setAttribute("aria-label", "Abrir mais páginas");
+  moreButton.setAttribute("aria-label", "Abrir mais seções");
 
-  links.forEach((item) => {
-    nav.appendChild(buildHeaderLink(item));
+  sections.forEach((section) => {
+    nav.appendChild(buildHeaderLink(section));
   });
 
-  adjustDesktopHeaderNav(links);
+  adjustDesktopHeaderNav(sections);
 }
 
-function adjustDesktopHeaderNav(links = getHeaderLinks()) {
+function adjustDesktopHeaderNav(sections = getHeaderLinks()) {
   const nav = document.querySelector("#siteNav");
   const moreWrapper = document.querySelector("[data-header-more]");
   const moreMenu = document.querySelector("[data-header-more-menu]");
@@ -199,25 +170,25 @@ function adjustDesktopHeaderNav(links = getHeaderLinks()) {
   if (!nav || !moreWrapper || !moreMenu) return;
   if (window.matchMedia(HEADER_MOBILE_QUERY).matches) return;
 
-  const hiddenLinks = [];
+  const hiddenSections = [];
 
   const navFits = () => nav.scrollWidth <= nav.clientWidth + 1;
 
   while (!navFits() && nav.children.length > 1) {
     const hiddenIndex = nav.children.length - 1;
-    const hiddenItem = links[hiddenIndex];
+    const hiddenSection = sections[hiddenIndex];
     const lastLink = nav.lastElementChild;
 
-    if (!hiddenItem || !lastLink) break;
+    if (!hiddenSection || !lastLink) break;
 
-    hiddenLinks.unshift(hiddenItem);
+    hiddenSections.unshift(hiddenSection);
     nav.removeChild(lastLink);
     moreWrapper.classList.add("has-items");
   }
 
-  if (hiddenLinks.length) {
+  if (hiddenSections.length) {
     moreMenu.innerHTML = "";
-    appendHeaderMoreSections(hiddenLinks);
+    appendHeaderMoreSections(hiddenSections);
   } else {
     moreWrapper.classList.remove("has-items");
     moreMenu.innerHTML = "";
