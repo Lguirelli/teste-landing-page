@@ -345,7 +345,7 @@ function initServicesCarousel() {
 
 
 async function initHeroModel() {
-  const section = document.querySelector("[data-hero-model-section]");
+  const section = document.querySelector("[data-duck-model-section], [data-hero-model-section]");
   const stage = document.querySelector("#heroModelStage");
 
   if (!section || !stage) return;
@@ -369,7 +369,7 @@ async function initHeroModel() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
-  camera.position.set(0, -0.72, 5.85);
+  camera.position.set(0, -0.42, 6.15);
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -421,10 +421,10 @@ async function initHeroModel() {
   let isVisible = true;
   let animationId = null;
   const baseRotationX = -0.035;
-  const baseRotationY = -0.02;
-  const baseRotationZ = -0.012;
+  const baseRotationY = -3.15;
+  const baseRotationZ = 0.018;
   const basePositionX = 0;
-  const basePositionY = 0.52;
+  const basePositionY = 0.24;
 
   function resizeRenderer() {
     const rect = stage.getBoundingClientRect();
@@ -447,8 +447,8 @@ async function initHeroModel() {
     object.scale.setScalar(1.54 / maxDimension);
     object.rotation.set(0, 0, 0);
 
-    camera.position.set(0, -0.72, 5.85);
-    camera.lookAt(0, -0.4, 0);
+    camera.position.set(0, -0.42, 6.15);
+    camera.lookAt(0, -0.2, 0);
     group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
     group.position.set(basePositionX, basePositionY, 0);
   }
