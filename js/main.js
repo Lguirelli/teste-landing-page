@@ -690,144 +690,367 @@ if (document.readyState === "loading") {
 document.addEventListener("sectionsLoaded", initBlogRepositoryPage);
 
 const GLOSSARIO_EDITORIAL = {
-  "AEO": {
-    categoria: "Busca e IA",
-    definicao: "Otimização para mecanismos de resposta. Ajuda o conteúdo a ser entendido e citado por buscadores e ferramentas de IA."
+  "IA": {
+    "prioridade": "Alta",
+    "significado": "Inteligência Artificial",
+    "explicacao": "Tecnologia capaz de interpretar informações, reconhecer padrões e apoiar tarefas que antes dependeriam de análise ou execução manual."
+  },
+  "Agente de IA": {
+    "prioridade": "Alta",
+    "significado": "IA configurada para uma função específica",
+    "explicacao": "Sistema preparado para executar uma tarefa dentro do negócio, como atender, qualificar contatos, responder dúvidas ou registrar informações."
+  },
+  "Chatbot": {
+    "prioridade": "Alta",
+    "significado": "Sistema de conversa automatizada",
+    "explicacao": "Ferramenta que conversa com usuários por mensagens. Pode usar botões, respostas prontas, fluxos fixos ou inteligência artificial."
   },
   "Automação": {
-    categoria: "Operação",
-    definicao: "Uso de regras, fluxos e sistemas para executar tarefas repetitivas com menos esforço manual."
-  },
-  "CRM": {
-    categoria: "Vendas",
-    definicao: "Sistema que organiza contatos, histórico, oportunidades e etapas do relacionamento com clientes."
-  },
-  "CTA": {
-    categoria: "Conversão",
-    definicao: "Chamada para ação. É o convite que orienta o próximo passo do visitante, como solicitar contato, pedir diagnóstico ou acessar uma página."
-  },
-  "Dashboard": {
-    categoria: "Dados",
-    definicao: "Painel visual que reúne indicadores importantes para acompanhar desempenho e apoiar decisões."
-  },
-  "Funil": {
-    categoria: "Marketing e vendas",
-    definicao: "Representação das etapas que uma pessoa percorre entre descobrir uma solução, avaliar opções e tomar uma decisão."
-  },
-  "Integração": {
-    categoria: "Tecnologia",
-    definicao: "Conexão entre ferramentas para que dados, mensagens ou ações circulem sem depender de cópia manual."
-  },
-  "Jornada de compra": {
-    categoria: "Estratégia",
-    definicao: "Caminho percorrido pelo cliente desde a percepção do problema até a escolha da solução."
-  },
-  "Landing page": {
-    categoria: "Conversão",
-    definicao: "Página criada para uma ação específica, como gerar leads, pedidos de orçamento, agendamentos ou vendas."
-  },
-  "Lead": {
-    categoria: "Comercial",
-    definicao: "Pessoa ou empresa que demonstrou interesse e pode se tornar cliente."
-  },
-  "LGPD": {
-    categoria: "Privacidade",
-    definicao: "Lei Geral de Proteção de Dados. Define regras para coleta, uso, armazenamento e tratamento de dados pessoais no Brasil."
-  },
-  "Métrica": {
-    categoria: "Dados",
-    definicao: "Número usado para acompanhar desempenho, como cliques, conversões, tempo de resposta ou taxa de abandono."
-  },
-  "No-code": {
-    categoria: "Automação",
-    definicao: "Criação de páginas, sistemas ou automações usando ferramentas visuais, com pouco ou nenhum código."
-  },
-  "Omnicanalidade": {
-    categoria: "Atendimento",
-    definicao: "Integração entre canais para manter contexto e continuidade no relacionamento com o cliente."
-  },
-  "Posicionamento": {
-    categoria: "Marca",
-    definicao: "Forma como a empresa quer ser percebida no mercado, deixando claro para quem fala, o que oferece e por que é relevante."
-  },
-  "ROI": {
-    categoria: "Dados",
-    definicao: "Retorno sobre investimento. Ajuda a comparar o ganho gerado com o valor investido em uma ação."
-  },
-  "SEO": {
-    categoria: "Busca",
-    definicao: "Otimização para mecanismos de busca. Organiza conteúdo, estrutura e experiência para melhorar a presença em pesquisas."
-  },
-  "Social search": {
-    categoria: "Conteúdo",
-    definicao: "Uso das redes sociais como ambiente de busca, onde pessoas pesquisam temas, marcas, produtos e recomendações."
-  },
-  "IA": {
-    categoria: "Estratégia",
-    definicao: "Uso de sistemas capazes de interpretar dados, linguagem e contexto para apoiar tarefas, respostas e decisões."
-  },
-  "Handoff humano": {
-    categoria: "Estratégia",
-    definicao: "Passagem da automação para uma pessoa da equipe quando a conversa precisa de contexto, julgamento ou cuidado direto."
+    "prioridade": "Alta",
+    "significado": "Uso de tecnologia para executar tarefas repetitivas",
+    "explicacao": "Reduz ações manuais em processos que seguem um padrão, como enviar lembretes, registrar contatos, responder dúvidas simples ou atualizar planilhas."
   },
   "Fluxo de atendimento": {
-    categoria: "Estratégia",
-    definicao: "Sequência de etapas que organiza entrada, resposta, encaminhamento, registro e acompanhamento de uma solicitação."
+    "prioridade": "Alta",
+    "significado": "Caminho que a conversa segue",
+    "explicacao": "Sequência de etapas do atendimento, desde a primeira mensagem até a solução, venda, finalização ou encaminhamento para outra pessoa."
   },
-  "Triagem": {
-    categoria: "Estratégia",
-    definicao: "Separação inicial dos contatos por intenção, urgência ou tipo de necessidade para direcionar cada caso ao melhor caminho."
+  "Lead": {
+    "prioridade": "Alta",
+    "significado": "Pessoa que demonstrou interesse",
+    "explicacao": "Contato que ainda não virou cliente, mas deixou algum sinal de interesse, como preencher um formulário, chamar no WhatsApp ou pedir orçamento."
   },
-  "Métrica de vaidade": {
-    categoria: "Estratégia",
-    definicao: "Indicador que chama atenção, mas não mostra sozinho se a estratégia gerou resultado real para o negócio."
+  "Lead qualificado": {
+    "prioridade": "Alta",
+    "significado": "Contato com maior potencial comercial",
+    "explicacao": "Lead que possui perfil, necessidade e momento de compra mais próximos do que a empresa consegue atender."
   },
-  "Prova social": {
-    categoria: "Estratégia",
-    definicao: "Uso de evidências, casos, avaliações ou depoimentos para reduzir insegurança e aumentar confiança na decisão."
+  "Qualificação de leads": {
+    "prioridade": "Alta",
+    "significado": "Processo de avaliar um contato",
+    "explicacao": "Conjunto de perguntas e critérios usados para entender se o lead tem perfil, necessidade, urgência e potencial para avançar na venda."
   },
-  "Microcopy": {
-    categoria: "Estratégia",
-    definicao: "Pequenos textos de interface, como botões, avisos e mensagens de formulário, que ajudam a orientar a ação do usuário."
+  "Funil de vendas": {
+    "prioridade": "Alta",
+    "significado": "Etapas até a compra",
+    "explicacao": "Representa o caminho que uma pessoa percorre entre descobrir uma solução, comparar opções, conversar com a empresa e decidir pela compra."
   },
-  "UX": {
-    categoria: "Estratégia",
-    definicao: "Experiência do usuário ao navegar, entender, decidir e executar uma ação em um site, aplicativo ou atendimento digital."
+  "Jornada do cliente": {
+    "prioridade": "Alta",
+    "significado": "Caminho completo da pessoa com a marca",
+    "explicacao": "Inclui todos os momentos de contato com a empresa, da descoberta inicial às dúvidas, compra, atendimento, entrega e relacionamento pós-venda."
   },
-  "Jornada": {
-    categoria: "Estratégia",
-    definicao: "Caminho percorrido por uma pessoa entre perceber uma necessidade, buscar opções, avaliar uma solução e tomar uma decisão."
+  "CTA": {
+    "prioridade": "Alta",
+    "significado": "Call to Action",
+    "explicacao": "Convite para a pessoa realizar uma ação específica, como clicar em um botão, chamar no WhatsApp, pedir orçamento ou baixar um material."
+  },
+  "Copywriting": {
+    "prioridade": "Alta",
+    "significado": "Escrita com intenção comercial",
+    "explicacao": "Forma de escrever que organiza argumentos, clareza e contexto para ajudar a pessoa a entender uma oferta e tomar uma decisão."
+  },
+  "Conversão": {
+    "prioridade": "Alta",
+    "significado": "Ação esperada realizada",
+    "explicacao": "Acontece quando a pessoa faz a ação principal desejada, como preencher um formulário, chamar no WhatsApp, agendar uma conversa ou comprar."
+  },
+  "Taxa de conversão": {
+    "prioridade": "Alta",
+    "significado": "Porcentagem de pessoas que converteram",
+    "explicacao": "Mostra quantas pessoas realizaram a ação desejada em relação ao total de visitantes, contatos ou oportunidades analisadas."
+  },
+  "SEO": {
+    "prioridade": "Alta",
+    "significado": "Search Engine Optimization",
+    "explicacao": "Conjunto de ajustes em páginas, conteúdos e estrutura do site para aumentar a chance de aparecer em buscadores como o Google."
+  },
+  "AEO": {
+    "prioridade": "Alta",
+    "significado": "Answer Engine Optimization",
+    "explicacao": "Organização do conteúdo para que mecanismos de resposta e IAs entendam melhor uma informação e consigam usá-la em respostas diretas."
+  },
+  "FAQ": {
+    "prioridade": "Alta",
+    "significado": "Frequently Asked Questions",
+    "explicacao": "Seção de perguntas frequentes criada para responder dúvidas comuns de forma objetiva e facilitar a decisão do visitante."
+  },
+  "Briefing": {
+    "prioridade": "Média",
+    "significado": "Coleta inicial de informações",
+    "explicacao": "Etapa usada para entender negócio, público, objetivos, problemas, preferências e restrições antes de criar uma solução."
+  },
+  "Persona": {
+    "prioridade": "Média",
+    "significado": "Representação de um cliente ideal",
+    "explicacao": "Perfil semifictício criado para resumir dores, dúvidas, objetivos e comportamentos de um tipo de cliente importante para a empresa."
   },
   "Público-alvo": {
-    categoria: "Estratégia",
-    definicao: "Grupo de pessoas que a comunicação, oferta ou solução precisa atingir com mais clareza."
+    "prioridade": "Média",
+    "significado": "Grupo de pessoas que a empresa quer alcançar",
+    "explicacao": "Definição ampla de quem pode se interessar pela oferta, considerando características como segmento, necessidade, localização ou perfil de compra."
+  },
+  "Posicionamento": {
+    "prioridade": "Média",
+    "significado": "Forma como a marca quer ser percebida",
+    "explicacao": "Define o lugar que a empresa deseja ocupar na mente do público e como ela se diferencia das outras opções do mercado."
+  },
+  "Branding": {
+    "prioridade": "Média",
+    "significado": "Construção estratégica da marca",
+    "explicacao": "Processo de organizar identidade, percepção, tom de voz, posicionamento e experiências para tornar a marca mais reconhecível e confiável."
+  },
+  "Identidade visual": {
+    "prioridade": "Média",
+    "significado": "Elementos visuais da marca",
+    "explicacao": "Conjunto de cores, fontes, logotipo, ícones, imagens e padrões gráficos usados para tornar a marca reconhecível."
   },
   "Tom de voz": {
-    categoria: "Estratégia",
-    definicao: "Forma como a marca se expressa para criar reconhecimento, confiança e coerência em diferentes canais."
+    "prioridade": "Média",
+    "significado": "Forma como a marca se comunica",
+    "explicacao": "Define o jeito de escrever e falar da marca, como mais simples, técnico, próximo, formal, consultivo ou descontraído."
   },
-  "Calendário editorial": {
-    categoria: "Estratégia",
-    definicao: "Organização de temas, formatos, datas e objetivos para publicar conteúdo com direção e continuidade."
+  "Landing page": {
+    "prioridade": "Média",
+    "significado": "Página criada para uma ação principal",
+    "explicacao": "Página focada em conduzir o visitante para uma ação específica, como pedir orçamento, preencher um formulário, agendar ou comprar."
+  },
+  "Página de conversão": {
+    "prioridade": "Média",
+    "significado": "Página pensada para transformar visitantes em oportunidades",
+    "explicacao": "Forma mais simples de explicar uma landing page: uma página criada para converter atenção em contato, venda ou pedido de orçamento."
+  },
+  "Dashboard": {
+    "prioridade": "Alta",
+    "significado": "Painel visual de dados",
+    "explicacao": "Tela que reúne indicadores, gráficos e tabelas importantes para acompanhar resultados e facilitar decisões."
+  },
+  "KPI": {
+    "prioridade": "Alta",
+    "significado": "Key Performance Indicator",
+    "explicacao": "Indicador-chave usado para medir um resultado importante do negócio, como vendas, conversões, tempo de resposta ou retenção."
+  },
+  "Métrica": {
+    "prioridade": "Média",
+    "significado": "Dado que pode ser medido",
+    "explicacao": "Número acompanhado para entender desempenho, comportamento ou evolução de uma ação, processo ou campanha."
+  },
+  "Ticket médio": {
+    "prioridade": "Média",
+    "significado": "Valor médio gasto por cliente",
+    "explicacao": "Mostra quanto cada cliente compra ou contrata, em média, dentro de um período ou tipo de venda."
+  },
+  "ROI": {
+    "prioridade": "Média",
+    "significado": "Return on Investment",
+    "explicacao": "Retorno sobre investimento. Ajuda a entender se o dinheiro aplicado em uma ação gerou resultado financeiro proporcional."
+  },
+  "CPL": {
+    "prioridade": "Média",
+    "significado": "Custo por Lead",
+    "explicacao": "Valor médio gasto para gerar um contato interessado por meio de anúncios, campanhas ou ações de captação."
+  },
+  "CRM": {
+    "prioridade": "Alta",
+    "significado": "Customer Relationship Management",
+    "explicacao": "Ferramenta ou processo usado para organizar contatos, histórico de conversas, oportunidades e etapas de venda."
+  },
+  "API": {
+    "prioridade": "Alta",
+    "significado": "Forma de conectar sistemas diferentes",
+    "explicacao": "Recurso que permite que ferramentas troquem informações automaticamente, sem copiar e colar dados manualmente."
+  },
+  "Integração": {
+    "prioridade": "Alta",
+    "significado": "Conexão entre ferramentas",
+    "explicacao": "Quando sistemas passam a funcionar juntos, enviando dados, mensagens ou ações entre si de forma automática."
+  },
+  "Webhook": {
+    "prioridade": "Alta",
+    "significado": "Aviso automático entre ferramentas",
+    "explicacao": "Recurso que dispara uma automação quando algo acontece, como um formulário preenchido, pagamento aprovado ou nova mensagem recebida."
+  },
+  "WhatsApp Business API": {
+    "prioridade": "Alta",
+    "significado": "Versão do WhatsApp para integrações empresariais",
+    "explicacao": "Solução oficial para conectar o WhatsApp a sistemas, automações, CRMs e operações com maior volume de atendimento."
+  },
+  "Formulário funcional": {
+    "prioridade": "Média",
+    "significado": "Formulário que coleta e envia dados de verdade",
+    "explicacao": "Formulário que não é apenas visual. Ele envia as respostas para e-mail, planilha, CRM, banco de dados ou automação."
+  },
+  "Banco de dados": {
+    "prioridade": "Média",
+    "significado": "Local organizado para armazenar informações",
+    "explicacao": "Estrutura usada para guardar e consultar dados como contatos, pedidos, mensagens, registros e históricos."
+  },
+  "No-code": {
+    "prioridade": "Média",
+    "significado": "Criação sem escrever código manualmente",
+    "explicacao": "Uso de ferramentas visuais e conectores prontos para criar páginas, automações ou sistemas sem programar do zero."
+  },
+  "Low-code": {
+    "prioridade": "Média",
+    "significado": "Criação com pouco código",
+    "explicacao": "Modelo que combina ferramentas visuais com pequenas personalizações técnicas para criar soluções mais flexíveis."
+  },
+  "n8n": {
+    "prioridade": "Média",
+    "significado": "Ferramenta de automação",
+    "explicacao": "Plataforma usada para conectar aplicativos, criar fluxos automáticos e movimentar dados entre sistemas."
+  },
+  "Google Sheets": {
+    "prioridade": "Baixa",
+    "significado": "Planilha online do Google",
+    "explicacao": "Ferramenta que pode registrar dados de leads, pedidos, atendimentos, relatórios e integrações simples."
+  },
+  "CMS": {
+    "prioridade": "Média",
+    "significado": "Content Management System",
+    "explicacao": "Sistema usado para criar, editar e organizar conteúdos de um site sem mexer diretamente nos arquivos do código."
+  },
+  "Hospedagem": {
+    "prioridade": "Média",
+    "significado": "Serviço que mantém o site online",
+    "explicacao": "Local onde os arquivos do site ficam armazenados para que outras pessoas consigam acessá-lo pela internet."
+  },
+  "Domínio": {
+    "prioridade": "Média",
+    "significado": "Endereço do site",
+    "explicacao": "Nome usado para acessar um site na internet, como o endereço principal que a pessoa digita no navegador."
+  },
+  "Responsivo": {
+    "prioridade": "Média",
+    "significado": "Site que se adapta a diferentes telas",
+    "explicacao": "Site que mantém boa leitura e funcionamento em celular, tablet e computador."
+  },
+  "UX": {
+    "prioridade": "Média",
+    "significado": "User Experience",
+    "explicacao": "Experiência do usuário ao navegar por uma página, preencher um formulário, usar um sistema ou passar por um atendimento."
+  },
+  "UI": {
+    "prioridade": "Média",
+    "significado": "User Interface",
+    "explicacao": "Parte visual e interativa de uma solução, como telas, botões, menus, cores, campos e elementos clicáveis."
+  },
+  "LGPD": {
+    "prioridade": "Alta",
+    "significado": "Lei Geral de Proteção de Dados",
+    "explicacao": "Lei brasileira que define regras para coleta, uso, armazenamento, proteção e exclusão de dados pessoais."
+  },
+  "Dados pessoais": {
+    "prioridade": "Alta",
+    "significado": "Informações que identificam uma pessoa",
+    "explicacao": "Dados como nome, telefone, e-mail, CPF, endereço, histórico de atendimento ou qualquer informação ligada a uma pessoa específica."
+  },
+  "Handoff humano": {
+    "prioridade": "Alta",
+    "significado": "Transferência para atendimento humano",
+    "explicacao": "Momento em que a automação encerra ou pausa sua atuação e passa a conversa para uma pessoa da equipe continuar o atendimento."
+  },
+  "SLA": {
+    "prioridade": "Média",
+    "significado": "Service Level Agreement",
+    "explicacao": "Acordo que define prazos, responsabilidades e nível esperado de atendimento, entrega ou suporte entre áreas ou partes envolvidas."
+  },
+  "Suporte": {
+    "prioridade": "Média",
+    "significado": "Acompanhamento para dúvidas e correções",
+    "explicacao": "Ajuda oferecida depois da entrega ou durante o uso de uma solução para resolver dúvidas, falhas ou ajustes necessários."
+  },
+  "Manutenção": {
+    "prioridade": "Média",
+    "significado": "Ajustes após a entrega inicial",
+    "explicacao": "Correções, atualizações e melhorias feitas depois que uma página, sistema ou automação já está em uso."
+  },
+  "MVP": {
+    "prioridade": "Média",
+    "significado": "Minimum Viable Product",
+    "explicacao": "Primeira versão funcional de uma solução, criada para validar uma ideia com o menor esforço possível antes de evoluir."
+  },
+  "Funil": {
+    "prioridade": "Alta",
+    "significado": "Etapas de relacionamento até a decisão",
+    "explicacao": "Forma resumida de representar o caminho entre descoberta, interesse, contato, proposta e compra."
+  },
+  "Jornada": {
+    "prioridade": "Alta",
+    "significado": "Caminho percorrido pela pessoa",
+    "explicacao": "Sequência de momentos em que alguém descobre uma marca, entende uma solução, tira dúvidas e decide se avança."
+  },
+  "Triagem": {
+    "prioridade": "Alta",
+    "significado": "Filtro inicial de contatos ou demandas",
+    "explicacao": "Etapa usada para entender o motivo do contato, prioridade, perfil e melhor encaminhamento antes do atendimento principal."
+  },
+  "Prova social": {
+    "prioridade": "Média",
+    "significado": "Evidência de confiança gerada por outras pessoas",
+    "explicacao": "Uso de depoimentos, avaliações, cases, prints autorizados ou clientes atendidos para reduzir insegurança e reforçar credibilidade."
+  },
+  "Métrica de vaidade": {
+    "prioridade": "Média",
+    "significado": "Número que impressiona, mas não prova resultado",
+    "explicacao": "Indicador como curtidas ou visualizações que pode parecer positivo, mas não mostra sozinho se houve impacto comercial real."
+  },
+  "Microcopy": {
+    "prioridade": "Média",
+    "significado": "Pequenos textos que orientam ações",
+    "explicacao": "Textos curtos em botões, formulários, avisos e mensagens de erro que ajudam a pessoa a entender o que fazer."
   },
   "Trend": {
-    categoria: "Estratégia",
-    definicao: "Formato, assunto ou comportamento que ganha força nas redes e pode ser usado com critério dentro de uma estratégia de conteúdo."
+    "prioridade": "Média",
+    "significado": "Tendência de formato, tema ou comportamento",
+    "explicacao": "Assunto, estética ou dinâmica que ganha força nas redes e pode ser usada com critério dentro de uma estratégia de conteúdo."
   },
   "Dados": {
-    categoria: "Estratégia",
-    definicao: "Informações registradas sobre comportamento, operação ou resultado que ajudam a enxergar padrões e tomar decisões melhores."
+    "prioridade": "Média",
+    "significado": "Informações registradas para análise",
+    "explicacao": "Registros sobre comportamento, atendimento, vendas ou operação que ajudam a entender padrões e tomar decisões melhores."
   },
+  "Social search": {
+    "prioridade": "Média",
+    "significado": "Busca feita dentro das redes sociais",
+    "explicacao": "Comportamento de usar Instagram, TikTok, LinkedIn ou outras redes para procurar respostas, marcas, produtos e recomendações."
+  },
+  "GEO": {
+    "prioridade": "Média",
+    "significado": "Generative Engine Optimization",
+    "explicacao": "Organização de conteúdo para aumentar a chance de ser compreendido por mecanismos de IA generativa e respostas automáticas."
+  },
+  "Omnicanalidade": {
+    "prioridade": "Média",
+    "significado": "Integração entre canais de atendimento",
+    "explicacao": "Estratégia em que canais como WhatsApp, site, redes sociais e e-mail mantêm contexto e continuidade na experiência do cliente."
+  },
+  "First-party data": {
+    "prioridade": "Média",
+    "significado": "Dados coletados diretamente pela empresa",
+    "explicacao": "Informações obtidas nos próprios canais da marca, como site, formulários, CRM e atendimento, com mais controle e contexto."
+  },
+  "Handoff": {
+    "prioridade": "Média",
+    "significado": "Passagem de responsabilidade no atendimento",
+    "explicacao": "Transferência de uma conversa ou tarefa da automação para uma pessoa, ou de uma área para outra, mantendo o contexto."
+  }
 };
 
 function getGlossarioEntry(term) {
   if (!term) return null;
   const normalized = term.trim().toLowerCase();
   const key = Object.keys(GLOSSARIO_EDITORIAL).find((item) => item.toLowerCase() === normalized);
-  return key ? { termo: key, ...GLOSSARIO_EDITORIAL[key] } : {
+
+  if (key) {
+    return { termo: key, ...GLOSSARIO_EDITORIAL[key] };
+  }
+
+  return {
     termo: term,
-    categoria: "Glossário",
-    definicao: "Termo usado no contexto do artigo para explicar melhor a estratégia, o processo ou o indicador citado."
+    prioridade: "Baixa",
+    significado: "Termo do artigo",
+    explicacao: "Termo usado no contexto do conteúdo para explicar melhor uma estratégia, processo ou indicador citado."
   };
 }
 
@@ -869,10 +1092,19 @@ function openGlossarioPopup(trigger) {
   popup.className = "glossario-popup-card";
   popup.setAttribute("role", "dialog");
   popup.setAttribute("aria-live", "polite");
-  popup.innerHTML = `
-    <strong>${entry.termo}</strong>
-    <p>${entry.definicao}</p>
-  `;
+
+  const title = document.createElement("strong");
+  title.textContent = entry.termo;
+
+  const subtitle = document.createElement("small");
+  subtitle.textContent = entry.significado || "";
+
+  const description = document.createElement("p");
+  description.textContent = entry.explicacao || "";
+
+  popup.appendChild(title);
+  if (subtitle.textContent) popup.appendChild(subtitle);
+  popup.appendChild(description);
 
   document.body.appendChild(popup);
   trigger.setAttribute("aria-expanded", "true");
@@ -918,34 +1150,3 @@ if (document.readyState === "loading") {
 } else {
   initGlossarioPopups();
 }
-
-document.addEventListener("sectionsLoaded", initGlossarioPopups);
-
-function capitalizeArticleListItems() {
-  document.querySelectorAll(".blog-article-page .blog-section li").forEach((item) => {
-    const walker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT);
-    let node = walker.nextNode();
-
-    while (node && !node.nodeValue.trim()) {
-      node = walker.nextNode();
-    }
-
-    if (!node) return;
-
-    node.nodeValue = node.nodeValue.replace(/^(\s*)([a-záàâãéêíóôõúç])/, (match, space, letter) => {
-      return space + letter.toUpperCase();
-    });
-  });
-}
-
-function initBlogArticleFormatting() {
-  capitalizeArticleListItems();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initBlogArticleFormatting);
-} else {
-  initBlogArticleFormatting();
-}
-
-document.addEventListener("sectionsLoaded", initBlogArticleFormatting);
