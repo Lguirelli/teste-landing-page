@@ -761,7 +761,63 @@ const GLOSSARIO_EDITORIAL = {
   "Social search": {
     categoria: "Conteúdo",
     definicao: "Uso das redes sociais como ambiente de busca, onde pessoas pesquisam temas, marcas, produtos e recomendações."
-  }
+  },
+  "IA": {
+    categoria: "Estratégia",
+    definicao: "Uso de sistemas capazes de interpretar dados, linguagem e contexto para apoiar tarefas, respostas e decisões."
+  },
+  "Handoff humano": {
+    categoria: "Estratégia",
+    definicao: "Passagem da automação para uma pessoa da equipe quando a conversa precisa de contexto, julgamento ou cuidado direto."
+  },
+  "Fluxo de atendimento": {
+    categoria: "Estratégia",
+    definicao: "Sequência de etapas que organiza entrada, resposta, encaminhamento, registro e acompanhamento de uma solicitação."
+  },
+  "Triagem": {
+    categoria: "Estratégia",
+    definicao: "Separação inicial dos contatos por intenção, urgência ou tipo de necessidade para direcionar cada caso ao melhor caminho."
+  },
+  "Métrica de vaidade": {
+    categoria: "Estratégia",
+    definicao: "Indicador que chama atenção, mas não mostra sozinho se a estratégia gerou resultado real para o negócio."
+  },
+  "Prova social": {
+    categoria: "Estratégia",
+    definicao: "Uso de evidências, casos, avaliações ou depoimentos para reduzir insegurança e aumentar confiança na decisão."
+  },
+  "Microcopy": {
+    categoria: "Estratégia",
+    definicao: "Pequenos textos de interface, como botões, avisos e mensagens de formulário, que ajudam a orientar a ação do usuário."
+  },
+  "UX": {
+    categoria: "Estratégia",
+    definicao: "Experiência do usuário ao navegar, entender, decidir e executar uma ação em um site, aplicativo ou atendimento digital."
+  },
+  "Jornada": {
+    categoria: "Estratégia",
+    definicao: "Caminho percorrido por uma pessoa entre perceber uma necessidade, buscar opções, avaliar uma solução e tomar uma decisão."
+  },
+  "Público-alvo": {
+    categoria: "Estratégia",
+    definicao: "Grupo de pessoas que a comunicação, oferta ou solução precisa atingir com mais clareza."
+  },
+  "Tom de voz": {
+    categoria: "Estratégia",
+    definicao: "Forma como a marca se expressa para criar reconhecimento, confiança e coerência em diferentes canais."
+  },
+  "Calendário editorial": {
+    categoria: "Estratégia",
+    definicao: "Organização de temas, formatos, datas e objetivos para publicar conteúdo com direção e continuidade."
+  },
+  "Trend": {
+    categoria: "Estratégia",
+    definicao: "Formato, assunto ou comportamento que ganha força nas redes e pode ser usado com critério dentro de uma estratégia de conteúdo."
+  },
+  "Dados": {
+    categoria: "Estratégia",
+    definicao: "Informações registradas sobre comportamento, operação ou resultado que ajudam a enxergar padrões e tomar decisões melhores."
+  },
 };
 
 function getGlossarioEntry(term) {
