@@ -3535,11 +3535,10 @@ details p {
 }
 
 /* =========================
-   PATCH HERO FINAL
-   - texto realmente sobre a imagem
-   - imagem com melhor qualidade
-   - pato um pouco menor no desktop
-   - fundo geral do index no tom mais escuro da imagem
+   PATCH HERO SEM RECOMPRESSAO
+   - usa a imagem original sem recomprimir
+   - texto sobre a imagem
+   - pato levemente menor
 ========================= */
 
 body.home-page {
@@ -3583,12 +3582,13 @@ body.home-page .hero-bg-media {
 
 body.home-page .hero-bg-media img {
   display: block !important;
-  width: min(92vw, 1900px) !important;
+  width: min(88vw, 1720px) !important;
   max-width: none !important;
   height: auto !important;
   margin: 0 auto !important;
   object-fit: contain !important;
   object-position: center top !important;
+  image-rendering: auto !important;
   opacity: 1 !important;
   filter: none !important;
   transform: none !important;
@@ -3604,7 +3604,7 @@ body.home-page .hero-bg-text-shade {
     90deg,
     rgba(2, 9, 19, .96) 0%,
     rgba(2, 9, 19, .91) 34%,
-    rgba(2, 9, 19, .66) 66%,
+    rgba(2, 9, 19, .64) 66%,
     rgba(2, 9, 19, 0) 100%
   ) !important;
 }
