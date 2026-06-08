@@ -3484,3 +3484,52 @@ details p {
     align-items: center;
   }
 }
+
+
+/* PATCH BLOG ARTIGO: ajustes de glossário, CTA e listas */
+.glossario-popup-card small {
+  display: none !important;
+}
+
+.blog-article-page .blog-cta {
+  text-align: center;
+}
+
+.blog-article-page .blog-cta p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-article-page .blog-cta-link {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blog-article-page .blog-section ul,
+.blog-article-page .blog-section ol {
+  width: fit-content;
+  max-width: min(720px, 100%);
+  margin: 20px auto 30px;
+  padding-left: 1.15em;
+  text-align: left;
+  list-style-position: outside;
+}
+
+.blog-article-page .blog-section li {
+  padding-left: .35em;
+  text-align: left;
+}
+
+.blog-article-page .blog-section li::first-letter {
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .blog-article-page .blog-section ul,
+  .blog-article-page .blog-section ol {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1.2em;
+  }
+}

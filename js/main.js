@@ -815,7 +815,6 @@ function openGlossarioPopup(trigger) {
   popup.setAttribute("aria-live", "polite");
   popup.innerHTML = `
     <strong>${entry.termo}</strong>
-    <small>${entry.categoria}</small>
     <p>${entry.definicao}</p>
   `;
 
@@ -865,3 +864,32 @@ if (document.readyState === "loading") {
 }
 
 document.addEventListener("sectionsLoaded", initGlossarioPopups);
+
+function capitalizeArticleListItems() {
+  document.querySelectorAll(".blog-article-page .blog-section li").forEach((item) => {
+    const walker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+
+    while (node && !node.nodeValue.trim()) {
+      node = walker.nextNode();
+    }
+
+    if (!node) return;
+
+    node.nodeValue = node.nodeValue.replace(/^(\s*)([a-záàâãéêíóôõúç])/, (match, space, letter) => {
+      return space + letter.toUpperCase();
+    });
+  });
+}
+
+function initBlogArticleFormatting() {
+  capitalizeArticleListItems();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initBlogArticleFormatting);
+} else {
+  initBlogArticleFormatting();
+}
+
+document.addEventListener("sectionsLoaded", initBlogArticleFormatting);
