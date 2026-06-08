@@ -688,3 +688,180 @@ if (document.readyState === "loading") {
 }
 
 document.addEventListener("sectionsLoaded", initBlogRepositoryPage);
+
+const GLOSSARIO_EDITORIAL = {
+  "AEO": {
+    categoria: "Busca e IA",
+    definicao: "Otimização para mecanismos de resposta. Ajuda o conteúdo a ser entendido e citado por buscadores e ferramentas de IA."
+  },
+  "Automação": {
+    categoria: "Operação",
+    definicao: "Uso de regras, fluxos e sistemas para executar tarefas repetitivas com menos esforço manual."
+  },
+  "CRM": {
+    categoria: "Vendas",
+    definicao: "Sistema que organiza contatos, histórico, oportunidades e etapas do relacionamento com clientes."
+  },
+  "CTA": {
+    categoria: "Conversão",
+    definicao: "Chamada para ação. É o convite que orienta o próximo passo do visitante, como solicitar contato, pedir diagnóstico ou acessar uma página."
+  },
+  "Dashboard": {
+    categoria: "Dados",
+    definicao: "Painel visual que reúne indicadores importantes para acompanhar desempenho e apoiar decisões."
+  },
+  "Funil": {
+    categoria: "Marketing e vendas",
+    definicao: "Representação das etapas que uma pessoa percorre entre descobrir uma solução, avaliar opções e tomar uma decisão."
+  },
+  "Integração": {
+    categoria: "Tecnologia",
+    definicao: "Conexão entre ferramentas para que dados, mensagens ou ações circulem sem depender de cópia manual."
+  },
+  "Jornada de compra": {
+    categoria: "Estratégia",
+    definicao: "Caminho percorrido pelo cliente desde a percepção do problema até a escolha da solução."
+  },
+  "Landing page": {
+    categoria: "Conversão",
+    definicao: "Página criada para uma ação específica, como gerar leads, pedidos de orçamento, agendamentos ou vendas."
+  },
+  "Lead": {
+    categoria: "Comercial",
+    definicao: "Pessoa ou empresa que demonstrou interesse e pode se tornar cliente."
+  },
+  "LGPD": {
+    categoria: "Privacidade",
+    definicao: "Lei Geral de Proteção de Dados. Define regras para coleta, uso, armazenamento e tratamento de dados pessoais no Brasil."
+  },
+  "Métrica": {
+    categoria: "Dados",
+    definicao: "Número usado para acompanhar desempenho, como cliques, conversões, tempo de resposta ou taxa de abandono."
+  },
+  "No-code": {
+    categoria: "Automação",
+    definicao: "Criação de páginas, sistemas ou automações usando ferramentas visuais, com pouco ou nenhum código."
+  },
+  "Omnicanalidade": {
+    categoria: "Atendimento",
+    definicao: "Integração entre canais para manter contexto e continuidade no relacionamento com o cliente."
+  },
+  "Posicionamento": {
+    categoria: "Marca",
+    definicao: "Forma como a empresa quer ser percebida no mercado, deixando claro para quem fala, o que oferece e por que é relevante."
+  },
+  "ROI": {
+    categoria: "Dados",
+    definicao: "Retorno sobre investimento. Ajuda a comparar o ganho gerado com o valor investido em uma ação."
+  },
+  "SEO": {
+    categoria: "Busca",
+    definicao: "Otimização para mecanismos de busca. Organiza conteúdo, estrutura e experiência para melhorar a presença em pesquisas."
+  },
+  "Social search": {
+    categoria: "Conteúdo",
+    definicao: "Uso das redes sociais como ambiente de busca, onde pessoas pesquisam temas, marcas, produtos e recomendações."
+  }
+};
+
+function getGlossarioEntry(term) {
+  if (!term) return null;
+  const normalized = term.trim().toLowerCase();
+  const key = Object.keys(GLOSSARIO_EDITORIAL).find((item) => item.toLowerCase() === normalized);
+  return key ? { termo: key, ...GLOSSARIO_EDITORIAL[key] } : {
+    termo: term,
+    categoria: "Glossário",
+    definicao: "Termo usado no contexto do artigo para explicar melhor a estratégia, o processo ou o indicador citado."
+  };
+}
+
+function closeGlossarioPopup() {
+  document.querySelectorAll(".glossario-termo[aria-expanded='true']").forEach((button) => {
+    button.setAttribute("aria-expanded", "false");
+  });
+
+  document.querySelectorAll(".glossario-popup-card").forEach((popup) => popup.remove());
+}
+
+function positionGlossarioPopup(popup, trigger) {
+  const rect = trigger.getBoundingClientRect();
+  const margin = 12;
+
+  popup.style.left = "0px";
+  popup.style.top = "0px";
+
+  const popupRect = popup.getBoundingClientRect();
+  const maxLeft = window.innerWidth - popupRect.width - margin;
+  const left = Math.max(margin, Math.min(rect.left, maxLeft));
+  let top = rect.bottom + margin;
+
+  if (top + popupRect.height > window.innerHeight - margin) {
+    top = Math.max(margin, rect.top - popupRect.height - margin);
+  }
+
+  popup.style.left = `${left}px`;
+  popup.style.top = `${top}px`;
+}
+
+function openGlossarioPopup(trigger) {
+  const term = trigger.dataset.glossarioTermo || trigger.textContent;
+  const entry = getGlossarioEntry(term);
+
+  closeGlossarioPopup();
+
+  const popup = document.createElement("div");
+  popup.className = "glossario-popup-card";
+  popup.setAttribute("role", "dialog");
+  popup.setAttribute("aria-live", "polite");
+  popup.innerHTML = `
+    <strong>${entry.termo}</strong>
+    <small>${entry.categoria}</small>
+    <p>${entry.definicao}</p>
+  `;
+
+  document.body.appendChild(popup);
+  trigger.setAttribute("aria-expanded", "true");
+  positionGlossarioPopup(popup, trigger);
+}
+
+function initGlossarioPopups() {
+  if (window.__glossarioPopupsReady) return;
+  window.__glossarioPopupsReady = true;
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest(".glossario-termo");
+
+    if (!trigger) {
+      if (!event.target.closest(".glossario-popup-card")) {
+        closeGlossarioPopup();
+      }
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const isOpen = trigger.getAttribute("aria-expanded") === "true";
+
+    if (isOpen) {
+      closeGlossarioPopup();
+    } else {
+      openGlossarioPopup(trigger);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeGlossarioPopup();
+  });
+
+  window.addEventListener("resize", closeGlossarioPopup, { passive: true });
+  window.addEventListener("scroll", closeGlossarioPopup, { passive: true });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGlossarioPopups);
+} else {
+  initGlossarioPopups();
+}
+
+document.addEventListener("sectionsLoaded", initGlossarioPopups);
