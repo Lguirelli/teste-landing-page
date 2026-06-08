@@ -1,7 +1,12 @@
-<section class="hero" data-copy-section="hero">
-  <div class="hero-bg-media" aria-hidden="true">
+<section class="hero hero-with-bg" data-copy-section="hero">
+  <picture class="hero-bg-media" aria-hidden="true">
+    <source media="(max-width: 980px)" type="image/webp" srcset="assets/images/hero-mobile-bg.webp">
+    <source media="(max-width: 980px)" srcset="assets/images/hero-mobile-bg.jpg">
+    <source type="image/webp" srcset="assets/images/hero-desktop-bg.webp">
     <img src="assets/images/hero-desktop-bg.jpg" alt="" loading="eager" decoding="async" fetchpriority="high">
-  </div>
+  </picture>
+
+  <div class="hero-bg-text-shade" aria-hidden="true"></div>
 
   <div class="container grid-2 hero-grid hero-grid-copy-left">
     <div class="hero-copy">
