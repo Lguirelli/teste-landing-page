@@ -6,7 +6,8 @@ const HEADER_LINKS = [
   { href: "servicos/agentes-ia.html", label: "Agentes de automação" },
   { href: "servicos/conteudo-personalizado.html", label: "Conteúdo" },
   { href: "servicos/dashboards-pmes.html", label: "Dashboards" },
-  { href: "servicos/estrategia-marketing.html", label: "Estratégia de Marketing" }
+  { href: "servicos/estrategia-marketing.html", label: "Estratégia de Marketing" },
+  { href: "blog.html", label: "Blog" }
 ];
 
 function closeHeaderMenu() {

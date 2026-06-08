@@ -1,0 +1,338 @@
+[
+  {
+    "prioridade": "Alta",
+    "termo": "IA",
+    "significado": "Inteligência Artificial",
+    "explicacao": "Tecnologia capaz de interpretar informações, identificar padrões e apoiar tarefas que antes dependiam de trabalho manual."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Agente de IA",
+    "significado": "IA configurada para uma função específica",
+    "explicacao": "Diferente de uma IA genérica, o agente é preparado para executar uma tarefa dentro do negócio."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Chatbot",
+    "significado": "Sistema de conversa automatizada",
+    "explicacao": "Pode funcionar com respostas prontas, botões, fluxos fixos ou IA. Nem todo chatbot é um agente de IA."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Automação",
+    "significado": "Uso de tecnologia para executar tarefas repetitivas",
+    "explicacao": "Automatizar significa reduzir ações manuais em processos que seguem um padrão."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Fluxo de atendimento",
+    "significado": "Caminho que a conversa segue",
+    "explicacao": "É a sequência de etapas desde o primeiro contato até a finalização ou encaminhamento."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Lead",
+    "significado": "Pessoa que demonstrou interesse",
+    "explicacao": "É alguém que ainda não virou cliente, mas abriu uma oportunidade de conversa."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Lead qualificado",
+    "significado": "Contato com maior potencial comercial",
+    "explicacao": "É um lead com informações suficientes para avaliar se existe uma boa oportunidade."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Qualificação de leads",
+    "significado": "Processo de avaliar um contato",
+    "explicacao": "Consiste em fazer perguntas para entender perfil, necessidade e momento de compra."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Funil de vendas",
+    "significado": "Etapas até a compra",
+    "explicacao": "Mostra o caminho que uma pessoa percorre desde o primeiro contato até a decisão."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Jornada do cliente",
+    "significado": "Caminho completo da pessoa com a marca",
+    "explicacao": "Inclui descoberta, dúvidas, comparação, decisão, compra e relacionamento."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "CTA",
+    "significado": "Call to Action",
+    "explicacao": "É o convite direto para a pessoa realizar uma ação, como clicar em um botão ou chamar no WhatsApp."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Copywriting",
+    "significado": "Escrita com intenção comercial",
+    "explicacao": "Texto pensado para conduzir a pessoa a uma ação com clareza, argumento e contexto."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Conversão",
+    "significado": "Ação esperada realizada",
+    "explicacao": "Acontece quando a pessoa faz aquilo que a página, campanha ou atendimento queria gerar."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Taxa de conversão",
+    "significado": "Porcentagem de pessoas que converteram",
+    "explicacao": "Mede quantas pessoas realizaram a ação desejada em relação ao total de visitantes."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "SEO",
+    "significado": "Search Engine Optimization",
+    "explicacao": "Conjunto de ajustes feitos em páginas e conteúdos para melhorar a chance de aparecer em buscadores como Google."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "AEO",
+    "significado": "Answer Engine Optimization",
+    "explicacao": "Organização de conteúdo para mecanismos de resposta e IAs entenderem melhor uma informação."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "FAQ",
+    "significado": "Frequently Asked Questions",
+    "explicacao": "Seção de perguntas frequentes com respostas diretas para dúvidas comuns do público."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Briefing",
+    "significado": "Coleta inicial de informações",
+    "explicacao": "Reúne dados sobre negócio, público, objetivo, problema e preferências antes de criar uma solução."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Persona",
+    "significado": "Representação de um cliente ideal",
+    "explicacao": "Descreve dores, dúvidas, objetivos e comportamento de um tipo de cliente."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Público-alvo",
+    "significado": "Grupo de pessoas que a empresa quer alcançar",
+    "explicacao": "É uma definição mais ampla de quem pode se interessar pelo serviço."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Posicionamento",
+    "significado": "Forma como a marca quer ser percebida",
+    "explicacao": "Define o lugar que a empresa ocupa na mente do público em comparação com outras opções."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Branding",
+    "significado": "Construção estratégica da marca",
+    "explicacao": "Envolve identidade, percepção, tom de voz, posicionamento e reconhecimento."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Identidade visual",
+    "significado": "Elementos visuais da marca",
+    "explicacao": "Cores, fontes, logotipo, ícones, imagens e estilo gráfico que representam uma marca."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Tom de voz",
+    "significado": "Forma como a marca se comunica",
+    "explicacao": "Define se a comunicação será mais técnica, simples, próxima, formal ou consultiva."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Landing page",
+    "significado": "Página criada para uma ação principal",
+    "explicacao": "Página focada em gerar contatos, vendas, inscrições ou pedidos de orçamento."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Página de conversão",
+    "significado": "Página pensada para transformar visitantes em oportunidades",
+    "explicacao": "É uma forma mais clara de explicar landing page para público leigo."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Dashboard",
+    "significado": "Painel visual de dados",
+    "explicacao": "Reúne informações importantes em gráficos, tabelas e indicadores."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "KPI",
+    "significado": "Key Performance Indicator",
+    "explicacao": "Indicador-chave de desempenho usado para medir um resultado relevante."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Métrica",
+    "significado": "Dado que pode ser medido",
+    "explicacao": "Qualquer número acompanhado em uma ação ou processo."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Ticket médio",
+    "significado": "Valor médio gasto por cliente",
+    "explicacao": "Mostra quanto cada cliente compra ou contrata, em média."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "ROI",
+    "significado": "Return on Investment",
+    "explicacao": "Retorno sobre investimento. Mostra se o valor investido gerou retorno financeiro."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "CPL",
+    "significado": "Custo por Lead",
+    "explicacao": "Valor médio gasto para gerar um contato interessado."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "CRM",
+    "significado": "Customer Relationship Management",
+    "explicacao": "Ferramenta ou processo para organizar contatos, histórico de conversas e oportunidades."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "API",
+    "significado": "Forma de conectar sistemas diferentes",
+    "explicacao": "Permite que ferramentas troquem informações entre si automaticamente."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Integração",
+    "significado": "Conexão entre ferramentas",
+    "explicacao": "Quando sistemas passam a funcionar juntos sem copiar dados manualmente."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Webhook",
+    "significado": "Envio automático de informação entre ferramentas",
+    "explicacao": "Recurso que aciona uma automação quando algo acontece em uma ferramenta."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "WhatsApp Business API",
+    "significado": "Versão do WhatsApp para integrações empresariais",
+    "explicacao": "Permite conectar WhatsApp a sistemas, automações e atendimentos em maior volume."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Formulário funcional",
+    "significado": "Formulário que coleta e envia dados de verdade",
+    "explicacao": "Não é apenas visual. Ele envia informações para e-mail, planilha, CRM ou automação."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Banco de dados",
+    "significado": "Local organizado para armazenar informações",
+    "explicacao": "Guarda dados como contatos, pedidos, mensagens e registros."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "No-code",
+    "significado": "Criação sem escrever código manualmente",
+    "explicacao": "Usa ferramentas visuais e conectores prontos para criar soluções digitais."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Low-code",
+    "significado": "Criação com pouco código",
+    "explicacao": "Combina ferramentas visuais com pequenas personalizações técnicas."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "n8n",
+    "significado": "Ferramenta de automação",
+    "explicacao": "Plataforma usada para conectar aplicativos e criar fluxos automáticos."
+  },
+  {
+    "prioridade": "Baixa",
+    "termo": "Google Sheets",
+    "significado": "Planilha online do Google",
+    "explicacao": "Pode ser usada para registrar dados de leads, pedidos, atendimentos e relatórios."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "CMS",
+    "significado": "Content Management System",
+    "explicacao": "Sistema para criar, editar e gerenciar conteúdos em um site."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Hospedagem",
+    "significado": "Serviço que mantém o site online",
+    "explicacao": "É onde os arquivos do site ficam para que as pessoas consigam acessar pela internet."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Domínio",
+    "significado": "Endereço do site",
+    "explicacao": "É o nome usado para acessar uma página na internet."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Responsivo",
+    "significado": "Site que se adapta a diferentes telas",
+    "explicacao": "Funciona bem em celular, tablet e computador."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "UX",
+    "significado": "User Experience",
+    "explicacao": "Experiência do usuário ao usar uma página, sistema ou atendimento."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "UI",
+    "significado": "User Interface",
+    "explicacao": "Parte visual e interativa de uma solução, como botões, menus, cores e telas."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "LGPD",
+    "significado": "Lei Geral de Proteção de Dados",
+    "explicacao": "Lei brasileira que define regras para coleta, uso e proteção de dados pessoais."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Dados pessoais",
+    "significado": "Informações que identificam uma pessoa",
+    "explicacao": "Nome, telefone, e-mail, CPF, endereço ou histórico de atendimento."
+  },
+  {
+    "prioridade": "Alta",
+    "termo": "Handoff humano",
+    "significado": "Transferência para atendimento humano",
+    "explicacao": "Momento em que a automação passa a conversa para uma pessoa da equipe."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "SLA",
+    "significado": "Service Level Agreement",
+    "explicacao": "Acordo de prazo ou nível de atendimento esperado para uma entrega, resposta ou suporte."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Suporte",
+    "significado": "Acompanhamento para dúvidas e correções",
+    "explicacao": "Ajuda após a entrega para resolver problemas ou orientar ajustes."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "Manutenção",
+    "significado": "Ajustes após a entrega inicial",
+    "explicacao": "Correções, atualizações e melhorias feitas com o tempo."
+  },
+  {
+    "prioridade": "Média",
+    "termo": "MVP",
+    "significado": "Minimum Viable Product",
+    "explicacao": "Primeira versão funcional de uma solução criada para validar uma ideia antes de evoluir."
+  }
+]
