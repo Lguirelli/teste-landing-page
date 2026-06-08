@@ -2763,11 +2763,11 @@ details p {
 
 /* BLOG COMO REPOSITÓRIO VISUAL DE TÍTULOS */
 .blog-repository-hero {
-  background: #030303;
-  color: #fff;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   padding: 0;
-  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid var(--line);
 }
 
 .blog-repository-shell {
@@ -2775,12 +2775,12 @@ details p {
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  border-left: 1px solid rgba(255,255,255,.07);
-  border-right: 1px solid rgba(255,255,255,.07);
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
   background:
-    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px) 0 0 / 33.333% 100%,
-    linear-gradient(180deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 100% 320px,
-    #030303;
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px) 0 0 / 33.333% 100%,
+    linear-gradient(180deg, rgba(255,255,255,.045) 1px, transparent 1px) 0 0 / 100% 320px,
+    var(--bg);
 }
 
 .blog-repository-topbar {
@@ -2788,7 +2788,7 @@ details p {
   justify-content: space-between;
   gap: 24px;
   padding: 38px 56px 0;
-  color: rgba(255,255,255,.78);
+  color: var(--muted);
   font-size: .78rem;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -2804,7 +2804,7 @@ details p {
 }
 
 .blog-repository-back {
-  color: var(--secondary, #00e6e6);
+  color: var(--accent);
   font-size: clamp(2rem, 4vw, 4.5rem);
   line-height: .85;
   text-decoration: none;
@@ -2812,18 +2812,20 @@ details p {
 }
 
 .blog-repository-title-block .section-kicker {
-  color: var(--secondary, #00e6e6);
+  color: var(--accent);
   margin-bottom: 18px;
 }
 
 .blog-repository-title-block h1 {
   margin: 0;
   max-width: 880px;
+  color: var(--text);
+  font-family: inherit;
   font-size: clamp(4rem, 11vw, 10rem);
   line-height: .78;
   letter-spacing: -.08em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .blog-repository-title-block h1::after {
@@ -2835,7 +2837,7 @@ details p {
 .blog-repository-title-block p {
   width: min(560px, 100%);
   margin: 28px 0 0;
-  color: rgba(255,255,255,.62);
+  color: var(--muted);
   font-size: clamp(1rem, 1.4vw, 1.25rem);
   line-height: 1.5;
 }
@@ -2848,9 +2850,9 @@ details p {
 }
 
 .blog-repository-filter button {
-  border: 1px solid rgba(255,255,255,.14);
+  border: 1px solid var(--line);
   background: rgba(255,255,255,.03);
-  color: rgba(255,255,255,.7);
+  color: var(--muted);
   border-radius: 999px;
   padding: 10px 14px;
   font: inherit;
@@ -2862,23 +2864,23 @@ details p {
 .blog-repository-filter button:hover,
 .blog-repository-filter button:focus-visible,
 .blog-repository-filter button.is-active {
-  color: #fff;
-  border-color: var(--secondary, #00e6e6);
-  background: rgba(0,230,230,.09);
+  color: var(--text);
+  border-color: var(--accent);
+  background: rgba(255,216,77,.08);
   outline: none;
 }
 
 .blog-repository-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid var(--line);
 }
 
 .blog-repository-card {
-  min-height: 320px;
-  border-right: 1px solid rgba(255,255,255,.08);
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.035);
+  min-height: 300px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,.025);
 }
 
 .blog-repository-card:nth-child(3n) {
@@ -2894,65 +2896,44 @@ details p {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 320px;
-  padding: 38px 42px 32px;
+  min-height: 300px;
+  padding: 42px 42px 32px;
   border: 0;
   background: transparent;
-  color: #fff;
+  color: var(--text);
+  font-family: inherit;
   text-align: left;
   cursor: pointer;
   overflow: hidden;
 }
 
-.blog-repository-card-button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 80% 16%, rgba(0,230,230,.14), transparent 35%);
-  opacity: 0;
-  transition: opacity .25s ease;
-}
-
-.blog-repository-card-button:hover::before,
-.blog-repository-card-button:focus-visible::before {
-  opacity: 1;
-}
-
 .blog-repository-card-button:focus-visible {
-  outline: 1px solid var(--secondary, #00e6e6);
+  outline: 1px solid var(--accent);
   outline-offset: -1px;
 }
 
-.blog-repository-number {
-  color: rgba(255,255,255,.82);
-  font-size: 1.12rem;
-  letter-spacing: .02em;
-}
-
-.blog-repository-arrow {
-  position: absolute;
-  top: 36px;
-  right: 34px;
-  color: var(--secondary, #00e6e6);
-  font-size: 1.1rem;
-}
-
+.blog-repository-number,
+.blog-repository-arrow,
 .blog-repository-category {
-  margin-top: auto;
-  color: rgba(255,255,255,.36);
-  font-size: .68rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  display: none;
 }
 
 .blog-repository-card strong {
   display: block;
-  max-width: 340px;
-  margin-top: 12px;
+  max-width: 360px;
+  margin: auto 0 0;
+  color: var(--accent);
+  font-family: inherit;
   font-size: clamp(1.45rem, 2.4vw, 2.45rem);
   line-height: .98;
   letter-spacing: -.045em;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color .2s ease;
+}
+
+.blog-repository-card-button:hover strong,
+.blog-repository-card-button:focus-visible strong {
+  color: var(--text);
 }
 
 .blog-repository-card small {
@@ -2962,23 +2943,29 @@ details p {
   overflow: hidden;
   max-width: 360px;
   margin-top: 18px;
-  color: rgba(255,255,255,.42);
+  color: var(--muted);
   font-size: .8rem;
   line-height: 1.45;
 }
 
 .blog-repository-card em {
   margin-top: 18px;
-  color: rgba(255,255,255,.45);
+  color: var(--muted);
   font-size: .68rem;
   font-style: normal;
   letter-spacing: .12em;
   text-transform: uppercase;
+  transition: color .2s ease;
+}
+
+.blog-repository-card-button:hover em,
+.blog-repository-card-button:focus-visible em {
+  color: var(--text);
 }
 
 .blog-article-drawer {
-  background: #030303;
-  color: #fff;
+  background: var(--bg);
+  color: var(--text);
   padding-top: 96px;
 }
 
