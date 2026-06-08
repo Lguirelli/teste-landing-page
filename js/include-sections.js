@@ -1,52 +1,72 @@
-async function includeSections() {
-  const targets = document.querySelectorAll("[data-section]");
-  const root = document.body?.dataset.root || "";
+(function () {
+  const sectionCache = new Map();
+
+  function getRootPrefix() {
+    return document.body?.dataset.root || "";
+  }
 
   function resolveSectionPath(path) {
     if (!path) return "";
-    if (path.startsWith("http") || path.startsWith("/")) return path;
+    if (/^(https?:)?\/\//.test(path) || path.startsWith("/")) return path;
 
-    const normalizedPath = path.replace(/^\.\//, "");
-    const normalizedRoot = root.replace(/\/$/, "");
+    const root = getRootPrefix().replace(/\/$/, "");
+    const cleanPath = path.replace(/^\.\//, "");
 
-    if (!normalizedRoot) return normalizedPath;
-    if (normalizedPath.startsWith(`${normalizedRoot}/`)) return normalizedPath;
-    if (normalizedPath.startsWith("../") || normalizedPath.startsWith("./")) return normalizedPath;
+    if (!root) return cleanPath;
+    if (cleanPath.startsWith("../") || cleanPath.startsWith(`${root}/`)) return cleanPath;
 
-    return `${normalizedRoot}/${normalizedPath}`;
+    return `${root}/${cleanPath}`;
   }
 
-  await Promise.all([...targets].map(async (target) => {
-    const path = target.getAttribute("data-section");
+  async function fetchSection(path) {
     const fetchPath = resolveSectionPath(path);
 
+    if (!fetchPath) return "";
+    if (sectionCache.has(fetchPath)) return sectionCache.get(fetchPath);
+
+    const request = fetch(fetchPath, { cache: "force-cache" })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Erro ao carregar ${fetchPath}`);
+        return response.text();
+      });
+
+    sectionCache.set(fetchPath, request);
+    return request;
+  }
+
+  async function loadSection(target) {
+    const sectionPath = target.dataset.section;
+
+    if (!sectionPath || target.dataset.sectionLoaded === "true") return;
+
+    target.setAttribute("aria-busy", "true");
+
     try {
-      const response = await fetch(fetchPath, { cache: "no-store" });
-
-      if (!response.ok) {
-        throw new Error(`Erro ao carregar ${fetchPath}`);
-      }
-
-      const html = await response.text();
-      target.innerHTML = html.replaceAll("{{root}}", root);
+      const html = await fetchSection(sectionPath);
+      target.innerHTML = html.replaceAll("{{root}}", getRootPrefix());
+      target.dataset.sectionLoaded = "true";
+      target.removeAttribute("data-section-error");
     } catch (error) {
-      target.innerHTML = `
-        <section class="section">
-          <div class="container">
-            <div class="card">
-              <strong>Seção não carregada:</strong> ${path}
-            </div>
-          </div>
-        </section>
-      `;
-
+      target.dataset.sectionError = "true";
       console.error(error);
+    } finally {
+      target.removeAttribute("aria-busy");
     }
-  }));
+  }
 
-  document.dispatchEvent(new CustomEvent("sectionsLoaded", {
-    detail: { total: targets.length }
-  }));
-}
+  async function includeSections() {
+    const targets = [...document.querySelectorAll("[data-section]")];
 
-includeSections();
+    await Promise.all(targets.map(loadSection));
+
+    document.dispatchEvent(new CustomEvent("sectionsLoaded", {
+      detail: { total: targets.length }
+    }));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", includeSections, { once: true });
+  } else {
+    includeSections();
+  }
+})();
