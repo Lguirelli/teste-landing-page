@@ -3765,3 +3765,244 @@ body.home-page .hero.hero-with-bg .hero-copy .btn-row {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   PATCH SUBPÁGINAS EM TEXTO CORRIDO + FUNDO GLOBAL ESCURO
+   - aplica a cor escura da hero em todas as páginas
+   - remove fundos alternados das seções
+   - transforma páginas de serviço em leitura corrida, sem cards/boxes
+========================= */
+
+:root {
+  --bg: #020913;
+}
+
+html,
+body {
+  background: #020913 !important;
+}
+
+body {
+  background: #020913 !important;
+}
+
+main,
+#main,
+[data-section],
+.section,
+.section:nth-of-type(even),
+.service-page-hero,
+.blog-section,
+.blog-complete-section,
+.blog-lab-intro,
+.blog-repository-section,
+.blog-article-page .blog-section {
+  background: transparent !important;
+}
+
+/* mantém o fundo das páginas consistente com a área escura da hero */
+body:not(.home-page) {
+  background: #020913 !important;
+}
+
+body:not(.home-page)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 216, 77, .035), transparent 30%),
+    radial-gradient(circle at 86% 10%, rgba(217, 249, 157, .025), transparent 32%),
+    #020913;
+}
+
+/* páginas de serviço: texto corrido */
+.service-page-hero {
+  padding: clamp(72px, 8vw, 104px) 0 clamp(36px, 5vw, 64px) !important;
+}
+
+.service-page-hero .container,
+.service-page-grid {
+  width: min(100% - 32px, 920px) !important;
+  max-width: 920px !important;
+}
+
+.service-page-grid {
+  display: block !important;
+}
+
+.service-page-content {
+  display: block !important;
+  width: 100% !important;
+}
+
+.service-page-content,
+.service-page-content *,
+.service-page-hero .container,
+.service-page-hero .container * {
+  text-align: left !important;
+}
+
+.service-page-hero .section-kicker,
+.service-page-hero .hero-title,
+.service-page-hero .hero-lead,
+.service-page-content p,
+.service-page-content ul,
+.service-page-content ol,
+.service-page-content li {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.service-page-hero .hero-title {
+  max-width: 880px !important;
+}
+
+.service-page-hero .hero-lead {
+  max-width: 760px !important;
+}
+
+.service-page-content .card,
+.service-page-content .card-soft {
+  display: block !important;
+  margin: 0 0 clamp(36px, 5vw, 56px) !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.service-page-content .card:hover,
+.service-page-content .card-soft:hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.service-page-content h2 {
+  margin: 0 0 18px !important;
+  max-width: 820px !important;
+  font-size: clamp(28px, 4vw, 46px) !important;
+  line-height: 1.04 !important;
+}
+
+.service-page-content h3 {
+  margin: 0 0 8px !important;
+  font-size: clamp(20px, 2vw, 26px) !important;
+  line-height: 1.16 !important;
+}
+
+.service-page-content p {
+  max-width: 760px !important;
+  margin: 0 0 18px !important;
+  color: rgba(245, 247, 251, .78) !important;
+  font-size: clamp(17px, 1.7vw, 20px) !important;
+  line-height: 1.72 !important;
+}
+
+.service-feature-grid {
+  display: block !important;
+  margin: 20px 0 0 !important;
+}
+
+.service-feature-grid > div {
+  margin: 0 0 24px !important;
+  padding: 0 0 0 18px !important;
+  border: 0 !important;
+  border-left: 2px solid rgba(255, 216, 77, .32) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.service-feature-grid > div:last-child {
+  margin-bottom: 0 !important;
+}
+
+.service-feature-grid p {
+  max-width: 720px !important;
+  margin: 0 !important;
+  font-size: clamp(16px, 1.4vw, 18px) !important;
+  line-height: 1.65 !important;
+}
+
+.service-list {
+  display: block !important;
+  max-width: 760px !important;
+  margin: 18px 0 0 !important;
+  padding-left: 1.25rem !important;
+  list-style: disc !important;
+}
+
+.service-list li {
+  display: list-item !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: rgba(245, 247, 251, .82) !important;
+  font-weight: 500 !important;
+  line-height: 1.65 !important;
+  text-align: left !important;
+}
+
+.service-list li::before {
+  display: none !important;
+  content: none !important;
+}
+
+.service-sidebar {
+  position: static !important;
+  width: 100% !important;
+  margin-top: clamp(32px, 5vw, 56px) !important;
+}
+
+.service-sidebar .card,
+.service-sidebar .card-soft {
+  max-width: 760px !important;
+  padding: clamp(22px, 3vw, 32px) 0 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, .12) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.service-sidebar h3,
+.service-sidebar p,
+.service-sidebar .btn-row,
+.service-sidebar .microcopy {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.service-sidebar p {
+  max-width: 640px !important;
+}
+
+/* remove fundos sólidos de blocos comuns quando aparecerem dentro das páginas */
+.service-page-content details,
+.service-page-content summary,
+.service-page-content .final-cta-box {
+  background: transparent !important;
+}
+
+@media (max-width: 760px) {
+  .service-page-hero .container,
+  .service-page-grid {
+    width: min(100% - 28px, 920px) !important;
+  }
+
+  .service-page-content h2 {
+    font-size: clamp(26px, 8vw, 36px) !important;
+  }
+
+  .service-page-content p {
+    font-size: 17px !important;
+    line-height: 1.68 !important;
+  }
+}
