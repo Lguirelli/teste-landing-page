@@ -2891,7 +2891,7 @@ details p {
   display: none;
 }
 
-.blog-repository-card-button {
+.blog-repository-card-link {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -2903,11 +2903,12 @@ details p {
   color: var(--text);
   font-family: inherit;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   overflow: hidden;
 }
 
-.blog-repository-card-button:focus-visible {
+.blog-repository-card-link:focus-visible {
   outline: 1px solid var(--accent);
   outline-offset: -1px;
 }
@@ -2922,7 +2923,7 @@ details p {
   display: block;
   max-width: 360px;
   margin: auto 0 0;
-  color: var(--accent);
+  color: var(--text);
   font-family: inherit;
   font-size: clamp(1.45rem, 2.4vw, 2.45rem);
   line-height: .98;
@@ -2931,9 +2932,9 @@ details p {
   transition: color .2s ease;
 }
 
-.blog-repository-card-button:hover strong,
-.blog-repository-card-button:focus-visible strong {
-  color: var(--text);
+.blog-repository-card-link:hover strong,
+.blog-repository-card-link:focus-visible strong {
+  color: var(--accent);
 }
 
 .blog-repository-card small {
@@ -2958,9 +2959,9 @@ details p {
   transition: color .2s ease;
 }
 
-.blog-repository-card-button:hover em,
-.blog-repository-card-button:focus-visible em {
-  color: var(--text);
+.blog-repository-card-link:hover em,
+.blog-repository-card-link:focus-visible em {
+  color: var(--accent);
 }
 
 .blog-article-drawer {
@@ -3019,7 +3020,7 @@ details p {
   }
 
   .blog-repository-card,
-  .blog-repository-card-button {
+  .blog-repository-card-link {
     min-height: 280px;
   }
 
@@ -3029,7 +3030,142 @@ details p {
     border-right: 0;
   }
 
-  .blog-repository-card-button {
+  .blog-repository-card-link {
     padding: 30px 24px 26px;
+  }
+}
+
+
+/* Blog em páginas próprias */
+.blog-repository-page,
+.blog-article-page {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.blog-repository-card-link,
+.blog-repository-card-link:visited {
+  color: inherit;
+}
+
+.blog-repository-card-link::before,
+.blog-repository-card-link::after {
+  display: none;
+  content: none;
+}
+
+.blog-repository-card:hover {
+  background: rgba(255, 255, 255, .035);
+}
+
+.blog-article-page-hero {
+  padding: 128px 0 0;
+}
+
+.blog-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.blog-back-link::before {
+  content: "←";
+}
+
+.blog-article-page-container {
+  max-width: 900px;
+}
+
+.blog-article-page .blog-article {
+  display: block;
+}
+
+.blog-article-page .blog-header {
+  margin-bottom: 36px;
+}
+
+.blog-article-page .blog-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  line-height: .94;
+  letter-spacing: -.06em;
+}
+
+.blog-article-page .blog-lead {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.6;
+}
+
+.blog-article-page .blog-section {
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+
+.blog-article-page .blog-section h2 {
+  margin: 0 0 16px;
+  color: var(--text);
+  font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+
+.blog-article-page .blog-section p,
+.blog-article-page .blog-section li {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.blog-article-page .blog-section a {
+  color: var(--accent);
+}
+
+
+/* PATCH BLOG: remove o hero grande da página de blog e mantém apenas os filtros */
+.blog-repository-hero--filters-only {
+  min-height: auto;
+  padding: calc(var(--header-h, 88px) + 20px) 0 40px;
+}
+
+.blog-repository-hero--filters-only .blog-repository-shell {
+  padding-top: 0;
+}
+
+.blog-repository-hero--filters-only .blog-repository-filter {
+  margin: 0 0 28px;
+  justify-content: center;
+}
+
+.blog-repository-hero--filters-only .blog-repository-grid {
+  margin-top: 0;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 720px) {
+  .blog-repository-hero--filters-only {
+    padding-top: calc(var(--header-h, 72px) + 16px);
+  }
+
+  .blog-repository-hero--filters-only .blog-repository-filter {
+    justify-content: flex-start;
   }
 }

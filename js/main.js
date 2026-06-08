@@ -634,11 +634,10 @@ document.addEventListener("sectionsLoaded", () => {
 
 
 function setBlogFilter(category) {
-  const articles = [...document.querySelectorAll("[data-blog-article]")];
   const cards = [...document.querySelectorAll("[data-blog-card]")];
   const buttons = [...document.querySelectorAll("[data-blog-filter]")];
 
-  if (!articles.length && !cards.length) return;
+  if (!cards.length) return;
 
   const normalizedCategory = category || "all";
 
@@ -646,37 +645,13 @@ function setBlogFilter(category) {
     button.classList.toggle("is-active", button.dataset.blogFilter === normalizedCategory);
   });
 
-  [...articles, ...cards].forEach((item) => {
+  cards.forEach((item) => {
     const shouldShow = normalizedCategory === "all" || item.dataset.blogCategory === normalizedCategory;
     item.hidden = !shouldShow;
   });
-
-  const target = document.querySelector("#blog");
-  if (target) {
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 }
 
-function openBlogArticle(articleId) {
-  const article = document.querySelector(`[data-blog-id="${articleId}"]`);
-  if (!article) return;
-
-  const body = article.querySelector(".blog-complete-body");
-  const button = article.querySelector("[data-blog-toggle]");
-
-  if (!body || !button) return;
-
-  article.hidden = false;
-  body.hidden = false;
-  article.classList.add("is-open");
-  button.setAttribute("aria-expanded", "true");
-
-  window.setTimeout(() => {
-    article.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, 120);
-}
-
-function initSingleBlogPage() {
+function initBlogRepositoryPage() {
   const blogList = document.querySelector("[data-blog-list]");
   if (!blogList || blogList.dataset.ready === "true") return;
 
@@ -684,52 +659,32 @@ function initSingleBlogPage() {
 
   document.addEventListener("click", (event) => {
     const filterButton = event.target.closest("[data-blog-filter]");
-    const openButton = event.target.closest("[data-blog-open]");
-    const toggleButton = event.target.closest("[data-blog-toggle]");
 
     if (filterButton) {
       event.preventDefault();
       setBlogFilter(filterButton.dataset.blogFilter || "all");
     }
-
-    if (openButton) {
-      event.preventDefault();
-      openBlogArticle(openButton.dataset.blogOpen);
-    }
-
-    if (toggleButton) {
-      const articleId = toggleButton.dataset.blogToggle;
-      const article = document.querySelector(`[data-blog-id="${articleId}"]`);
-      const body = article?.querySelector(".blog-complete-body");
-
-      if (!article || !body) return;
-
-      const willOpen = body.hidden;
-      body.hidden = !willOpen;
-      article.classList.toggle("is-open", willOpen);
-      toggleButton.setAttribute("aria-expanded", String(willOpen));
-    }
   });
 
   const hash = decodeURIComponent(window.location.hash.replace("#", ""));
-  const categoryFromHash = ["atendimento", "conversao", "automacao", "dados", "conteudo"].includes(hash) ? hash : "";
   const map = {
     atendimento: "Atendimento",
     conversao: "Conversão",
     automacao: "Automação",
     dados: "Dados",
-    conteudo: "Conteúdo"
+    conteudo: "Conteúdo",
+    tendencias: "Tendências"
   };
 
-  if (map[categoryFromHash]) {
-    window.setTimeout(() => setBlogFilter(map[categoryFromHash]), 300);
+  if (map[hash]) {
+    window.setTimeout(() => setBlogFilter(map[hash]), 300);
   }
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initSingleBlogPage);
+  document.addEventListener("DOMContentLoaded", initBlogRepositoryPage);
 } else {
-  initSingleBlogPage();
+  initBlogRepositoryPage();
 }
 
-document.addEventListener("sectionsLoaded", initSingleBlogPage);
+document.addEventListener("sectionsLoaded", initBlogRepositoryPage);
