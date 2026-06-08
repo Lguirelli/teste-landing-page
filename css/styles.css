@@ -3449,3 +3449,38 @@ details p {
     border-radius: 20px;
   }
 }
+
+/* PATCH BLOG ARTIGO: alinhamento do voltar e tag do pilar */
+.blog-article-page .blog-article-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  min-height: 34px;
+}
+
+.blog-article-page .blog-back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.blog-article-page .blog-article-pillar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin: 0;
+  line-height: 1;
+}
+
+@media (max-width: 700px) {
+  .blog-article-page .blog-article-topbar {
+    align-items: center;
+  }
+}
