@@ -2161,6 +2161,7 @@ details p {
   background: rgba(255, 209, 0, .08);
   transform: translateY(-2px);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .45);
 }
 
 .blog-topic-strip {
@@ -2235,6 +2236,7 @@ details p {
   border-color: rgba(255, 209, 0, .48);
   background: rgba(255, 255, 255, .075);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .35);
 }
 
 .blog-card .service-category {
@@ -2386,6 +2388,11 @@ details p {
   text-decoration: underline;
   outline: none;
 }
+.blog-back-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
 
 @media (max-width: 1020px) {
   .blog-topic-strip {
@@ -2433,6 +2440,9 @@ details p {
   outline: none;
   background: rgba(138, 180, 255, .16);
   text-decoration-style: solid;
+}
+.glossario-termo:focus-visible {
+  box-shadow: 0 0 0 2px rgba(138, 180, 255, .65);
 }
 .glossario-popup-card {
   position: fixed;
@@ -2588,6 +2598,11 @@ details p {
   padding-left: 10px;
   outline: none;
 }
+.blog-index-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
 
 .blog-index-more {
   margin-top: 12px;
@@ -2644,6 +2659,9 @@ details p {
   color: #fff;
   background: rgba(255,209,0,.11);
   outline: none;
+}
+.blog-filter-bar button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .4);
 }
 
 .blog-complete-list {
@@ -2868,6 +2886,9 @@ details p {
   border-color: var(--accent);
   background: rgba(255,216,77,.08);
   outline: none;
+}
+.blog-repository-filter button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .4);
 }
 
 .blog-repository-grid {
@@ -3410,6 +3431,7 @@ details p {
   border-color: var(--accent);
   color: var(--text);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .4);
 }
 
 .blog-article-page .glossario-termo {
@@ -3848,4 +3870,57 @@ body.home-page .hero.hero-with-bg .hero-copy .btn-row {
   .blog-article-page .blog-section ol {
     max-width: 100% !important;
   }
+}
+
+
+/* ─── Foco acessível global ───────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(255, 216, 77, .25);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+  box-shadow: 0 0 0 3px rgba(255, 216, 77, .2);
+}
+
+/* ─── Movimento reduzido ──────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Skip link ──────────────────────────────────────────────────────────── */
+.skip-link.sr-only:focus {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 9999;
+  padding: 10px 18px;
+  background: var(--accent);
+  color: #0b0d12;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  clip: auto !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  white-space: nowrap;
 }

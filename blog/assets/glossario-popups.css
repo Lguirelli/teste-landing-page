@@ -21,6 +21,9 @@
   background: rgba(138, 180, 255, .16);
   text-decoration-style: solid;
 }
+.glossario-termo:focus-visible {
+  box-shadow: 0 0 0 2px rgba(138, 180, 255, .65);
+}
 .glossario-popup-card {
   position: fixed;
   z-index: 9999;
