@@ -7,6 +7,7 @@ const HEADER_LINKS = [
   { href: "servicos/conteudo-personalizado.html", label: "Conteúdo" },
   { href: "servicos/dashboards-pmes.html", label: "Dashboards" },
   { href: "servicos/estrategia-marketing.html", label: "Estratégia de Marketing" },
+  { href: "servicos/sistema-operacional-completo.html", label: "Sistema completo" },
   { href: "blog.html", label: "Blog" }
 ];
 
