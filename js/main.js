@@ -200,10 +200,8 @@ function adjustDesktopHeaderNav(sections = getHeaderLinks()) {
 function initHeaderNav() {
   renderHeaderNav();
 
-  const header = document.querySelector(".site-header .header-inner");
-  if (!header || window.__headerNavResponsiveReady) return;
-
-  window.__headerNavResponsiveReady = true;
+  if (window.__headerNavListenersReady) return;
+  window.__headerNavListenersReady = true;
 
   window.addEventListener("resize", () => {
     window.clearTimeout(window.__headerNavResizeTimer);
@@ -211,8 +209,12 @@ function initHeaderNav() {
   }, { passive: true });
 
   if (window.ResizeObserver) {
-    const observer = new ResizeObserver(renderHeaderNav);
-    observer.observe(header);
+    const header = document.querySelector(".site-header .header-inner");
+
+    if (header) {
+      const observer = new ResizeObserver(renderHeaderNav);
+      observer.observe(header);
+    }
   }
 }
 
@@ -246,46 +248,55 @@ function initSmoothScroll() {
 
 function initServicesCarousel() {
   const carousel = document.querySelector("[data-services-carousel]");
+
   if (!carousel) return;
 
   const slides = [...carousel.querySelectorAll(".service-slide")];
-  if (!slides.length) return;
+  const slideCount = slides.length;
+
+  if (!slideCount) return;
 
   const previousState = carousel.__servicesCarouselState;
-  if (previousState) previousState.destroy();
 
-  const autoplayDelay = 2400;
-  let currentIndex = Number(carousel.dataset.currentIndex || 0);
-  let autoplayId = null;
-  let pulseTimeoutId = null;
-
-  if (!Number.isInteger(currentIndex) || currentIndex < 0 || currentIndex >= slides.length) {
-    currentIndex = 0;
+  if (previousState?.slideCount === slideCount) {
+    previousState.update();
+    return;
   }
 
-  function getRelativePosition(index) {
-    const total = slides.length;
-    let position = index - currentIndex;
+  if (previousState) {
+    previousState.destroy();
+  }
 
-    if (position > total / 2) position -= total;
-    if (position < -total / 2) position += total;
+  let currentIndex = previousState?.currentIndex || 0;
+  let autoplayId = null;
+  let pulseTimeoutId = null;
+  const autoplayDelay = 2800;
+
+  currentIndex = ((currentIndex % slideCount) + slideCount) % slideCount;
+
+  const normalizeIndex = (index) => ((index % slideCount) + slideCount) % slideCount;
+
+  function getRelativePosition(index) {
+    let position = index - currentIndex;
+    const half = slideCount / 2;
+
+    if (position > half) position -= slideCount;
+    if (position < -half) position += slideCount;
 
     return position;
   }
 
   function setButtonStyle(slide, isActive) {
     const button = slide.querySelector(".btn");
+
     if (!button) return;
 
     button.classList.toggle("btn-accent", isActive);
     button.classList.toggle("btn-secondary", !isActive);
+    button.tabIndex = isActive ? 0 : -1;
   }
 
-  function updateCarousel() {
-    carousel.dataset.currentIndex = String(currentIndex);
-    carousel.dataset.carouselInitialized = "true";
-    carousel.dataset.carouselSlideCount = String(slides.length);
-
+  function update() {
     slides.forEach((slide, index) => {
       const position = getRelativePosition(index);
       const isActive = position === 0;
@@ -300,6 +311,8 @@ function initServicesCarousel() {
         "is-neon-pulse"
       );
 
+      slide.dataset.carouselIndex = String(index);
+      slide.setAttribute("aria-hidden", String(!isActive));
       setButtonStyle(slide, isActive);
 
       if (isActive) {
@@ -308,7 +321,7 @@ function initServicesCarousel() {
         slide.classList.add("is-prev");
       } else if (position === 1) {
         slide.classList.add("is-next");
-      } else if (position < -1) {
+      } else if (position < 0) {
         slide.classList.add("is-hidden-left");
       } else {
         slide.classList.add("is-hidden-right");
@@ -319,19 +332,9 @@ function initServicesCarousel() {
     pulseTimeoutId = window.setTimeout(() => {
       slides.forEach((slide) => slide.classList.remove("is-neon-pulse"));
     }, 840);
-  }
 
-  function goToSlide(index) {
-    if (index < 0 || index >= slides.length || index === currentIndex) return;
-
-    currentIndex = index;
-    updateCarousel();
-    startAutoplay();
-  }
-
-  function moveCarousel(direction = 1) {
-    currentIndex = (currentIndex + direction + slides.length) % slides.length;
-    updateCarousel();
+    carousel.__servicesCarouselState.currentIndex = currentIndex;
+    carousel.__servicesCarouselState.pulseTimeoutId = pulseTimeoutId;
   }
 
   function stopAutoplay() {
@@ -341,31 +344,59 @@ function initServicesCarousel() {
 
   function startAutoplay() {
     stopAutoplay();
-    autoplayId = window.setInterval(() => moveCarousel(1), autoplayDelay);
+    autoplayId = window.setInterval(() => goToSlide(currentIndex + 1, false), autoplayDelay);
+    carousel.__servicesCarouselState.autoplayId = autoplayId;
+  }
+
+  function goToSlide(index, restartAutoplay = true) {
+    currentIndex = normalizeIndex(index);
+    update();
+
+    if (restartAutoplay) startAutoplay();
   }
 
   function handleCarouselClick(event) {
     const slide = event.target.closest(".service-slide");
+
     if (!slide || !carousel.contains(slide)) return;
 
-    const index = slides.indexOf(slide);
-    if (index < 0 || index === currentIndex) return;
+    const clickedIndex = slides.indexOf(slide);
+
+    if (clickedIndex < 0 || clickedIndex === currentIndex) return;
 
     event.preventDefault();
-    goToSlide(index);
+    goToSlide(clickedIndex);
   }
 
-  carousel.addEventListener("click", handleCarouselClick);
-  carousel.addEventListener("mouseenter", stopAutoplay);
-  carousel.addEventListener("mouseleave", startAutoplay);
-  carousel.addEventListener("focusin", stopAutoplay);
-  carousel.addEventListener("focusout", startAutoplay);
+  function handleKeydown(event) {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goToSlide(currentIndex - 1);
+    }
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goToSlide(currentIndex + 1);
+    }
+  }
+
+  carousel.dataset.carouselInitialized = "true";
+  carousel.dataset.carouselSlideCount = String(slideCount);
+  carousel.setAttribute("role", "region");
+  carousel.setAttribute("aria-label", "Carrossel de serviços");
+  carousel.tabIndex = 0;
 
   carousel.__servicesCarouselState = {
+    slideCount,
+    currentIndex,
+    autoplayId,
+    pulseTimeoutId,
+    update,
     destroy() {
       stopAutoplay();
       window.clearTimeout(pulseTimeoutId);
       carousel.removeEventListener("click", handleCarouselClick);
+      carousel.removeEventListener("keydown", handleKeydown);
       carousel.removeEventListener("mouseenter", stopAutoplay);
       carousel.removeEventListener("mouseleave", startAutoplay);
       carousel.removeEventListener("focusin", stopAutoplay);
@@ -373,7 +404,14 @@ function initServicesCarousel() {
     }
   };
 
-  updateCarousel();
+  carousel.addEventListener("click", handleCarouselClick);
+  carousel.addEventListener("keydown", handleKeydown);
+  carousel.addEventListener("mouseenter", stopAutoplay);
+  carousel.addEventListener("mouseleave", startAutoplay);
+  carousel.addEventListener("focusin", stopAutoplay);
+  carousel.addEventListener("focusout", startAutoplay);
+
+  update();
   startAutoplay();
 }
 

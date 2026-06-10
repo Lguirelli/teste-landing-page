@@ -600,6 +600,7 @@ details:hover {
   min-height: 430px;
   overflow: visible;
   perspective: 1200px;
+  isolation: isolate;
 }
 
 .service-slide {
