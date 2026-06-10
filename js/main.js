@@ -255,7 +255,12 @@ function initServicesCarousel() {
 
   if (!slides.length) return;
 
-  let currentIndex = 0;
+  const featuredServiceIndex = slides.findIndex((slide) => {
+    return slide.dataset.serviceKey === "sistema-operacional-completo" ||
+      Boolean(slide.querySelector('a[href*="sistema-operacional-completo"]'));
+  });
+
+  let currentIndex = featuredServiceIndex >= 0 ? featuredServiceIndex : 0;
   let autoplayId = null;
   let pulseTimeoutId = null;
   const autoplayDelay = 2400;
