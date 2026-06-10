@@ -1725,28 +1725,6 @@ details p {
   visibility: visible !important;
 }
 
-.services-carousel {
-  isolation: isolate;
-}
-
-.service-slide.is-prev,
-.service-slide.is-next {
-  pointer-events: auto !important;
-  cursor: pointer !important;
-}
-
-.service-slide.is-active {
-  border-color: rgba(255, 216, 77, .95) !important;
-  box-shadow:
-    0 0 0 1px rgba(255, 216, 77, .42),
-    0 0 18px rgba(255, 216, 77, .42),
-    0 0 44px rgba(255, 216, 77, .18),
-    var(--shadow) !important;
-}
-
-.service-slide.is-active.is-neon-pulse {
-  animation: serviceNeonPulse .82s ease both !important;
-}
 
 /* =========================
    AJUSTE HEADER DESKTOP - MAIS COMO ITEM DAS SEÇÕES

@@ -200,18 +200,19 @@ function adjustDesktopHeaderNav(sections = getHeaderLinks()) {
 function initHeaderNav() {
   renderHeaderNav();
 
+  const header = document.querySelector(".site-header .header-inner");
+  if (!header || window.__headerNavResponsiveReady) return;
+
+  window.__headerNavResponsiveReady = true;
+
   window.addEventListener("resize", () => {
     window.clearTimeout(window.__headerNavResizeTimer);
     window.__headerNavResizeTimer = window.setTimeout(renderHeaderNav, 120);
   }, { passive: true });
 
   if (window.ResizeObserver) {
-    const header = document.querySelector(".site-header .header-inner");
-
-    if (header) {
-      const observer = new ResizeObserver(renderHeaderNav);
-      observer.observe(header);
-    }
+    const observer = new ResizeObserver(renderHeaderNav);
+    observer.observe(header);
   }
 }
 
@@ -245,47 +246,49 @@ function initSmoothScroll() {
 
 function initServicesCarousel() {
   const carousel = document.querySelector("[data-services-carousel]");
-
   if (!carousel) return;
 
   const slides = [...carousel.querySelectorAll(".service-slide")];
-
   if (!slides.length) return;
 
-  const existingState = carousel.__servicesCarouselState;
+  const previousState = carousel.__servicesCarouselState;
+  if (previousState) previousState.destroy();
 
-  if (existingState) {
-    window.clearInterval(existingState.autoplayId);
-    window.clearTimeout(existingState.pulseTimeoutId);
-  }
-
-  carousel.dataset.carouselInitialized = "true";
-  carousel.dataset.carouselSlideCount = String(slides.length);
-
-  let currentIndex = 0;
+  const autoplayDelay = 2400;
+  let currentIndex = Number(carousel.dataset.currentIndex || 0);
   let autoplayId = null;
   let pulseTimeoutId = null;
-  const autoplayDelay = 2400;
+
+  if (!Number.isInteger(currentIndex) || currentIndex < 0 || currentIndex >= slides.length) {
+    currentIndex = 0;
+  }
 
   function getRelativePosition(index) {
     const total = slides.length;
     let position = index - currentIndex;
 
-    if (position > total / 2) {
-      position -= total;
-    }
-
-    if (position < -total / 2) {
-      position += total;
-    }
+    if (position > total / 2) position -= total;
+    if (position < -total / 2) position += total;
 
     return position;
   }
 
+  function setButtonStyle(slide, isActive) {
+    const button = slide.querySelector(".btn");
+    if (!button) return;
+
+    button.classList.toggle("btn-accent", isActive);
+    button.classList.toggle("btn-secondary", !isActive);
+  }
+
   function updateCarousel() {
+    carousel.dataset.currentIndex = String(currentIndex);
+    carousel.dataset.carouselInitialized = "true";
+    carousel.dataset.carouselSlideCount = String(slides.length);
+
     slides.forEach((slide, index) => {
       const position = getRelativePosition(index);
-      const button = slide.querySelector(".btn");
+      const isActive = position === 0;
 
       slide.classList.remove(
         "featured",
@@ -297,12 +300,9 @@ function initServicesCarousel() {
         "is-neon-pulse"
       );
 
-      if (button) {
-        button.classList.toggle("btn-accent", position === 0);
-        button.classList.toggle("btn-secondary", position !== 0);
-      }
+      setButtonStyle(slide, isActive);
 
-      if (position === 0) {
+      if (isActive) {
         slide.classList.add("is-active", "is-neon-pulse");
       } else if (position === -1) {
         slide.classList.add("is-prev");
@@ -319,10 +319,14 @@ function initServicesCarousel() {
     pulseTimeoutId = window.setTimeout(() => {
       slides.forEach((slide) => slide.classList.remove("is-neon-pulse"));
     }, 840);
+  }
 
-    if (carousel.__servicesCarouselState) {
-      carousel.__servicesCarouselState.pulseTimeoutId = pulseTimeoutId;
-    }
+  function goToSlide(index) {
+    if (index < 0 || index >= slides.length || index === currentIndex) return;
+
+    currentIndex = index;
+    updateCarousel();
+    startAutoplay();
   }
 
   function moveCarousel(direction = 1) {
@@ -330,44 +334,42 @@ function initServicesCarousel() {
     updateCarousel();
   }
 
-  function startAutoplay() {
+  function stopAutoplay() {
     window.clearInterval(autoplayId);
+    autoplayId = null;
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
     autoplayId = window.setInterval(() => moveCarousel(1), autoplayDelay);
-
-    if (carousel.__servicesCarouselState) {
-      carousel.__servicesCarouselState.autoplayId = autoplayId;
-    }
   }
 
-  function goToSlide(index) {
-    if (index === currentIndex) return;
+  function handleCarouselClick(event) {
+    const slide = event.target.closest(".service-slide");
+    if (!slide || !carousel.contains(slide)) return;
 
-    currentIndex = index;
-    updateCarousel();
-    startAutoplay();
+    const index = slides.indexOf(slide);
+    if (index < 0 || index === currentIndex) return;
+
+    event.preventDefault();
+    goToSlide(index);
   }
 
-  slides.forEach((slide, index) => {
-    if (slide.dataset.carouselClickReady === "true") return;
-
-    slide.dataset.carouselClickReady = "true";
-
-    slide.addEventListener("click", (event) => {
-      const refreshedSlides = [...carousel.querySelectorAll(".service-slide")];
-      const refreshedIndex = refreshedSlides.indexOf(slide);
-
-      if (refreshedIndex < 0 || refreshedIndex === currentIndex) return;
-
-      event.preventDefault();
-      goToSlide(refreshedIndex);
-    });
-  });
+  carousel.addEventListener("click", handleCarouselClick);
+  carousel.addEventListener("mouseenter", stopAutoplay);
+  carousel.addEventListener("mouseleave", startAutoplay);
+  carousel.addEventListener("focusin", stopAutoplay);
+  carousel.addEventListener("focusout", startAutoplay);
 
   carousel.__servicesCarouselState = {
-    autoplayId,
-    pulseTimeoutId,
-    get currentIndex() {
-      return currentIndex;
+    destroy() {
+      stopAutoplay();
+      window.clearTimeout(pulseTimeoutId);
+      carousel.removeEventListener("click", handleCarouselClick);
+      carousel.removeEventListener("mouseenter", stopAutoplay);
+      carousel.removeEventListener("mouseleave", startAutoplay);
+      carousel.removeEventListener("focusin", stopAutoplay);
+      carousel.removeEventListener("focusout", startAutoplay);
     }
   };
 
