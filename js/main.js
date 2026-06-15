@@ -11,6 +11,23 @@ const HEADER_LINKS = [
   { href: "blog.html", label: "Blog" }
 ];
 
+function setHeaderMenuButtonContent(button, mode = "desktop") {
+  if (!button) return;
+
+  if (mode === "mobile") {
+    button.classList.add("is-bubble-toggle");
+    button.innerHTML = `
+      <span class="menu-line" aria-hidden="true"></span>
+      <span class="menu-line short" aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    `;
+    return;
+  }
+
+  button.classList.remove("is-bubble-toggle");
+  button.textContent = "Mais";
+}
+
 function closeHeaderMenu() {
   const button = document.querySelector("[data-header-menu-button]");
   const menu = document.querySelector("[data-header-more-menu]");
@@ -18,7 +35,9 @@ function closeHeaderMenu() {
   if (!button || !menu) return;
 
   button.setAttribute("aria-expanded", "false");
+  button.classList.remove("is-open");
   menu.classList.remove("is-open");
+  document.body.classList.remove("is-menu-open");
 }
 
 function openHeaderMenu() {
@@ -28,7 +47,9 @@ function openHeaderMenu() {
   if (!button || !menu) return;
 
   button.setAttribute("aria-expanded", "true");
+  button.classList.add("is-open");
   menu.classList.add("is-open");
+  document.body.classList.add("is-menu-open");
 }
 
 function toggleHeaderMenu() {
@@ -43,25 +64,39 @@ function toggleHeaderMenu() {
   }
 }
 
-function buildHeaderLink(item) {
+function getHeaderBubbleRotation(index, total) {
+  const rotations = [-7, 5, -3, 6, -5, 4, -6, 3, -4, 5];
+  if (total <= 1) return 0;
+  return rotations[index % rotations.length];
+}
+
+function prepareHeaderBubbleLink(link, index, total) {
+  link.style.setProperty("--bubble-delay", `${Math.min(index * 70, 520)}ms`);
+  link.style.setProperty("--item-rot", `${getHeaderBubbleRotation(index, total)}deg`);
+}
+
+function buildHeaderLink(item, index = 0, total = 1) {
   const root = document.body?.dataset.root || "";
   const link = document.createElement("a");
   link.href = `${root}${item.href}`;
   link.textContent = item.label;
   link.className = "header-nav-link";
+  prepareHeaderBubbleLink(link, index, total);
   return link;
 }
 
-function buildHeaderActionLink(sourceLink) {
+function buildHeaderActionLink(sourceLink, index = 0, total = 1) {
   const link = document.createElement("a");
   link.href = sourceLink.getAttribute("href") || "#";
   link.className = sourceLink.className;
   link.textContent = sourceLink.textContent.trim();
+  prepareHeaderBubbleLink(link, index, total);
   return link;
 }
 
 function ensureHeaderMenuEvents() {
   const button = document.querySelector("[data-header-menu-button]");
+  const menu = document.querySelector("[data-header-more-menu]");
 
   if (!button || button.dataset.menuReady === "true") return;
 
@@ -74,6 +109,13 @@ function ensureHeaderMenuEvents() {
   });
 
   document.addEventListener("click", (event) => {
+    const clickedLink = event.target.closest("[data-header-more-menu] a");
+
+    if (clickedLink) {
+      window.setTimeout(closeHeaderMenu, 80);
+      return;
+    }
+
     if (!event.target.closest("[data-header-more]")) {
       closeHeaderMenu();
     }
@@ -98,8 +140,8 @@ function appendHeaderMoreSections(sections) {
   const sectionGroup = document.createElement("div");
   sectionGroup.className = "header-more-sections";
 
-  sections.forEach((section) => {
-    sectionGroup.appendChild(buildHeaderLink(section));
+  sections.forEach((section, index) => {
+    sectionGroup.appendChild(buildHeaderLink(section, index, sections.length));
   });
 
   moreMenu.appendChild(sectionGroup);
@@ -117,8 +159,8 @@ function appendHeaderMoreActions(actions) {
   const actionGroup = document.createElement("div");
   actionGroup.className = "header-more-actions";
 
-  actionLinks.forEach((link) => {
-    actionGroup.appendChild(buildHeaderActionLink(link));
+  actionLinks.forEach((link, index) => {
+    actionGroup.appendChild(buildHeaderActionLink(link, index + 8, actionLinks.length + 8));
   });
 
   moreMenu.appendChild(actionGroup);
@@ -146,7 +188,7 @@ function renderHeaderNav() {
   closeHeaderMenu();
 
   if (isHeaderMobile) {
-    moreButton.textContent = "☰";
+    setHeaderMenuButtonContent(moreButton, "mobile");
     moreButton.setAttribute("aria-label", "Abrir menu da página");
     appendHeaderMoreSections(sections);
     appendHeaderMoreActions(actions);
@@ -154,11 +196,11 @@ function renderHeaderNav() {
     return;
   }
 
-  moreButton.textContent = "Mais";
+  setHeaderMenuButtonContent(moreButton, "desktop");
   moreButton.setAttribute("aria-label", "Abrir mais seções");
 
-  sections.forEach((section) => {
-    nav.appendChild(buildHeaderLink(section));
+  sections.forEach((section, index) => {
+    nav.appendChild(buildHeaderLink(section, index, sections.length));
   });
 
   adjustDesktopHeaderNav(sections);
