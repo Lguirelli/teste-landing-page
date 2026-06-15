@@ -4159,18 +4159,19 @@ details:hover {
   }
 }
 
+
 .bubble-overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.88);
-  backdrop-filter:blur(12px);
+  background:rgba(0,0,0,.9);
+  backdrop-filter:blur(14px);
   display:flex;
   align-items:center;
   justify-content:center;
   opacity:0;
   pointer-events:none;
   transition:.35s ease;
-  z-index:9999;
+  z-index:99999;
 }
 
 .bubble-overlay.active{
@@ -4178,11 +4179,10 @@ details:hover {
   pointer-events:auto;
 }
 
-.bubble-overlay-inner{
+.bubble-inner{
   display:flex;
   flex-direction:column;
   gap:16px;
-  align-items:center;
 }
 
 .bubble-item{
@@ -4191,8 +4191,9 @@ details:hover {
   background:#111;
   color:#ffd84d;
   font-size:20px;
+  transform:translateY(40px);
+  opacity:0;
   transition:.35s cubic-bezier(.2,.8,.2,1);
-  transform:translateY(30px) scale(.9);
   text-decoration:none;
 }
 
