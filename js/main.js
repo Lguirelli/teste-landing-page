@@ -259,7 +259,7 @@ function initServicesCarousel() {
   const previousState = carousel.__servicesCarouselState;
 
   if (previousState?.slideCount === slideCount) {
-    previousState.update();
+    previousState.refresh();
     return;
   }
 
@@ -267,23 +267,35 @@ function initServicesCarousel() {
     previousState.destroy();
   }
 
-  let currentIndex = previousState?.currentIndex || 0;
-  let autoplayId = null;
-  let pulseTimeoutId = null;
-  const autoplayDelay = 2800;
-
-  currentIndex = ((currentIndex % slideCount) + slideCount) % slideCount;
-
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const normalizeIndex = (index) => ((index % slideCount) + slideCount) % slideCount;
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  const lerp = (start, end, amount) => start + (end - start) * amount;
 
-  function getRelativePosition(index) {
-    let position = index - currentIndex;
-    const half = slideCount / 2;
+  let currentIndex = normalizeIndex(previousState?.currentIndex || 0);
+  let scroll = {
+    current: currentIndex,
+    target: currentIndex,
+    last: currentIndex,
+    ease: prefersReducedMotion ? 1 : 0.075
+  };
+  let rafId = null;
+  let snapTimeoutId = null;
+  let pulseTimeoutId = null;
+  let autoplayId = null;
+  let isPointerDown = false;
+  let startX = 0;
+  let startTarget = 0;
+  let lastPointerX = 0;
+  let lastPointerTime = 0;
+  let velocity = 0;
+  const autoplayDelay = 3600;
 
-    if (position > half) position -= slideCount;
-    if (position < -half) position += slideCount;
-
-    return position;
+  function getItemSpacing() {
+    const carouselRect = carousel.getBoundingClientRect();
+    const activeSlide = slides[currentIndex] || slides[0];
+    const slideWidth = activeSlide.getBoundingClientRect().width || 340;
+    return Math.max(220, Math.min(carouselRect.width * 0.34, slideWidth * 1.08));
   }
 
   function setButtonStyle(slide, isActive) {
@@ -296,45 +308,97 @@ function initServicesCarousel() {
     button.tabIndex = isActive ? 0 : -1;
   }
 
-  function update() {
+  function applySlideState() {
+    const centerIndex = Math.round(scroll.current);
+    const progressFromCenter = scroll.current - centerIndex;
+    const spacing = getItemSpacing();
+    let closestIndex = normalizeIndex(centerIndex);
+    let closestDistance = Infinity;
+
     slides.forEach((slide, index) => {
-      const position = getRelativePosition(index);
-      const isActive = position === 0;
+      let offset = index - scroll.current;
 
-      slide.classList.remove(
-        "featured",
-        "is-active",
-        "is-prev",
-        "is-next",
-        "is-hidden-left",
-        "is-hidden-right",
-        "is-neon-pulse"
-      );
+      if (offset > slideCount / 2) offset -= slideCount;
+      if (offset < -slideCount / 2) offset += slideCount;
 
-      slide.dataset.carouselIndex = String(index);
-      slide.setAttribute("aria-hidden", String(!isActive));
-      setButtonStyle(slide, isActive);
+      const absOffset = Math.abs(offset);
+      const limitedOffset = clamp(offset, -3, 3);
+      const arc = Math.min(absOffset * absOffset * 18, 92);
+      const direction = offset === 0 ? 0 : Math.sign(offset);
+      const depthScale = 1 - Math.min(absOffset * 0.105, 0.32);
+      const opacity = absOffset > 2.9 ? 0 : 1 - Math.min(absOffset * 0.34, 0.82);
+      const blur = Math.min(absOffset * 1.15, 3.2);
+      const rotation = clamp(-limitedOffset * 9, -22, 22);
+      const zIndex = String(20 - Math.round(absOffset * 4));
 
-      if (isActive) {
-        slide.classList.add("is-active", "is-neon-pulse");
-      } else if (position === -1) {
-        slide.classList.add("is-prev");
-      } else if (position === 1) {
-        slide.classList.add("is-next");
-      } else if (position < 0) {
-        slide.classList.add("is-hidden-left");
-      } else {
-        slide.classList.add("is-hidden-right");
+      if (absOffset < closestDistance) {
+        closestDistance = absOffset;
+        closestIndex = index;
       }
+
+      slide.classList.toggle("is-active", absOffset < 0.42);
+      slide.classList.toggle("is-prev", offset < -0.42 && offset > -1.65);
+      slide.classList.toggle("is-next", offset > 0.42 && offset < 1.65);
+      slide.classList.toggle("is-hidden-left", offset <= -1.65);
+      slide.classList.toggle("is-hidden-right", offset >= 1.65);
+      slide.dataset.carouselIndex = String(index);
+      slide.setAttribute("aria-hidden", String(absOffset >= 0.42));
+      slide.style.setProperty("--service-x", `${limitedOffset * spacing}px`);
+      slide.style.setProperty("--service-y", `${arc}px`);
+      slide.style.setProperty("--service-rotate", `${rotation}deg`);
+      slide.style.setProperty("--service-scale", String(depthScale));
+      slide.style.setProperty("--service-opacity", String(opacity));
+      slide.style.setProperty("--service-blur", `${blur}px`);
+      slide.style.setProperty("--service-z", zIndex);
+      slide.style.setProperty("--service-shade", String(Math.min(absOffset * 0.18, 0.42)));
+      slide.style.pointerEvents = absOffset < 2.2 ? "auto" : "none";
+      setButtonStyle(slide, absOffset < 0.42);
     });
 
+    currentIndex = closestIndex;
+    carousel.dataset.activeService = String(currentIndex + 1);
+    carousel.style.setProperty("--gallery-progress", String(progressFromCenter));
+    carousel.__servicesCarouselState.currentIndex = currentIndex;
+  }
+
+  function animate() {
+    scroll.current = lerp(scroll.current, scroll.target, scroll.ease);
+
+    if (Math.abs(scroll.current - scroll.target) < 0.001) {
+      scroll.current = scroll.target;
+    }
+
+    applySlideState();
+    scroll.last = scroll.current;
+    rafId = window.requestAnimationFrame(animate);
+  }
+
+  function pulseActiveSlide() {
+    slides.forEach((slide) => slide.classList.remove("is-neon-pulse"));
+    const activeSlide = slides[currentIndex];
+
+    if (!activeSlide) return;
+
+    activeSlide.classList.add("is-neon-pulse");
     window.clearTimeout(pulseTimeoutId);
     pulseTimeoutId = window.setTimeout(() => {
-      slides.forEach((slide) => slide.classList.remove("is-neon-pulse"));
+      activeSlide.classList.remove("is-neon-pulse");
     }, 840);
+  }
 
-    carousel.__servicesCarouselState.currentIndex = currentIndex;
-    carousel.__servicesCarouselState.pulseTimeoutId = pulseTimeoutId;
+  function goToSlide(index, restartAutoplay = true) {
+    scroll.target = normalizeIndex(index);
+    currentIndex = normalizeIndex(Math.round(scroll.target));
+    pulseActiveSlide();
+
+    if (restartAutoplay) startAutoplay();
+  }
+
+  function scheduleSnap() {
+    window.clearTimeout(snapTimeoutId);
+    snapTimeoutId = window.setTimeout(() => {
+      goToSlide(Math.round(scroll.target));
+    }, 160);
   }
 
   function stopAutoplay() {
@@ -344,15 +408,11 @@ function initServicesCarousel() {
 
   function startAutoplay() {
     stopAutoplay();
+
+    if (prefersReducedMotion) return;
+
     autoplayId = window.setInterval(() => goToSlide(currentIndex + 1, false), autoplayDelay);
     carousel.__servicesCarouselState.autoplayId = autoplayId;
-  }
-
-  function goToSlide(index, restartAutoplay = true) {
-    currentIndex = normalizeIndex(index);
-    update();
-
-    if (restartAutoplay) startAutoplay();
   }
 
   function handleCarouselClick(event) {
@@ -362,10 +422,12 @@ function initServicesCarousel() {
 
     const clickedIndex = slides.indexOf(slide);
 
-    if (clickedIndex < 0 || clickedIndex === currentIndex) return;
+    if (clickedIndex < 0) return;
 
-    event.preventDefault();
-    goToSlide(clickedIndex);
+    if (clickedIndex !== currentIndex) {
+      event.preventDefault();
+      goToSlide(clickedIndex);
+    }
   }
 
   function handleKeydown(event) {
@@ -380,10 +442,64 @@ function initServicesCarousel() {
     }
   }
 
+  function handleWheel(event) {
+    if (Math.abs(event.deltaY) < 1 && Math.abs(event.deltaX) < 1) return;
+
+    event.preventDefault();
+    stopAutoplay();
+    const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    scroll.target += clamp(delta, -120, 120) * 0.006;
+    scheduleSnap();
+  }
+
+  function handlePointerDown(event) {
+    if (event.button !== undefined && event.button !== 0) return;
+
+    isPointerDown = true;
+    startX = event.clientX;
+    lastPointerX = event.clientX;
+    lastPointerTime = performance.now();
+    startTarget = scroll.target;
+    velocity = 0;
+    stopAutoplay();
+    carousel.classList.add("is-dragging");
+    carousel.setPointerCapture?.(event.pointerId);
+  }
+
+  function handlePointerMove(event) {
+    if (!isPointerDown) return;
+
+    const now = performance.now();
+    const dx = event.clientX - startX;
+    const frameDx = event.clientX - lastPointerX;
+    const frameDt = Math.max(now - lastPointerTime, 16);
+    const spacing = getItemSpacing();
+
+    velocity = frameDx / frameDt;
+    scroll.target = startTarget - dx / spacing;
+    lastPointerX = event.clientX;
+    lastPointerTime = now;
+  }
+
+  function handlePointerUp(event) {
+    if (!isPointerDown) return;
+
+    isPointerDown = false;
+    carousel.classList.remove("is-dragging");
+    carousel.releasePointerCapture?.(event.pointerId);
+    scroll.target -= velocity * 4.5;
+    goToSlide(Math.round(scroll.target));
+  }
+
+  function refresh() {
+    applySlideState();
+  }
+
   carousel.dataset.carouselInitialized = "true";
+  carousel.dataset.circularServices = "true";
   carousel.dataset.carouselSlideCount = String(slideCount);
   carousel.setAttribute("role", "region");
-  carousel.setAttribute("aria-label", "Carrossel de serviços");
+  carousel.setAttribute("aria-label", "Carrossel circular de serviços. Use as setas, arraste ou role para navegar.");
   carousel.tabIndex = 0;
 
   carousel.__servicesCarouselState = {
@@ -391,27 +507,44 @@ function initServicesCarousel() {
     currentIndex,
     autoplayId,
     pulseTimeoutId,
-    update,
+    refresh,
+    update: refresh,
     destroy() {
       stopAutoplay();
+      window.cancelAnimationFrame(rafId);
+      window.clearTimeout(snapTimeoutId);
       window.clearTimeout(pulseTimeoutId);
       carousel.removeEventListener("click", handleCarouselClick);
       carousel.removeEventListener("keydown", handleKeydown);
+      carousel.removeEventListener("wheel", handleWheel);
+      carousel.removeEventListener("pointerdown", handlePointerDown);
+      carousel.removeEventListener("pointermove", handlePointerMove);
+      carousel.removeEventListener("pointerup", handlePointerUp);
+      carousel.removeEventListener("pointercancel", handlePointerUp);
       carousel.removeEventListener("mouseenter", stopAutoplay);
       carousel.removeEventListener("mouseleave", startAutoplay);
       carousel.removeEventListener("focusin", stopAutoplay);
       carousel.removeEventListener("focusout", startAutoplay);
+      window.removeEventListener("resize", refresh);
     }
   };
 
   carousel.addEventListener("click", handleCarouselClick);
   carousel.addEventListener("keydown", handleKeydown);
+  carousel.addEventListener("wheel", handleWheel, { passive: false });
+  carousel.addEventListener("pointerdown", handlePointerDown);
+  carousel.addEventListener("pointermove", handlePointerMove);
+  carousel.addEventListener("pointerup", handlePointerUp);
+  carousel.addEventListener("pointercancel", handlePointerUp);
   carousel.addEventListener("mouseenter", stopAutoplay);
   carousel.addEventListener("mouseleave", startAutoplay);
   carousel.addEventListener("focusin", stopAutoplay);
   carousel.addEventListener("focusout", startAutoplay);
+  window.addEventListener("resize", refresh, { passive: true });
 
-  update();
+  applySlideState();
+  pulseActiveSlide();
+  animate();
   startAutoplay();
 }
 
