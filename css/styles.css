@@ -4158,3 +4158,130 @@ details:hover {
     width: 100%;
   }
 }
+
+/* =========================
+   PATCH: EFEITO CIRCULAR NOS CARDS DE SERVIÇO
+   Inspirado no CircularGallery, adaptado para HTML/CSS/JS sem React/ogl.
+========================= */
+
+.services-carousel[data-circular-services="true"] {
+  min-height: 470px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.services-carousel[data-circular-services="true"].is-dragging {
+  cursor: grabbing;
+}
+
+.services-carousel[data-circular-services="true"]::before,
+.services-carousel[data-circular-services="true"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  z-index: 8;
+  width: 18%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.services-carousel[data-circular-services="true"]::before {
+  left: -1px;
+  background: linear-gradient(90deg, var(--bg) 0%, rgba(13, 13, 13, .72) 38%, rgba(13, 13, 13, 0) 100%);
+}
+
+.services-carousel[data-circular-services="true"]::after {
+  right: -1px;
+  background: linear-gradient(270deg, var(--bg) 0%, rgba(13, 13, 13, .72) 38%, rgba(13, 13, 13, 0) 100%);
+}
+
+.services-carousel[data-circular-services="true"] .service-slide {
+  top: 10px;
+  left: 50%;
+  z-index: var(--service-z, 1);
+  opacity: var(--service-opacity, 0);
+  transform:
+    translate3d(calc(-50% + var(--service-x, 0px)), var(--service-y, 0px), 0)
+    scale(var(--service-scale, .86))
+    rotateZ(var(--service-rotate, 0deg));
+  filter: blur(var(--service-blur, 0px)) saturate(calc(1 - var(--service-shade, 0))) brightness(calc(1 - var(--service-shade, 0)));
+  transform-origin: 50% 120%;
+  backface-visibility: hidden;
+  transition:
+    border-color .35s ease,
+    box-shadow .35s ease,
+    background .35s ease,
+    filter .2s ease,
+    opacity .2s ease;
+}
+
+.services-carousel[data-circular-services="true"] .service-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% -18%, rgba(255, 216, 77, .16), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, .045), transparent 34%);
+  opacity: calc(.34 + var(--service-opacity, 0) * .34);
+  mix-blend-mode: screen;
+}
+
+.services-carousel[data-circular-services="true"] .service-slide.is-active {
+  pointer-events: auto;
+  border-color: rgba(255, 216, 77, .86);
+  box-shadow:
+    0 0 0 1px rgba(255, 216, 77, .34),
+    0 18px 44px rgba(0, 0, 0, .38),
+    0 0 36px rgba(255, 216, 77, .14),
+    var(--shadow);
+}
+
+.services-carousel[data-circular-services="true"] .service-slide:not(.is-active) .btn {
+  pointer-events: none;
+}
+
+.services-carousel[data-circular-services="true"] .service-slide.is-prev,
+.services-carousel[data-circular-services="true"] .service-slide.is-next {
+  cursor: pointer;
+}
+
+.services-carousel[data-circular-services="true"] .service-slide h3,
+.services-carousel[data-circular-services="true"] .service-slide p,
+.services-carousel[data-circular-services="true"] .service-slide .btn,
+.services-carousel[data-circular-services="true"] .service-slide .service-category,
+.services-carousel[data-circular-services="true"] .service-slide .service-placeholder-icon {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 980px) {
+  .services-carousel[data-circular-services="true"] {
+    min-height: 450px;
+  }
+
+  .services-carousel[data-circular-services="true"]::before,
+  .services-carousel[data-circular-services="true"]::after {
+    width: 10%;
+  }
+}
+
+@media (max-width: 640px) {
+  .services-carousel[data-circular-services="true"] {
+    min-height: 430px;
+  }
+
+  .services-carousel[data-circular-services="true"]::before,
+  .services-carousel[data-circular-services="true"]::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .services-carousel[data-circular-services="true"] .service-slide {
+    transition: none;
+  }
+}
