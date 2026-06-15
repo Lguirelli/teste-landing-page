@@ -4159,18 +4159,14 @@ details:hover {
   }
 }
 
-
-/* BUBBLE MENU EFFECT */
 .bubble-overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,.88);
+  backdrop-filter:blur(12px);
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:16px;
   opacity:0;
   pointer-events:none;
   transition:.35s ease;
@@ -4182,13 +4178,26 @@ details:hover {
   pointer-events:auto;
 }
 
+.bubble-overlay-inner{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  align-items:center;
+}
+
 .bubble-item{
   padding:14px 28px;
   border-radius:999px;
   background:#111;
   color:#ffd84d;
-  transform:translateY(30px) scale(.9);
-  opacity:0;
-  transition:.35s cubic-bezier(.2,.8,.2,1);
   font-size:20px;
+  transition:.35s cubic-bezier(.2,.8,.2,1);
+  transform:translateY(30px) scale(.9);
+  text-decoration:none;
+}
+
+.bubble-item.cta{
+  background:#ffd84d;
+  color:#111;
+  font-weight:700;
 }
