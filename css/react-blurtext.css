@@ -1,0 +1,46 @@
+/* React BlurText aplicado aos textos da hero */
+
+.react-blur-text-mount {
+  display: contents;
+}
+
+.react-blur-text {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  white-space: normal;
+  row-gap: 0;
+}
+
+.hero-copy .react-blur-text {
+  justify-content: flex-start;
+}
+
+.react-blur-text__segment {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, filter, opacity;
+}
+
+.hero-title .react-blur-text__segment {
+  margin-right: .02em;
+}
+
+.hero-lead .react-blur-text__segment,
+.section-kicker .react-blur-text__segment {
+  margin-right: .04em;
+}
+
+@media (max-width: 980px) {
+  .hero-copy .react-blur-text {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-blur-text__segment {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
