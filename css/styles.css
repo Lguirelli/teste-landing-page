@@ -4493,3 +4493,224 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
     animation: none !important;
   }
 }
+
+
+/* =========================
+   PATCH: PATO SVG COM EFEITO STICKER PEEL
+   Substitui visualmente o modelo 3D da seção Problema por um sticker SVG.
+========================= */
+
+.problem-sticker-wrap {
+  position: relative;
+  width: min(100%, 540px);
+  min-height: clamp(320px, 38vw, 520px);
+  display: grid;
+  place-items: center;
+  justify-self: start;
+  margin-left: 0;
+  transform: translateY(-8%);
+  isolation: isolate;
+}
+
+.sticker-peel-duck {
+  --sticker-p: 10px;
+  --sticker-width: clamp(250px, 30vw, 430px);
+  --sticker-rotate: -7deg;
+  --sticker-peelback-hover: 23%;
+  --sticker-peelback-active: 38%;
+  --sticker-start: calc(-1 * var(--sticker-p));
+  --sticker-end: calc(100% + var(--sticker-p));
+  position: relative;
+  width: var(--sticker-width);
+  cursor: grab;
+  transform: translateZ(0) rotate(var(--sticker-rotate));
+  filter:
+    drop-shadow(0 26px 42px rgba(0, 0, 0, .44))
+    drop-shadow(0 0 28px rgba(255, 216, 77, .12));
+  transition:
+    transform .55s cubic-bezier(.22, 1, .36, 1),
+    filter .55s ease;
+  will-change: transform, filter;
+}
+
+.sticker-peel-duck:active {
+  cursor: grabbing;
+}
+
+.sticker-peel-duck__container {
+  position: relative;
+  width: var(--sticker-width);
+  transform: rotate(0deg);
+  transform-origin: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sticker-peel-duck__main {
+  position: relative;
+  z-index: 2;
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+  transition: clip-path .58s cubic-bezier(.22, 1, .36, 1);
+}
+
+.sticker-peel-duck__image,
+.sticker-peel-duck__flap-image {
+  display: block;
+  width: var(--sticker-width);
+  height: auto;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.sticker-peel-duck__main::before {
+  content: "";
+  position: absolute;
+  inset: 6% 4% 4% 4%;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 38% 45% 42% 40%;
+  background:
+    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, .52), transparent 24%),
+    linear-gradient(135deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 48%);
+  mix-blend-mode: screen;
+  opacity: .38;
+}
+
+.sticker-peel-duck__flap {
+  position: absolute;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: calc(-100% - var(--sticker-p) - var(--sticker-p));
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-start) var(--sticker-start)
+  );
+  transform: scaleY(-1);
+  transform-origin: bottom center;
+  transition:
+    clip-path .58s cubic-bezier(.22, 1, .36, 1),
+    top .58s cubic-bezier(.22, 1, .36, 1);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sticker-peel-duck__flap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .58), rgba(255, 255, 255, .08) 52%, rgba(0, 0, 0, .22)),
+    linear-gradient(90deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, 0) 48%);
+  mix-blend-mode: screen;
+  opacity: .62;
+}
+
+.sticker-peel-duck__flap-image {
+  filter:
+    grayscale(.15)
+    saturate(.82)
+    brightness(1.18)
+    drop-shadow(0 -10px 18px rgba(0, 0, 0, .24));
+}
+
+.sticker-peel-duck::before {
+  content: "";
+  position: absolute;
+  inset: 12% 10% 7% 10%;
+  z-index: -1;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(255, 216, 77, .18), rgba(255, 216, 77, 0) 62%);
+  filter: blur(22px);
+  opacity: .74;
+  transform: translateY(18%);
+  pointer-events: none;
+}
+
+.sticker-peel-duck:hover {
+  transform: translateY(-6px) rotate(calc(var(--sticker-rotate) + 2deg)) scale(1.015);
+  filter:
+    drop-shadow(0 32px 52px rgba(0, 0, 0, .48))
+    drop-shadow(0 0 34px rgba(255, 216, 77, .18));
+}
+
+.sticker-peel-duck:hover .sticker-peel-duck__main {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-peelback-hover),
+    var(--sticker-end) var(--sticker-peelback-hover),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+}
+
+.sticker-peel-duck:hover .sticker-peel-duck__flap {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-peelback-hover),
+    var(--sticker-start) var(--sticker-peelback-hover)
+  );
+  top: calc(-100% + 2 * var(--sticker-peelback-hover) - 1px);
+}
+
+.sticker-peel-duck:active .sticker-peel-duck__main {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-peelback-active),
+    var(--sticker-end) var(--sticker-peelback-active),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+}
+
+.sticker-peel-duck:active .sticker-peel-duck__flap {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-peelback-active),
+    var(--sticker-start) var(--sticker-peelback-active)
+  );
+  top: calc(-100% + 2 * var(--sticker-peelback-active) - 1px);
+}
+
+@media (max-width: 980px) {
+  .problem-sticker-wrap {
+    width: min(100%, 380px);
+    min-height: 340px;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    transform: none;
+  }
+
+  .sticker-peel-duck {
+    --sticker-width: min(74vw, 340px);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .sticker-peel-duck {
+    cursor: default;
+  }
+
+  .sticker-peel-duck__container {
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticker-peel-duck,
+  .sticker-peel-duck__main,
+  .sticker-peel-duck__flap {
+    transition: none !important;
+  }
+}

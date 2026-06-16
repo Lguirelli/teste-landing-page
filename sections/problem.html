@@ -1,4 +1,4 @@
-<section class="section" data-copy-section="problem" data-duck-model-section id="problem">
+<section class="section" data-copy-section="problem" id="problem">
   <div class="container problem-section-inner">
     <span class="section-kicker problem-kicker-centered" data-copy="problem.kicker">Problema</span>
 
@@ -8,8 +8,17 @@
       </div>
 
       <div class="problem-duck-target" aria-hidden="true" role="presentation">
-        <div class="hero-model-wrap problem-model-wrap">
-          <div class="hero-model-stage problem-model-stage" data-model-src="assets/models/duck3d.glb" id="heroModelStage"></div>
+        <div class="problem-sticker-wrap">
+          <div class="sticker-peel-duck" style="--sticker-rotate: -7deg; --sticker-width: clamp(250px, 30vw, 430px); --sticker-peelback-hover: 23%; --sticker-peelback-active: 38%;">
+            <div class="sticker-peel-duck__container">
+              <div class="sticker-peel-duck__main">
+                <img class="sticker-peel-duck__image" src="{{root}}assets/icons/pato.svg" alt="" draggable="false">
+              </div>
+              <div class="sticker-peel-duck__flap">
+                <img class="sticker-peel-duck__flap-image" src="{{root}}assets/icons/pato.svg" alt="" draggable="false">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
