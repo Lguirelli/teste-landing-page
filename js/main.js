@@ -861,6 +861,7 @@ function initDynamicSiteFeatures() {
   initServicesCarousel();
   initHeaderNav();
   initHeroModel();
+  initBlurText();
 }
 
 document.addEventListener("sectionsLoaded", initDynamicSiteFeatures);
@@ -1389,12 +1390,19 @@ if (document.readyState === "loading") {
 
 
 function initBlurText() {
-  const blurTextElements = [...document.querySelectorAll("[data-blur-text]")];
+  const blurTextElements = [...document.querySelectorAll("[data-blur-text], body.home-page .hero-title")];
 
   if (!blurTextElements.length) return;
 
   blurTextElements.forEach((element) => {
     if (element.dataset.blurTextReady === "true") return;
+
+    if (!element.hasAttribute("data-blur-text")) {
+      element.setAttribute("data-blur-text", "");
+      element.dataset.blurBy = element.dataset.blurBy || "words";
+      element.dataset.blurDirection = element.dataset.blurDirection || "top";
+      element.dataset.blurDelay = element.dataset.blurDelay || "105";
+    }
 
     const originalText = element.textContent.trim();
     const animateBy = element.dataset.blurBy || "words";
@@ -1450,3 +1458,8 @@ function initBlurText() {
 window.addEventListener("sections:loaded", initBlurText);
 window.setTimeout(initBlurText, 250);
 window.setTimeout(initBlurText, 800);
+
+
+document.addEventListener("sectionsLoaded", initBlurText);
+window.setTimeout(initBlurText, 1600);
+window.setTimeout(initBlurText, 2600);

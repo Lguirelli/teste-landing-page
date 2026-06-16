@@ -59,7 +59,12 @@
 
     await Promise.all(targets.map(loadSection));
 
-    document.dispatchEvent(new CustomEvent("sectionsLoaded", {
+    const sectionsLoadedEvent = new CustomEvent("sectionsLoaded", {
+      detail: { total: targets.length }
+    });
+
+    document.dispatchEvent(sectionsLoadedEvent);
+    window.dispatchEvent(new CustomEvent("sectionsLoaded", {
       detail: { total: targets.length }
     }));
   }
@@ -71,5 +76,3 @@
   }
 })();
 
-
-window.setTimeout(() => window.dispatchEvent(new CustomEvent("sections:loaded")), 0);
