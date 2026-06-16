@@ -1,0 +1,264 @@
+:root {
+  --sticker-rotate: 30deg;
+  --sticker-p: 10px;
+  --sticker-peelback-hover: 30%;
+  --sticker-peelback-active: 40%;
+  --sticker-peel-easing: power3.out;
+  --sticker-peel-hover-easing: power2.out;
+  --sticker-start: calc(-1 * var(--sticker-p));
+  --sticker-end: calc(100% + var(--sticker-p));
+  --sticker-shadow-opacity: 0.6;
+  --sticker-lighting-constant: 0.1;
+  --peel-direction: 0deg;
+}
+
+#problem .problem-duck-target {
+  position: relative !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  width: 100% !important;
+  display: grid !important;
+  place-items: center start !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+  z-index: 2 !important;
+}
+
+#problem .hero-model-wrap,
+#problem .hero-model-stage,
+#problem .problem-model-wrap,
+#problem .problem-model-stage,
+#problem #heroModelStage,
+#problem canvas {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.problem-sticker-react-root {
+  position: relative !important;
+  width: min(100%, 540px) !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  display: grid !important;
+  place-items: center !important;
+  justify-self: start !important;
+  margin-left: 0 !important;
+  transform: translateY(-8%) !important;
+  isolation: isolate !important;
+  pointer-events: auto !important;
+}
+
+.problem-sticker-react-root .draggable {
+  position: relative;
+  cursor: grab;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  width: var(--sticker-width, 420px);
+  height: var(--sticker-width, 420px);
+  filter:
+    drop-shadow(0 28px 42px rgba(0, 0, 0, calc(var(--sticker-shadow-opacity, .5) * .8)))
+    drop-shadow(0 0 30px rgba(255, 216, 77, .16));
+  transition:
+    filter .35s ease,
+    transform .35s ease;
+}
+
+.problem-sticker-react-root .draggable:active {
+  cursor: grabbing;
+}
+
+.problem-sticker-react-root .sticker-container {
+  position: relative;
+  width: var(--sticker-width, 420px);
+  height: var(--sticker-width, 420px);
+  transform: rotate(var(--peel-direction));
+  transform-origin: center;
+  isolation: isolate;
+}
+
+.problem-sticker-react-root .sticker-container * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.problem-sticker-react-root .sticker-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+  transition: clip-path 0.6s ease-out;
+  filter: url(#dropShadow);
+  will-change: clip-path, transform;
+}
+
+.problem-sticker-react-root .sticker-main > * {
+  transform: rotate(calc(-1 * var(--peel-direction)));
+}
+
+.problem-sticker-react-root .sticker-lighting {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: url(#pointLight);
+}
+
+/* Base branca para o sticker aparecer mesmo quando o SVG tem fundo transparente */
+.problem-sticker-react-root .sticker-lighting::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border-radius: 46% 48% 45% 48%;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .9), rgba(255, 255, 255, .56) 44%, rgba(255, 255, 255, .18) 72%, rgba(255, 255, 255, 0) 100%);
+  opacity: .82;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.problem-sticker-react-root .sticker-image {
+  position: relative;
+  z-index: 1;
+  transform: rotate(var(--sticker-rotate));
+}
+
+.problem-sticker-react-root .sticker-container:hover .sticker-main,
+.problem-sticker-react-root .sticker-container.touch-active .sticker-main {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-peelback-hover),
+    var(--sticker-end) var(--sticker-peelback-hover),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+}
+
+.problem-sticker-react-root .sticker-container:active .sticker-main {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-peelback-active),
+    var(--sticker-end) var(--sticker-peelback-active),
+    var(--sticker-end) var(--sticker-end),
+    var(--sticker-start) var(--sticker-end)
+  );
+}
+
+.problem-sticker-react-root .flap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: calc(-100% - var(--sticker-p) - var(--sticker-p));
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-start) var(--sticker-start)
+  );
+  transform: scaleY(-1);
+  transition: all 0.6s ease-out;
+  will-change: clip-path, transform;
+  pointer-events: none;
+}
+
+.problem-sticker-react-root .flap > * {
+  transform: rotate(calc(-1 * var(--peel-direction)));
+}
+
+.problem-sticker-react-root .sticker-container:hover .flap,
+.problem-sticker-react-root .sticker-container.touch-active .flap {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-peelback-hover),
+    var(--sticker-start) var(--sticker-peelback-hover)
+  );
+  top: calc(-100% + 2 * var(--sticker-peelback-hover) - 1px);
+}
+
+.problem-sticker-react-root .sticker-container:active .flap {
+  clip-path: polygon(
+    var(--sticker-start) var(--sticker-start),
+    var(--sticker-end) var(--sticker-start),
+    var(--sticker-end) var(--sticker-peelback-active),
+    var(--sticker-start) var(--sticker-peelback-active)
+  );
+  top: calc(-100% + 2 * var(--sticker-peelback-active) - 1px);
+}
+
+.problem-sticker-react-root .flap-lighting {
+  width: 100%;
+  height: 100%;
+  filter: url(#pointLightFlipped);
+}
+
+.problem-sticker-react-root .flap-image {
+  transform: rotate(var(--sticker-rotate));
+  filter: url(#expandAndFill);
+}
+
+.problem-sticker-react-root .sticker-image,
+.problem-sticker-react-root .flap-image {
+  width: var(--sticker-width, 200px);
+  height: auto;
+  display: block;
+  max-width: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.problem-sticker-react-root .sticker-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  z-index: 10;
+}
+
+@media (max-width: 980px) {
+  #problem .problem-duck-target {
+    place-items: center !important;
+    min-height: 340px !important;
+    margin-top: 8px !important;
+  }
+
+  .problem-sticker-react-root {
+    width: min(100%, 380px) !important;
+    min-height: 340px !important;
+    justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    transform: none !important;
+  }
+
+  .problem-sticker-react-root .draggable,
+  .problem-sticker-react-root .sticker-container {
+    --sticker-width: min(74vw, 340px) !important;
+    width: var(--sticker-width) !important;
+    height: var(--sticker-width) !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .problem-sticker-react-root .draggable {
+    cursor: default;
+  }
+
+  .problem-sticker-react-root .sticker-container {
+    touch-action: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .problem-sticker-react-root .sticker-main,
+  .problem-sticker-react-root .flap {
+    transition: none !important;
+  }
+}
