@@ -5,19 +5,7 @@
     return document.body?.dataset.root || "";
   }
 
-  function resolveSectionPath(path) {
-    if (!path) return "";
-    if (/^(https?:)?\/\//.test(path) || path.startsWith("/")) return path;
-
-    const root = getRootPrefix().replace(/\/$/, "");
-    const cleanPath = path.replace(/^\.\//, "");
-
-    if (!root) return cleanPath;
-    if (cleanPath.startsWith("../") || cleanPath.startsWith(`${root}/`)) return cleanPath;
-
-    return `${root}/${cleanPath}`;
-  }
-
+  
   async function fetchSection(path) {
     const fetchPath = resolveSectionPath(path);
 
@@ -31,6 +19,7 @@
       });
 
     sectionCache.set(fetchPath, request);
+    request.catch(err => console.warn('Section load failed:', fetchPath, err));
     return request;
   }
 
