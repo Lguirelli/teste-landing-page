@@ -856,82 +856,9 @@ function initHeroModel() {
   }
 }
 
-
-function initPillarHoverSlider() {
-  const sections = [...document.querySelectorAll("[data-pillar-hover]")];
-
-  sections.forEach((section) => {
-    if (section.dataset.pillarHoverReady === "true") return;
-
-    const triggers = [...section.querySelectorAll("[data-pillar-trigger]")];
-    const images = [...section.querySelectorAll("[data-pillar-image]")];
-
-    if (!triggers.length || !images.length) return;
-
-    section.dataset.pillarHoverReady = "true";
-
-    triggers.forEach((trigger) => {
-      const textNode = trigger.querySelector("[data-stagger-text]");
-
-      if (textNode && textNode.dataset.staggerReady !== "true") {
-        const originalText = textNode.textContent.trim();
-        textNode.dataset.staggerReady = "true";
-        textNode.setAttribute("aria-label", originalText);
-        textNode.textContent = "";
-
-        [...originalText].forEach((char, charIndex) => {
-          const wrapper = document.createElement("span");
-          const muted = document.createElement("span");
-          const active = document.createElement("span");
-          const safeChar = char === " " ? "\u00A0" : char;
-
-          wrapper.className = "pillar-hover-char";
-          wrapper.style.setProperty("--pillar-char-delay", `${charIndex * 24}ms`);
-          wrapper.setAttribute("aria-hidden", "true");
-
-          muted.className = "pillar-hover-char-layer is-muted";
-          muted.textContent = safeChar;
-
-          active.className = "pillar-hover-char-layer is-active";
-          active.textContent = safeChar;
-
-          wrapper.appendChild(muted);
-          wrapper.appendChild(active);
-          textNode.appendChild(wrapper);
-        });
-      }
-    });
-
-    function setActive(index) {
-      const activeIndex = Number(index) || 0;
-
-      triggers.forEach((trigger) => {
-        const isActive = Number(trigger.dataset.pillarIndex) === activeIndex;
-        trigger.classList.toggle("is-active", isActive);
-        trigger.setAttribute("aria-selected", String(isActive));
-      });
-
-      images.forEach((image) => {
-        image.classList.toggle("is-active", Number(image.dataset.pillarIndex) === activeIndex);
-      });
-    }
-
-    triggers.forEach((trigger) => {
-      const index = Number(trigger.dataset.pillarIndex) || 0;
-
-      trigger.addEventListener("mouseenter", () => setActive(index));
-      trigger.addEventListener("focus", () => setActive(index));
-      trigger.addEventListener("click", () => setActive(index));
-    });
-
-    setActive(Number(triggers.find((trigger) => trigger.classList.contains("is-active"))?.dataset.pillarIndex) || 0);
-  });
-}
-
 function initDynamicSiteFeatures() {
   initSmoothScroll();
   initServicesCarousel();
-  initPillarHoverSlider();
   initHeaderNav();
   initHeroModel();
   initBlurText();
