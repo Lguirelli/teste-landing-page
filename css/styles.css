@@ -4496,8 +4496,8 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
 
 
 /* =========================
-   PATCH FIX: PROBLEMA COM PATO SVG STICKER VISÍVEL
-   Remove a dependência visual do modelo 3D e cria um sticker com dobra real no canto.
+   PATCH FIX: RENDERIZAÇÃO DO STICKER DO PATO NA SEÇÃO PROBLEMA
+   Renderiza o SVG por <img> e também por background-image como fallback.
 ========================= */
 
 #problem[data-copy-section="problem"] .problem-duck-target {
@@ -4514,164 +4514,150 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
   pointer-events: auto !important;
 }
 
-/* Garante que nenhum canvas/modelo antigo apareça dentro da seção Problema */
-#problem .problem-model-wrap,
-#problem .problem-model-stage,
-#problem #heroModelStage,
-#problem canvas {
+/* Impede que qualquer sobra do renderer 3D volte a aparecer nesta seção */
+#problem[data-copy-section="problem"] .hero-model-wrap,
+#problem[data-copy-section="problem"] .hero-model-stage,
+#problem[data-copy-section="problem"] .problem-model-wrap,
+#problem[data-copy-section="problem"] .problem-model-stage,
+#problem[data-copy-section="problem"] #heroModelStage,
+#problem[data-copy-section="problem"] canvas {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-.problem-sticker-wrap {
-  position: relative !important;
-  width: min(100%, 540px) !important;
-  min-height: clamp(320px, 38vw, 520px) !important;
-  display: grid !important;
-  place-items: center !important;
-  justify-self: start !important;
-  margin-left: 0 !important;
-  transform: translateY(-8%) !important;
-  isolation: isolate !important;
-  pointer-events: auto !important;
-}
-
-.duck-sticker-peel {
-  --duck-sticker-width: clamp(250px, 30vw, 430px);
+#problem .problem-duck-sticker {
+  --duck-sticker-size: clamp(250px, 30vw, 430px);
   --duck-sticker-rotate: -7deg;
-  position: relative;
-  width: var(--duck-sticker-width);
-  cursor: pointer;
-  transform: rotate(var(--duck-sticker-rotate)) translateZ(0);
+  position: relative !important;
+  display: block !important;
+  width: var(--duck-sticker-size) !important;
+  height: var(--duck-sticker-size) !important;
+  min-width: 250px !important;
+  min-height: 250px !important;
+  transform: translateY(-8%) rotate(var(--duck-sticker-rotate)) translateZ(0) !important;
+  cursor: pointer !important;
+  isolation: isolate !important;
+  opacity: 1 !important;
+  visibility: visible !important;
   filter:
     drop-shadow(0 28px 42px rgba(0, 0, 0, .46))
-    drop-shadow(0 0 30px rgba(255, 216, 77, .14));
+    drop-shadow(0 0 30px rgba(255, 216, 77, .16)) !important;
   transition:
     transform .5s cubic-bezier(.22, 1, .36, 1),
-    filter .5s ease;
-  will-change: transform, filter;
+    filter .5s ease !important;
 }
 
-.duck-sticker-peel__sheet {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-  transform: translateZ(0);
-}
-
-/* base branca do adesivo para o efeito aparecer mesmo com SVG transparente */
-.duck-sticker-peel__sheet::before {
-  content: "";
-  position: absolute;
-  inset: 4%;
-  z-index: 0;
-  border-radius: 46% 48% 45% 48%;
+/* Base do adesivo: deixa o efeito visível mesmo com SVG transparente */
+#problem .problem-duck-sticker::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 3% !important;
+  z-index: 0 !important;
+  border-radius: 46% 48% 45% 48% !important;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .92), rgba(255, 255, 255, .54) 45%, rgba(255, 255, 255, .18) 72%, rgba(255, 255, 255, 0) 100%);
-  opacity: .82;
-  transform: scale(.98);
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .92), rgba(255, 255, 255, .56) 44%, rgba(255, 255, 255, .18) 72%, rgba(255, 255, 255, 0) 100%) !important;
+  opacity: .84 !important;
+  pointer-events: none !important;
 }
 
-.duck-sticker-peel__sheet::after {
-  content: "";
-  position: absolute;
-  inset: 7%;
-  z-index: 1;
-  border-radius: 45% 48% 44% 47%;
+/* Brilho do adesivo */
+#problem .problem-duck-sticker::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 7% !important;
+  z-index: 3 !important;
+  border-radius: 45% 48% 44% 47% !important;
   background:
-    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, .42), transparent 26%),
-    linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, 0) 46%);
-  mix-blend-mode: screen;
-  pointer-events: none;
+    radial-gradient(circle at 25% 15%, rgba(255, 255, 255, .46), transparent 25%),
+    linear-gradient(135deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, 0) 46%) !important;
+  mix-blend-mode: screen !important;
+  pointer-events: none !important;
 }
 
-.duck-sticker-peel__image {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: auto;
-  display: block;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  transform: translateZ(0);
+/* Fallback por CSS: aparece mesmo se o <img> não carregar */
+#problem .problem-duck-sticker__asset {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: url("../assets/icons/pato.svg") center center / contain no-repeat !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
 }
 
-/* dobra visível do sticker */
-.duck-sticker-peel__fold {
-  position: absolute;
-  right: 9%;
-  bottom: 12%;
-  z-index: 4;
-  width: 27%;
-  aspect-ratio: 1 / 1;
-  border-radius: 14% 0 18% 0;
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+#problem .problem-duck-sticker__img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Dobra do sticker */
+#problem .problem-duck-sticker__fold {
+  position: absolute !important;
+  right: 9% !important;
+  bottom: 12% !important;
+  z-index: 5 !important;
+  display: block !important;
+  width: 27% !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 14% 0 18% 0 !important;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%) !important;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, .98) 0%, rgba(238, 238, 228, .96) 42%, rgba(182, 182, 166, .96) 100%);
+    linear-gradient(135deg, rgba(255, 255, 255, .98) 0%, rgba(238, 238, 228, .96) 42%, rgba(182, 182, 166, .96) 100%) !important;
   box-shadow:
     -8px -8px 18px rgba(0, 0, 0, .20),
     inset 8px 8px 16px rgba(255, 255, 255, .68),
-    inset -8px -8px 16px rgba(0, 0, 0, .16);
-  opacity: .86;
-  transform-origin: 100% 100%;
-  transform: rotate(-2deg) scale(.52);
+    inset -8px -8px 16px rgba(0, 0, 0, .16) !important;
+  opacity: .88 !important;
+  transform-origin: 100% 100% !important;
+  transform: rotate(-2deg) scale(.52) !important;
   transition:
     transform .58s cubic-bezier(.22, 1, .36, 1),
     opacity .58s ease,
-    box-shadow .58s ease;
-  pointer-events: none;
+    box-shadow .58s ease !important;
+  pointer-events: none !important;
 }
 
-.duck-sticker-peel__fold::before {
-  content: "";
-  position: absolute;
-  inset: 0;
+#problem .problem-duck-sticker__fold::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
   background:
     linear-gradient(45deg, rgba(0, 0, 0, .20), rgba(255, 255, 255, 0) 52%),
-    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, .78), transparent 54%);
-  opacity: .72;
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, .78), transparent 54%) !important;
+  opacity: .72 !important;
 }
 
-.duck-sticker-peel::before {
-  content: "";
-  position: absolute;
-  inset: 12% 8% 6% 8%;
-  z-index: -1;
-  border-radius: 999px;
-  background: radial-gradient(ellipse at center, rgba(255, 216, 77, .20), rgba(255, 216, 77, 0) 62%);
-  filter: blur(24px);
-  opacity: .78;
-  transform: translateY(18%);
-  pointer-events: none;
-}
-
-.duck-sticker-peel:hover,
-.duck-sticker-peel:focus-within {
-  transform: translateY(-8px) rotate(calc(var(--duck-sticker-rotate) + 2deg)) scale(1.02);
+#problem .problem-duck-sticker:hover {
+  transform: translateY(calc(-8% - 8px)) rotate(calc(var(--duck-sticker-rotate) + 2deg)) scale(1.02) translateZ(0) !important;
   filter:
     drop-shadow(0 34px 54px rgba(0, 0, 0, .52))
-    drop-shadow(0 0 38px rgba(255, 216, 77, .20));
+    drop-shadow(0 0 38px rgba(255, 216, 77, .22)) !important;
 }
 
-.duck-sticker-peel:hover .duck-sticker-peel__fold,
-.duck-sticker-peel:focus-within .duck-sticker-peel__fold {
-  opacity: 1;
-  transform: rotate(-2deg) scale(1);
+#problem .problem-duck-sticker:hover .problem-duck-sticker__fold {
+  opacity: 1 !important;
+  transform: rotate(-2deg) scale(1) !important;
   box-shadow:
     -16px -16px 30px rgba(0, 0, 0, .24),
     inset 10px 10px 18px rgba(255, 255, 255, .74),
-    inset -12px -12px 18px rgba(0, 0, 0, .18);
+    inset -12px -12px 18px rgba(0, 0, 0, .18) !important;
 }
 
-.duck-sticker-peel:active .duck-sticker-peel__fold {
-  transform: rotate(-2deg) scale(1.22);
+#problem .problem-duck-sticker:active .problem-duck-sticker__fold {
+  transform: rotate(-2deg) scale(1.22) !important;
 }
 
 @media (max-width: 980px) {
@@ -4681,23 +4667,17 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
     margin-top: 8px !important;
   }
 
-  .problem-sticker-wrap {
-    width: min(100%, 380px) !important;
-    min-height: 340px !important;
-    justify-self: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    transform: none !important;
-  }
-
-  .duck-sticker-peel {
-    --duck-sticker-width: min(74vw, 340px);
+  #problem .problem-duck-sticker {
+    --duck-sticker-size: min(74vw, 340px);
+    min-width: 220px !important;
+    min-height: 220px !important;
+    transform: rotate(var(--duck-sticker-rotate)) translateZ(0) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .duck-sticker-peel,
-  .duck-sticker-peel__fold {
+  #problem .problem-duck-sticker,
+  #problem .problem-duck-sticker__fold {
     transition: none !important;
   }
 }
