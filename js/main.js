@@ -448,7 +448,7 @@ function initServicesCarousel() {
     event.preventDefault();
     stopAutoplay();
     const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-    scroll.target += clamp(delta, -120, 120) * 0.006;
+    scroll.target += clamp(delta, -80, 80) * 0.0025;
     scheduleSnap();
   }
 
