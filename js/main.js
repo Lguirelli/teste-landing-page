@@ -1445,3 +1445,8 @@ function initBlurText() {
     observer.observe(element);
   });
 }
+
+
+window.addEventListener("sections:loaded", initBlurText);
+window.setTimeout(initBlurText, 250);
+window.setTimeout(initBlurText, 800);

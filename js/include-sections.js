@@ -70,3 +70,6 @@
     includeSections();
   }
 })();
+
+
+window.setTimeout(() => window.dispatchEvent(new CustomEvent("sections:loaded")), 0);
