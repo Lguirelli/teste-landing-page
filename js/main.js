@@ -553,7 +553,7 @@ function initHeroModel() {
   const stage = document.querySelector("#heroModelStage");
 
   if (!section || !stage) return;
-  if (section.id === "problem" && !stage.matches(".hero-model-stage")) return;
+  if (section.id === "problem") return;
   if (stage.dataset.modelInitialized === "true") return;
 
   stage.dataset.modelInitialized = "true";
