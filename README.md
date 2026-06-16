@@ -1,29 +1,36 @@
-# Landing Page Modular
+# Landing Page Modular — GitHub Pages
 
-Projeto preparado para deploy como site estático no Vercel.
+Repositório preparado para publicação como site estático no GitHub Pages.
 
-## Estrutura
+## Estrutura esperada
 
-- `index.html` na raiz
-- `blog.html` na raiz
-- `css/` com estilos globais
-- `js/` com scripts estáticos
-- `sections/` com seções carregadas dinamicamente
-- `assets/` com imagens e modelo 3D
-- `servicos/` e `blog/artigos/` com páginas internas
+O arquivo `index.html` deve ficar na raiz do repositório, junto com as pastas principais:
 
-## Ajustes aplicados
+```txt
+index.html
+blog.html
+.nojekyll
+assets/
+blog/
+css/
+js/
+sections/
+servicos/
+```
 
-- Removida a dependência de build React/Vite.
-- Removido o efeito sticker da seção Problema.
-- Restaurado o pato 3D na seção Problema usando `assets/models/duck3d.glb`.
-- Adicionado `vercel.json` para deploy estático.
+## Como publicar
 
-## Vercel
+1. Suba todos os arquivos para a branch `main`.
+2. No GitHub, acesse `Settings > Pages`.
+3. Em `Build and deployment`, selecione:
+   - Source: `Deploy from a branch`
+   - Branch: `main`
+   - Folder: `/root`
+4. Salve e aguarde o link do GitHub Pages.
 
-Use:
+## Observações
 
-- Framework Preset: Other
-- Build Command: vazio
-- Install Command: vazio
-- Output Directory: .
+- O projeto não depende de React, Vite ou npm.
+- Não é necessário rodar build.
+- As seções são carregadas dinamicamente por `js/include-sections.js`.
+- A seção Problema usa o SVG do pato em `assets/icons/pato.svg`.

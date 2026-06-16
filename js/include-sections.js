@@ -24,7 +24,7 @@
     if (!fetchPath) return "";
     if (sectionCache.has(fetchPath)) return sectionCache.get(fetchPath);
 
-    const request = fetch(fetchPath, { cache: "force-cache" })
+    const request = fetch(fetchPath, { cache: "no-store" })
       .then((response) => {
         if (!response.ok) throw new Error(`Erro ao carregar ${fetchPath}`);
         return response.text();
