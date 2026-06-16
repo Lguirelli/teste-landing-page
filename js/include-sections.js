@@ -5,7 +5,30 @@
     return document.body?.dataset.root || "";
   }
 
-  
+  function isExternalPath(path) {
+    return /^(https?:)?\/\//i.test(path) || path.startsWith("data:") || path.startsWith("blob:");
+  }
+
+  function normalizeRelativePath(path) {
+    return path.replace(/\/\.\//g, "/").replace(/([^:]\/)\/+/g, "$1");
+  }
+
+  function resolveSectionPath(path) {
+    const rawPath = String(path || "").trim();
+
+    if (!rawPath) return "";
+
+    if (isExternalPath(rawPath) || rawPath.startsWith("/")) {
+      return rawPath;
+    }
+
+    if (rawPath.startsWith("./") || rawPath.startsWith("../")) {
+      return normalizeRelativePath(rawPath);
+    }
+
+    return normalizeRelativePath(`${getRootPrefix()}${rawPath}`);
+  }
+
   async function fetchSection(path) {
     const fetchPath = resolveSectionPath(path);
 
@@ -19,7 +42,7 @@
       });
 
     sectionCache.set(fetchPath, request);
-    request.catch(err => console.warn('Section load failed:', fetchPath, err));
+    request.catch((err) => console.warn("Section load failed:", fetchPath, err));
     return request;
   }
 
@@ -48,15 +71,14 @@
 
     await Promise.all(targets.map(loadSection));
 
-    const sectionsLoadedEvent = new CustomEvent("sectionsLoaded", {
-      detail: { total: targets.length }
-    });
+    const detail = { total: targets.length };
 
-    document.dispatchEvent(sectionsLoadedEvent);
-    window.dispatchEvent(new CustomEvent("sectionsLoaded", {
-      detail: { total: targets.length }
-    }));
+    document.dispatchEvent(new CustomEvent("sectionsLoaded", { detail }));
+    window.dispatchEvent(new CustomEvent("sectionsLoaded", { detail }));
   }
+
+  window.resolveSectionPath = resolveSectionPath;
+  window.includeSections = includeSections;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", includeSections, { once: true });
@@ -64,4 +86,3 @@
     includeSections();
   }
 })();
-
