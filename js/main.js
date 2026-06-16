@@ -1386,3 +1386,62 @@ if (document.readyState === "loading") {
 } else {
   initGlossarioPopups();
 }
+
+
+function initBlurText() {
+  const blurTextElements = [...document.querySelectorAll("[data-blur-text]")];
+
+  if (!blurTextElements.length) return;
+
+  blurTextElements.forEach((element) => {
+    if (element.dataset.blurTextReady === "true") return;
+
+    const originalText = element.textContent.trim();
+    const animateBy = element.dataset.blurBy || "words";
+    const direction = element.dataset.blurDirection || "top";
+    const delay = Number(element.dataset.blurDelay || 150);
+    const duration = Number(element.dataset.blurDuration || 700);
+    const threshold = Number(element.dataset.blurThreshold || 0.1);
+    const rootMargin = element.dataset.blurRootMargin || "0px";
+    const segments = animateBy === "letters" ? [...originalText] : originalText.split(/\s+/);
+
+    element.dataset.blurTextReady = "true";
+    element.setAttribute("aria-label", originalText);
+    element.textContent = "";
+    element.style.setProperty("--blur-text-duration", `${duration}ms`);
+    element.style.setProperty("--blur-text-y", direction === "bottom" ? "34px" : "-34px");
+    element.style.setProperty("--blur-text-mid-y", direction === "bottom" ? "-5px" : "5px");
+
+    segments.forEach((segment, index) => {
+      const span = document.createElement("span");
+      span.className = "blur-text-segment";
+      span.setAttribute("aria-hidden", "true");
+      span.style.setProperty("--blur-text-delay", `${index * delay}ms`);
+      span.textContent = segment;
+
+      element.appendChild(span);
+
+      if (animateBy === "words" && index < segments.length - 1) {
+        element.appendChild(document.createTextNode("\u00A0"));
+      }
+    });
+
+    const reveal = () => element.classList.add("is-blur-text-ready");
+
+    if (!("IntersectionObserver" in window)) {
+      reveal();
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+
+      if (!entry?.isIntersecting) return;
+
+      reveal();
+      observer.unobserve(element);
+    }, { threshold, rootMargin });
+
+    observer.observe(element);
+  });
+}
