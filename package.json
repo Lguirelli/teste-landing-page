@@ -1,14 +1,10 @@
 {
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "build": "echo \"no build required\""
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
-    "vite": "^7.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "gsap": "^3.12.5"
   },
   "devDependencies": {}
