@@ -1,5 +1,5 @@
 :root {
-  --bg: #0b0d12;
+  --bg: #020913;
   --surface: #141821;
   --surface-2: #1b202b;
   --text: #f5f7fb;
@@ -24,10 +24,7 @@ html {
 body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255, 216, 77, .08), transparent 34%),
-    radial-gradient(circle at 88% 12%, rgba(217, 249, 157, .06), transparent 34%),
-    var(--bg);
+  background: #020913;
   color: var(--text);
   line-height: 1.5;
 }
@@ -115,7 +112,7 @@ button {
 }
 
 .section:nth-of-type(even) {
-  background: rgba(255, 255, 255, .015);
+  background: transparent;
 }
 
 .section-tight {
@@ -583,7 +580,9 @@ details:hover {
 ========================= */
 
 .services-carousel-section {
+  position: relative;
   overflow: hidden;
+  background: transparent !important;
 }
 
 .carousel-wrapper {
@@ -1124,10 +1123,10 @@ details p {
     margin-bottom: 28px;
   }
 
-  .carousel-wrapper {
-    min-height: 430px;
-    padding-inline: 0;
-  }
+body.home-page .services-carousel-section .carousel-wrapper::before {
+  content: none !important;
+  display: none !important;
+}
 
   .services-carousel {
     min-height: 410px;
@@ -1605,7 +1604,7 @@ details p {
 
 
 /* =========================
-   PATCH CONSOLIDADO - HEADER, HERO 3D E CARROSSEL
+   PATCH CONSOLIDADO - HEADER, HERO 3D E SSEL
    Corrige conflitos sem remover as regras funcionais anteriores.
 ========================= */
 
