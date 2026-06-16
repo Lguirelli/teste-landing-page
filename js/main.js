@@ -857,12 +857,33 @@ function initHeroModel() {
   }
 }
 
+
+function scrollToHashAfterDynamicSections() {
+  const hash = window.location.hash;
+
+  if (!hash || hash === "#" || window.__hashScrollAfterSectionsDone) return;
+
+  const target = document.querySelector(hash);
+
+  if (!target) return;
+
+  window.__hashScrollAfterSectionsDone = true;
+
+  window.requestAnimationFrame(() => {
+    target.scrollIntoView({
+      behavior: "auto",
+      block: "start"
+    });
+  });
+}
+
 function initDynamicSiteFeatures() {
   initSmoothScroll();
   initServicesCarousel();
   initHeaderNav();
   initHeroModel();
   initBlurText();
+  scrollToHashAfterDynamicSections();
 }
 
 document.addEventListener("sectionsLoaded", initDynamicSiteFeatures);

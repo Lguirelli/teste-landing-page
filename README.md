@@ -1,56 +1,32 @@
-# Landing Page Modular
+# Landing page estática pronta para GitHub Pages
 
-Estrutura básica de landing page com foco em conversão.
+Este repositório foi limpo para funcionar como site estático no GitHub Pages, sem depender de React, Vite, npm ou build.
 
-## Como editar
+## Como publicar no GitHub Pages
 
-Cada seção da página está em um arquivo separado dentro da pasta `sections/`.
+1. Envie todos os arquivos deste repositório para o GitHub.
+2. Acesse **Settings > Pages**.
+3. Em **Build and deployment**, selecione **Deploy from a branch**.
+4. Escolha a branch `main` e a pasta `/root`.
+5. Salve.
 
-- `sections/header.html`
-- `sections/hero.html`
-- `sections/trust-strip.html`
-- `sections/problem.html`
-- `sections/benefits.html`
-- `sections/how-it-works.html`
-- `sections/features.html`
-- `sections/social-proof.html`
-- `sections/case-preview.html`
-- `sections/comparison.html`
-- `sections/pricing-preview.html`
-- `sections/lead-qualifier.html`
-- `sections/faq.html`
-- `sections/final-cta.html`
-- `sections/footer.html`
+## Observações técnicas
 
-A estrutura geral fica em `index.html`.
+- Não carregue arquivos `.jsx` diretamente no HTML.
+- Componentes interativos devem ficar em `js/` como JavaScript compatível com navegador.
+- O antigo sticker em React foi substituído pelo carregamento estático em `js/problem-sticker-react.js`.
+- As seções modulares continuam em `sections/` e são carregadas por `js/include-sections.js`.
 
-## Como rodar localmente
+## Estrutura principal
 
-Como as seções são carregadas via `fetch`, rode com um servidor local:
-
-```bash
-python -m http.server 8000
-```
-
-Depois abra:
-
-```text
-http://localhost:8000
-```
-
-## Pastas
-
-```text
-landing-page-skeleton/
-├── index.html
-├── css/
-│   └── styles.css
-├── js/
-│   ├── include-sections.js
-│   └── main.js
-├── sections/
-│   └── arquivos HTML de cada seção
-└── assets/
-    ├── img/
-    └── icons/
+```txt
+index.html
+blog.html
+blog/
+servicos/
+sections/
+css/
+js/
+assets/
+docs/
 ```
