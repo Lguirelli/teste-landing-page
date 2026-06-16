@@ -1,4 +1,4 @@
-<section class="section" data-copy-section="problem" id="problem">
+<section class="section" data-copy-section="problem" data-duck-model-section id="problem">
   <div class="container problem-section-inner">
     <span class="section-kicker problem-kicker-centered" data-copy="problem.kicker">Problema</span>
 
@@ -8,11 +8,14 @@
       </div>
 
       <div class="problem-duck-target" aria-hidden="true" role="presentation">
-        <div
-          class="problem-sticker-react-root"
-          data-problem-sticker-root
-          data-sticker-src="{{root}}assets/icons/pato.svg"
-        ></div>
+        <div class="problem-model-wrap hero-model-wrap">
+          <div
+            id="problemModelStage"
+            class="problem-model-stage hero-model-stage"
+            data-duck-model-stage
+            data-model-src="{{root}}assets/models/duck3d.glb"
+          ></div>
+        </div>
       </div>
     </div>
 

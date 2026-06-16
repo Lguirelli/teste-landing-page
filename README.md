@@ -1,32 +1,29 @@
-# Landing page estática pronta para GitHub Pages
+# Landing Page Modular
 
-Este repositório foi limpo para funcionar como site estático no GitHub Pages, sem depender de React, Vite, npm ou build.
+Projeto preparado para deploy como site estático no Vercel.
 
-## Como publicar no GitHub Pages
+## Estrutura
 
-1. Envie todos os arquivos deste repositório para o GitHub.
-2. Acesse **Settings > Pages**.
-3. Em **Build and deployment**, selecione **Deploy from a branch**.
-4. Escolha a branch `main` e a pasta `/root`.
-5. Salve.
+- `index.html` na raiz
+- `blog.html` na raiz
+- `css/` com estilos globais
+- `js/` com scripts estáticos
+- `sections/` com seções carregadas dinamicamente
+- `assets/` com imagens e modelo 3D
+- `servicos/` e `blog/artigos/` com páginas internas
 
-## Observações técnicas
+## Ajustes aplicados
 
-- Não carregue arquivos `.jsx` diretamente no HTML.
-- Componentes interativos devem ficar em `js/` como JavaScript compatível com navegador.
-- O antigo sticker em React foi substituído pelo carregamento estático em `js/problem-sticker-react.js`.
-- As seções modulares continuam em `sections/` e são carregadas por `js/include-sections.js`.
+- Removida a dependência de build React/Vite.
+- Removido o efeito sticker da seção Problema.
+- Restaurado o pato 3D na seção Problema usando `assets/models/duck3d.glb`.
+- Adicionado `vercel.json` para deploy estático.
 
-## Estrutura principal
+## Vercel
 
-```txt
-index.html
-blog.html
-blog/
-servicos/
-sections/
-css/
-js/
-assets/
-docs/
-```
+Use:
+
+- Framework Preset: Other
+- Build Command: vazio
+- Install Command: vazio
+- Output Directory: .

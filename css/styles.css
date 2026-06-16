@@ -4681,3 +4681,102 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
     transition: none !important;
   }
 }
+
+
+/* =========================
+   PATCH VERCEL: PATO 3D NA SEÇÃO PROBLEMA, SEM STICKER
+   Mantém a seção Problema com o modelo GLB original e remove a aparência/efeito de adesivo.
+========================= */
+#problem[data-copy-section="problem"] .problem-duck-target {
+  position: relative !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  width: 100% !important;
+  display: grid !important;
+  place-items: center start !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+}
+
+#problem[data-copy-section="problem"] .problem-model-wrap,
+#problem[data-copy-section="problem"] .problem-model-stage,
+#problem[data-copy-section="problem"] .problem-model-stage canvas,
+#problem[data-copy-section="problem"] .hero-model-wrap,
+#problem[data-copy-section="problem"] .hero-model-stage,
+#problem[data-copy-section="problem"] .hero-model-stage canvas {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+}
+
+#problem[data-copy-section="problem"] .problem-model-wrap {
+  position: relative !important;
+  width: min(100%, 540px) !important;
+  aspect-ratio: 1 / 1 !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  justify-self: start !important;
+  transform: translateY(-8%) !important;
+  overflow: visible !important;
+}
+
+#problem[data-copy-section="problem"] .problem-model-stage {
+  position: absolute !important;
+  inset: -4% !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+#problem[data-copy-section="problem"] .problem-model-stage.is-dragging {
+  cursor: grabbing !important;
+}
+
+#problem[data-copy-section="problem"] .problem-model-stage::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 10% !important;
+  width: 54% !important;
+  height: 14% !important;
+  transform: translateX(-50%) !important;
+  border-radius: 999px !important;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .34), transparent 68%) !important;
+  filter: blur(10px) !important;
+  opacity: .48 !important;
+  pointer-events: none !important;
+}
+
+#problem .problem-sticker-react-root,
+#problem .problem-duck-sticker,
+#problem .problem-duck-sticker-react,
+#problem .sticker-container,
+#problem .sticker-peel-react-draggable {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  #problem[data-copy-section="problem"] .problem-duck-target {
+    place-items: center !important;
+    min-height: 340px !important;
+    margin-top: 8px !important;
+  }
+
+  #problem[data-copy-section="problem"] .problem-model-wrap {
+    width: min(100%, 380px) !important;
+    min-height: 340px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-self: center !important;
+    transform: none !important;
+  }
+}

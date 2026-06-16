@@ -549,314 +549,320 @@ function initServicesCarousel() {
 }
 
 function initHeroModel() {
-  const section = document.querySelector("[data-duck-model-section], [data-hero-model-section]");
-  const stage = document.querySelector("#heroModelStage");
+  const stages = [...document.querySelectorAll("[data-duck-model-stage], #heroModelStage")];
 
-  if (!section || !stage) return;
-  if (section.id === "problem") return;
-  if (stage.dataset.modelInitialized === "true") return;
+  if (!stages.length) return;
 
-  stage.dataset.modelInitialized = "true";
-  stage.dataset.modelStatus = "waiting";
+  stages.forEach((stage) => {
+    const section = stage.closest("[data-duck-model-section], [data-hero-model-section], section") || document.body;
 
-  const rootPrefix = document.body?.dataset.root || "";
-  const modelSrc = `${rootPrefix}${stage.dataset.modelSrc || "assets/models/duck3d.glb"}`;
-  let preloadObserver = null;
-  let hasStartedLoading = false;
+    if (!section || !stage) return;
+    if (stage.dataset.modelInitialized === "true") return;
 
-  async function startModelLoad() {
-    if (hasStartedLoading) return;
-    hasStartedLoading = true;
-    stage.dataset.modelStatus = "loading";
-    preloadObserver?.disconnect?.();
+    stage.dataset.modelInitialized = "true";
+    stage.dataset.modelStatus = "waiting";
 
-    let THREE;
-    let GLTFLoader;
+    const rootPrefix = document.body?.dataset.root || "";
+    const rawModelSrc = stage.dataset.modelSrc || "assets/models/duck3d.glb";
+    const modelSrc = /^(https?:)?\/\//.test(rawModelSrc) || rawModelSrc.startsWith("/")
+      ? rawModelSrc
+      : `${rootPrefix}${rawModelSrc}`;
+    let preloadObserver = null;
+    let hasStartedLoading = false;
 
-    try {
-      THREE = await import("https://esm.sh/three@0.164.1");
-      ({ GLTFLoader } = await import("https://esm.sh/three@0.164.1/examples/jsm/loaders/GLTFLoader.js"));
-    } catch (error) {
-      stage.classList.add("is-model-error");
-      stage.dataset.modelStatus = "error";
-      return;
-    }
+    async function startModelLoad() {
+      if (hasStartedLoading) return;
+      hasStartedLoading = true;
+      stage.dataset.modelStatus = "loading";
+      preloadObserver?.disconnect?.();
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
-    camera.position.set(0, -0.42, 6.15);
+      let THREE;
+      let GLTFLoader;
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance"
-    });
-
-    renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0;
-    stage.appendChild(renderer.domElement);
-
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x6b4a00, 1.7);
-    scene.add(hemiLight);
-
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.65);
-    keyLight.position.set(-2.6, 2.8, 4.2);
-    scene.add(keyLight);
-
-    const fillLight = new THREE.DirectionalLight(0xffe08a, 1.1);
-    fillLight.position.set(2.8, 1.6, 3.2);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.82);
-    rimLight.position.set(2.4, 2.2, -2.8);
-    scene.add(rimLight);
-
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const loader = new GLTFLoader();
-    let model = null;
-    let targetMouseX = 0;
-    let targetMouseY = 0;
-    let mouseX = 0;
-    let mouseY = 0;
-    let dragX = 0;
-    let dragY = 0;
-    let targetDragX = 0;
-    let targetDragY = 0;
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let dragOriginX = 0;
-    let dragOriginY = 0;
-    let hoverActive = false;
-    let isVisible = true;
-    let animationId = null;
-    const baseRotationX = -0.035;
-    const baseRotationY = -3.15;
-    const baseRotationZ = 0.018;
-    const basePositionX = 0;
-    const basePositionY = 0.24;
-
-    function resizeRenderer() {
-      const rect = stage.getBoundingClientRect();
-      const width = Math.max(1, rect.width);
-      const height = Math.max(1, rect.height);
-
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height, false);
-    }
-
-    function fitModelToStage(object) {
-      const box = new THREE.Box3().setFromObject(object);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const maxDimension = Math.max(size.x, size.y, size.z) || 1;
-
-      object.position.sub(center);
-      object.position.y -= size.y * 0.01;
-      object.scale.setScalar(1.54 / maxDimension);
-      object.rotation.set(0, 0, 0);
-
-      camera.position.set(0, -0.42, 6.15);
-      camera.lookAt(0, -0.2, 0);
-      group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
-      group.position.set(basePositionX, basePositionY, 0);
-    }
-
-    function animate() {
-      animationId = window.requestAnimationFrame(animate);
-
-      if (!isVisible || !model) return;
-
-      mouseX += (targetMouseX - mouseX) * 0.075;
-      mouseY += (targetMouseY - mouseY) * 0.075;
-      dragX += (targetDragX - dragX) * 0.16;
-      dragY += (targetDragY - dragY) * 0.16;
-
-      const influence = hoverActive || isDragging ? 1 : 0.35;
-      const dragInfluence = isDragging ? 1 : 0.72;
-
-      group.rotation.x = baseRotationX + (mouseY * 0.11 * influence) + (dragY * 0.32 * dragInfluence);
-      group.rotation.y = baseRotationY + (mouseX * 0.14 * influence) + (dragX * 0.72 * dragInfluence);
-      group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence) - (dragX * 0.1 * dragInfluence);
-
-      group.position.x = basePositionX + (mouseX * 0.1 * influence) + (dragX * 0.22 * dragInfluence);
-      group.position.y = basePositionY - (mouseY * 0.08 * influence) - (dragY * 0.12 * dragInfluence);
-
-      renderer.render(scene, camera);
-    }
-
-    loader.load(
-      modelSrc,
-      (gltf) => {
-        model = gltf.scene;
-
-        model.traverse((child) => {
-          if (!child.isMesh) return;
-
-          child.frustumCulled = false;
-          child.castShadow = false;
-          child.receiveShadow = false;
-
-          if (child.geometry) {
-            child.geometry.computeBoundingBox();
-            child.geometry.computeBoundingSphere();
-          }
-
-          if (child.material) {
-            if (Array.isArray(child.material)) {
-              child.material.forEach((material) => material.dispose?.());
-            } else {
-              child.material.dispose?.();
-            }
-          }
-
-          child.material = new THREE.MeshPhysicalMaterial({
-            color: 0xffd101,
-            roughness: 0.42,
-            metalness: 0.0,
-            clearcoat: 0.28,
-            clearcoatRoughness: 0.34,
-            specularIntensity: 0.42,
-            reflectivity: 0.36,
-            transmission: 0,
-            ior: 1.45,
-            flatShading: false
-          });
-        });
-
-        group.add(model);
-        fitModelToStage(model);
-        resizeRenderer();
-        renderer.render(scene, camera);
-        stage.dataset.modelStatus = "ready";
-      },
-      undefined,
-      () => {
+      try {
+        THREE = await import("https://esm.sh/three@0.164.1");
+        ({ GLTFLoader } = await import("https://esm.sh/three@0.164.1/examples/jsm/loaders/GLTFLoader.js"));
+      } catch (error) {
         stage.classList.add("is-model-error");
         stage.dataset.modelStatus = "error";
+        return;
       }
-    );
 
-    function updatePointerInfluence(clientX, clientY) {
-      const rect = stage.getBoundingClientRect();
-      const normalizedX = ((clientX - rect.left) / rect.width) * 2 - 1;
-      const normalizedY = ((clientY - rect.top) / rect.height) * 2 - 1;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(24, 1, 0.01, 1000);
+      camera.position.set(0, -0.42, 6.15);
 
-      targetMouseX = Math.max(-1, Math.min(1, normalizedX));
-      targetMouseY = Math.max(-1, Math.min(1, normalizedY));
-    }
+      const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance"
+      });
 
-    stage.addEventListener("pointerenter", (event) => {
-      hoverActive = true;
-      updatePointerInfluence(event.clientX, event.clientY);
-    });
+      renderer.setClearColor(0x000000, 0);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      stage.appendChild(renderer.domElement);
 
-    stage.addEventListener("pointermove", (event) => {
-      hoverActive = true;
-      updatePointerInfluence(event.clientX, event.clientY);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x6b4a00, 1.7);
+      scene.add(hemiLight);
 
-      if (!isDragging) return;
+      const keyLight = new THREE.DirectionalLight(0xffffff, 1.65);
+      keyLight.position.set(-2.6, 2.8, 4.2);
+      scene.add(keyLight);
 
-      event.preventDefault();
+      const fillLight = new THREE.DirectionalLight(0xffe08a, 1.1);
+      fillLight.position.set(2.8, 1.6, 3.2);
+      scene.add(fillLight);
 
-      const rect = stage.getBoundingClientRect();
-      const deltaX = (event.clientX - dragStartX) / Math.max(1, rect.width);
-      const deltaY = (event.clientY - dragStartY) / Math.max(1, rect.height);
+      const rimLight = new THREE.DirectionalLight(0xffffff, 0.82);
+      rimLight.position.set(2.4, 2.2, -2.8);
+      scene.add(rimLight);
 
-      targetDragX = Math.max(-1, Math.min(1, dragOriginX + deltaX * 2.2));
-      targetDragY = Math.max(-1, Math.min(1, dragOriginY + deltaY * 2.2));
-    });
+      const group = new THREE.Group();
+      scene.add(group);
 
-    stage.addEventListener("pointerdown", (event) => {
-      if (event.button !== 0) return;
+      const loader = new GLTFLoader();
+      let model = null;
+      let targetMouseX = 0;
+      let targetMouseY = 0;
+      let mouseX = 0;
+      let mouseY = 0;
+      let dragX = 0;
+      let dragY = 0;
+      let targetDragX = 0;
+      let targetDragY = 0;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragOriginX = 0;
+      let dragOriginY = 0;
+      let hoverActive = false;
+      let isVisible = true;
+      let animationId = null;
+      const baseRotationX = -0.035;
+      const baseRotationY = -3.15;
+      const baseRotationZ = 0.018;
+      const basePositionX = 0;
+      const basePositionY = 0.24;
 
-      isDragging = true;
-      hoverActive = true;
-      dragStartX = event.clientX;
-      dragStartY = event.clientY;
-      dragOriginX = targetDragX;
-      dragOriginY = targetDragY;
-      stage.classList.add("is-dragging");
-      stage.setPointerCapture?.(event.pointerId);
-      updatePointerInfluence(event.clientX, event.clientY);
-      event.preventDefault();
-    });
+      function resizeRenderer() {
+        const rect = stage.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(1, rect.height);
 
-    function finishDrag(event) {
-      if (!isDragging) return;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+      }
 
-      isDragging = false;
-      targetDragX = 0;
-      targetDragY = 0;
-      dragOriginX = 0;
-      dragOriginY = 0;
-      stage.classList.remove("is-dragging");
-      stage.releasePointerCapture?.(event.pointerId);
-    }
+      function fitModelToStage(object) {
+        const box = new THREE.Box3().setFromObject(object);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const maxDimension = Math.max(size.x, size.y, size.z) || 1;
 
-    stage.addEventListener("pointerup", finishDrag);
-    stage.addEventListener("pointercancel", finishDrag);
+        object.position.sub(center);
+        object.position.y -= size.y * 0.01;
+        object.scale.setScalar(1.54 / maxDimension);
+        object.rotation.set(0, 0, 0);
 
-    stage.addEventListener("pointerleave", () => {
-      hoverActive = false;
-      targetMouseX = 0;
-      targetMouseY = 0;
+        camera.position.set(0, -0.42, 6.15);
+        camera.lookAt(0, -0.2, 0);
+        group.rotation.set(baseRotationX, baseRotationY, baseRotationZ);
+        group.position.set(basePositionX, basePositionY, 0);
+      }
 
-      if (!isDragging) {
+      function animate() {
+        animationId = window.requestAnimationFrame(animate);
+
+        if (!isVisible || !model) return;
+
+        mouseX += (targetMouseX - mouseX) * 0.075;
+        mouseY += (targetMouseY - mouseY) * 0.075;
+        dragX += (targetDragX - dragX) * 0.16;
+        dragY += (targetDragY - dragY) * 0.16;
+
+        const influence = hoverActive || isDragging ? 1 : 0.35;
+        const dragInfluence = isDragging ? 1 : 0.72;
+
+        group.rotation.x = baseRotationX + (mouseY * 0.11 * influence) + (dragY * 0.32 * dragInfluence);
+        group.rotation.y = baseRotationY + (mouseX * 0.14 * influence) + (dragX * 0.72 * dragInfluence);
+        group.rotation.z = baseRotationZ - (mouseX * 0.05 * influence) - (dragX * 0.1 * dragInfluence);
+
+        group.position.x = basePositionX + (mouseX * 0.1 * influence) + (dragX * 0.22 * dragInfluence);
+        group.position.y = basePositionY - (mouseY * 0.08 * influence) - (dragY * 0.12 * dragInfluence);
+
+        renderer.render(scene, camera);
+      }
+
+      loader.load(
+        modelSrc,
+        (gltf) => {
+          model = gltf.scene;
+
+          model.traverse((child) => {
+            if (!child.isMesh) return;
+
+            child.frustumCulled = false;
+            child.castShadow = false;
+            child.receiveShadow = false;
+
+            if (child.geometry) {
+              child.geometry.computeBoundingBox();
+              child.geometry.computeBoundingSphere();
+            }
+
+            if (child.material) {
+              if (Array.isArray(child.material)) {
+                child.material.forEach((material) => material.dispose?.());
+              } else {
+                child.material.dispose?.();
+              }
+            }
+
+            child.material = new THREE.MeshPhysicalMaterial({
+              color: 0xffd101,
+              roughness: 0.42,
+              metalness: 0.0,
+              clearcoat: 0.28,
+              clearcoatRoughness: 0.34,
+              specularIntensity: 0.42,
+              reflectivity: 0.36,
+              transmission: 0,
+              ior: 1.45,
+              flatShading: false
+            });
+          });
+
+          group.add(model);
+          fitModelToStage(model);
+          resizeRenderer();
+          renderer.render(scene, camera);
+          stage.dataset.modelStatus = "ready";
+        },
+        undefined,
+        () => {
+          stage.classList.add("is-model-error");
+          stage.dataset.modelStatus = "error";
+        }
+      );
+
+      function updatePointerInfluence(clientX, clientY) {
+        const rect = stage.getBoundingClientRect();
+        const normalizedX = ((clientX - rect.left) / rect.width) * 2 - 1;
+        const normalizedY = ((clientY - rect.top) / rect.height) * 2 - 1;
+
+        targetMouseX = Math.max(-1, Math.min(1, normalizedX));
+        targetMouseY = Math.max(-1, Math.min(1, normalizedY));
+      }
+
+      stage.addEventListener("pointerenter", (event) => {
+        hoverActive = true;
+        updatePointerInfluence(event.clientX, event.clientY);
+      });
+
+      stage.addEventListener("pointermove", (event) => {
+        hoverActive = true;
+        updatePointerInfluence(event.clientX, event.clientY);
+
+        if (!isDragging) return;
+
+        event.preventDefault();
+
+        const rect = stage.getBoundingClientRect();
+        const deltaX = (event.clientX - dragStartX) / Math.max(1, rect.width);
+        const deltaY = (event.clientY - dragStartY) / Math.max(1, rect.height);
+
+        targetDragX = Math.max(-1, Math.min(1, dragOriginX + deltaX * 2.2));
+        targetDragY = Math.max(-1, Math.min(1, dragOriginY + deltaY * 2.2));
+      });
+
+      stage.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+
+        isDragging = true;
+        hoverActive = true;
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+        dragOriginX = targetDragX;
+        dragOriginY = targetDragY;
+        stage.classList.add("is-dragging");
+        stage.setPointerCapture?.(event.pointerId);
+        updatePointerInfluence(event.clientX, event.clientY);
+        event.preventDefault();
+      });
+
+      function finishDrag(event) {
+        if (!isDragging) return;
+
+        isDragging = false;
         targetDragX = 0;
         targetDragY = 0;
+        dragOriginX = 0;
+        dragOriginY = 0;
+        stage.classList.remove("is-dragging");
+        stage.releasePointerCapture?.(event.pointerId);
       }
-    });
 
-    window.addEventListener("resize", resizeRenderer, { passive: true });
+      stage.addEventListener("pointerup", finishDrag);
+      stage.addEventListener("pointercancel", finishDrag);
 
-    if ("ResizeObserver" in window) {
-      const observer = new ResizeObserver(resizeRenderer);
-      observer.observe(stage);
+      stage.addEventListener("pointerleave", () => {
+        hoverActive = false;
+        targetMouseX = 0;
+        targetMouseY = 0;
+
+        if (!isDragging) {
+          targetDragX = 0;
+          targetDragY = 0;
+        }
+      });
+
+      window.addEventListener("resize", resizeRenderer, { passive: true });
+
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(resizeRenderer);
+        observer.observe(stage);
+      }
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          isVisible = entries.some((entry) => entry.isIntersecting);
+        }, { threshold: 0.08 });
+
+        observer.observe(section);
+      }
+
+      resizeRenderer();
+      animate();
+
+      window.addEventListener("beforeunload", () => {
+        if (animationId) {
+          window.cancelAnimationFrame(animationId);
+        }
+
+        renderer.dispose();
+      });
     }
 
     if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        isVisible = entries.some((entry) => entry.isIntersecting);
-      }, { threshold: 0.08 });
+      preloadObserver = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          startModelLoad();
+        }
+      }, {
+        rootMargin: "280px 0px",
+        threshold: 0.01
+      });
 
-      observer.observe(section);
+      preloadObserver.observe(section);
+    } else {
+      startModelLoad();
     }
-
-    resizeRenderer();
-    animate();
-
-    window.addEventListener("beforeunload", () => {
-      if (animationId) {
-        window.cancelAnimationFrame(animationId);
-      }
-
-      renderer.dispose();
-    });
-  }
-
-  if ("IntersectionObserver" in window) {
-    preloadObserver = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        startModelLoad();
-      }
-    }, {
-      rootMargin: "280px 0px",
-      threshold: 0.01
-    });
-
-    preloadObserver.observe(section);
-  } else {
-    startModelLoad();
-  }
+  });
 }
-
 
 function scrollToHashAfterDynamicSections() {
   const hash = window.location.hash;
