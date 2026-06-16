@@ -4496,221 +4496,208 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
 
 
 /* =========================
-   PATCH: PATO SVG COM EFEITO STICKER PEEL
-   Substitui visualmente o modelo 3D da seção Problema por um sticker SVG.
+   PATCH FIX: PROBLEMA COM PATO SVG STICKER VISÍVEL
+   Remove a dependência visual do modelo 3D e cria um sticker com dobra real no canto.
 ========================= */
 
-.problem-sticker-wrap {
-  position: relative;
-  width: min(100%, 540px);
-  min-height: clamp(320px, 38vw, 520px);
-  display: grid;
-  place-items: center;
-  justify-self: start;
-  margin-left: 0;
-  transform: translateY(-8%);
-  isolation: isolate;
+#problem[data-copy-section="problem"] .problem-duck-target {
+  position: relative !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  width: 100% !important;
+  display: grid !important;
+  place-items: center start !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
-.sticker-peel-duck {
-  --sticker-p: 10px;
-  --sticker-width: clamp(250px, 30vw, 430px);
-  --sticker-rotate: -7deg;
-  --sticker-peelback-hover: 23%;
-  --sticker-peelback-active: 38%;
-  --sticker-start: calc(-1 * var(--sticker-p));
-  --sticker-end: calc(100% + var(--sticker-p));
+/* Garante que nenhum canvas/modelo antigo apareça dentro da seção Problema */
+#problem .problem-model-wrap,
+#problem .problem-model-stage,
+#problem #heroModelStage,
+#problem canvas {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.problem-sticker-wrap {
+  position: relative !important;
+  width: min(100%, 540px) !important;
+  min-height: clamp(320px, 38vw, 520px) !important;
+  display: grid !important;
+  place-items: center !important;
+  justify-self: start !important;
+  margin-left: 0 !important;
+  transform: translateY(-8%) !important;
+  isolation: isolate !important;
+  pointer-events: auto !important;
+}
+
+.duck-sticker-peel {
+  --duck-sticker-width: clamp(250px, 30vw, 430px);
+  --duck-sticker-rotate: -7deg;
   position: relative;
-  width: var(--sticker-width);
-  cursor: grab;
-  transform: translateZ(0) rotate(var(--sticker-rotate));
+  width: var(--duck-sticker-width);
+  cursor: pointer;
+  transform: rotate(var(--duck-sticker-rotate)) translateZ(0);
   filter:
-    drop-shadow(0 26px 42px rgba(0, 0, 0, .44))
-    drop-shadow(0 0 28px rgba(255, 216, 77, .12));
+    drop-shadow(0 28px 42px rgba(0, 0, 0, .46))
+    drop-shadow(0 0 30px rgba(255, 216, 77, .14));
   transition:
-    transform .55s cubic-bezier(.22, 1, .36, 1),
-    filter .55s ease;
+    transform .5s cubic-bezier(.22, 1, .36, 1),
+    filter .5s ease;
   will-change: transform, filter;
 }
 
-.sticker-peel-duck:active {
-  cursor: grabbing;
-}
-
-.sticker-peel-duck__container {
+.duck-sticker-peel__sheet {
   position: relative;
-  width: var(--sticker-width);
-  transform: rotate(0deg);
-  transform-origin: center;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.sticker-peel-duck__main {
-  position: relative;
-  z-index: 2;
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-start),
-    var(--sticker-end) var(--sticker-start),
-    var(--sticker-end) var(--sticker-end),
-    var(--sticker-start) var(--sticker-end)
-  );
-  transition: clip-path .58s cubic-bezier(.22, 1, .36, 1);
-}
-
-.sticker-peel-duck__image,
-.sticker-peel-duck__flap-image {
-  display: block;
-  width: var(--sticker-width);
-  height: auto;
-  pointer-events: none;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
   transform: translateZ(0);
 }
 
-.sticker-peel-duck__main::before {
+/* base branca do adesivo para o efeito aparecer mesmo com SVG transparente */
+.duck-sticker-peel__sheet::before {
   content: "";
   position: absolute;
-  inset: 6% 4% 4% 4%;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 38% 45% 42% 40%;
+  inset: 4%;
+  z-index: 0;
+  border-radius: 46% 48% 45% 48%;
   background:
-    radial-gradient(circle at 22% 10%, rgba(255, 255, 255, .52), transparent 24%),
-    linear-gradient(135deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 48%);
-  mix-blend-mode: screen;
-  opacity: .38;
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .92), rgba(255, 255, 255, .54) 45%, rgba(255, 255, 255, .18) 72%, rgba(255, 255, 255, 0) 100%);
+  opacity: .82;
+  transform: scale(.98);
 }
 
-.sticker-peel-duck__flap {
+.duck-sticker-peel__sheet::after {
+  content: "";
   position: absolute;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: calc(-100% - var(--sticker-p) - var(--sticker-p));
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-start),
-    var(--sticker-end) var(--sticker-start),
-    var(--sticker-end) var(--sticker-start),
-    var(--sticker-start) var(--sticker-start)
-  );
-  transform: scaleY(-1);
-  transform-origin: bottom center;
-  transition:
-    clip-path .58s cubic-bezier(.22, 1, .36, 1),
-    top .58s cubic-bezier(.22, 1, .36, 1);
+  inset: 7%;
+  z-index: 1;
+  border-radius: 45% 48% 44% 47%;
+  background:
+    radial-gradient(circle at 24% 16%, rgba(255, 255, 255, .42), transparent 26%),
+    linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, 0) 46%);
+  mix-blend-mode: screen;
   pointer-events: none;
-  overflow: hidden;
 }
 
-.sticker-peel-duck__flap::after {
+.duck-sticker-peel__image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transform: translateZ(0);
+}
+
+/* dobra visível do sticker */
+.duck-sticker-peel__fold {
+  position: absolute;
+  right: 9%;
+  bottom: 12%;
+  z-index: 4;
+  width: 27%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14% 0 18% 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .98) 0%, rgba(238, 238, 228, .96) 42%, rgba(182, 182, 166, .96) 100%);
+  box-shadow:
+    -8px -8px 18px rgba(0, 0, 0, .20),
+    inset 8px 8px 16px rgba(255, 255, 255, .68),
+    inset -8px -8px 16px rgba(0, 0, 0, .16);
+  opacity: .86;
+  transform-origin: 100% 100%;
+  transform: rotate(-2deg) scale(.52);
+  transition:
+    transform .58s cubic-bezier(.22, 1, .36, 1),
+    opacity .58s ease,
+    box-shadow .58s ease;
+  pointer-events: none;
+}
+
+.duck-sticker-peel__fold::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, .58), rgba(255, 255, 255, .08) 52%, rgba(0, 0, 0, .22)),
-    linear-gradient(90deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, 0) 48%);
-  mix-blend-mode: screen;
-  opacity: .62;
+    linear-gradient(45deg, rgba(0, 0, 0, .20), rgba(255, 255, 255, 0) 52%),
+    radial-gradient(circle at 100% 100%, rgba(255, 255, 255, .78), transparent 54%);
+  opacity: .72;
 }
 
-.sticker-peel-duck__flap-image {
-  filter:
-    grayscale(.15)
-    saturate(.82)
-    brightness(1.18)
-    drop-shadow(0 -10px 18px rgba(0, 0, 0, .24));
-}
-
-.sticker-peel-duck::before {
+.duck-sticker-peel::before {
   content: "";
   position: absolute;
-  inset: 12% 10% 7% 10%;
+  inset: 12% 8% 6% 8%;
   z-index: -1;
   border-radius: 999px;
-  background: radial-gradient(ellipse at center, rgba(255, 216, 77, .18), rgba(255, 216, 77, 0) 62%);
-  filter: blur(22px);
-  opacity: .74;
+  background: radial-gradient(ellipse at center, rgba(255, 216, 77, .20), rgba(255, 216, 77, 0) 62%);
+  filter: blur(24px);
+  opacity: .78;
   transform: translateY(18%);
   pointer-events: none;
 }
 
-.sticker-peel-duck:hover {
-  transform: translateY(-6px) rotate(calc(var(--sticker-rotate) + 2deg)) scale(1.015);
+.duck-sticker-peel:hover,
+.duck-sticker-peel:focus-within {
+  transform: translateY(-8px) rotate(calc(var(--duck-sticker-rotate) + 2deg)) scale(1.02);
   filter:
-    drop-shadow(0 32px 52px rgba(0, 0, 0, .48))
-    drop-shadow(0 0 34px rgba(255, 216, 77, .18));
+    drop-shadow(0 34px 54px rgba(0, 0, 0, .52))
+    drop-shadow(0 0 38px rgba(255, 216, 77, .20));
 }
 
-.sticker-peel-duck:hover .sticker-peel-duck__main {
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-peelback-hover),
-    var(--sticker-end) var(--sticker-peelback-hover),
-    var(--sticker-end) var(--sticker-end),
-    var(--sticker-start) var(--sticker-end)
-  );
+.duck-sticker-peel:hover .duck-sticker-peel__fold,
+.duck-sticker-peel:focus-within .duck-sticker-peel__fold {
+  opacity: 1;
+  transform: rotate(-2deg) scale(1);
+  box-shadow:
+    -16px -16px 30px rgba(0, 0, 0, .24),
+    inset 10px 10px 18px rgba(255, 255, 255, .74),
+    inset -12px -12px 18px rgba(0, 0, 0, .18);
 }
 
-.sticker-peel-duck:hover .sticker-peel-duck__flap {
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-start),
-    var(--sticker-end) var(--sticker-start),
-    var(--sticker-end) var(--sticker-peelback-hover),
-    var(--sticker-start) var(--sticker-peelback-hover)
-  );
-  top: calc(-100% + 2 * var(--sticker-peelback-hover) - 1px);
-}
-
-.sticker-peel-duck:active .sticker-peel-duck__main {
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-peelback-active),
-    var(--sticker-end) var(--sticker-peelback-active),
-    var(--sticker-end) var(--sticker-end),
-    var(--sticker-start) var(--sticker-end)
-  );
-}
-
-.sticker-peel-duck:active .sticker-peel-duck__flap {
-  clip-path: polygon(
-    var(--sticker-start) var(--sticker-start),
-    var(--sticker-end) var(--sticker-start),
-    var(--sticker-end) var(--sticker-peelback-active),
-    var(--sticker-start) var(--sticker-peelback-active)
-  );
-  top: calc(-100% + 2 * var(--sticker-peelback-active) - 1px);
+.duck-sticker-peel:active .duck-sticker-peel__fold {
+  transform: rotate(-2deg) scale(1.22);
 }
 
 @media (max-width: 980px) {
+  #problem[data-copy-section="problem"] .problem-duck-target {
+    place-items: center !important;
+    min-height: 340px !important;
+    margin-top: 8px !important;
+  }
+
   .problem-sticker-wrap {
-    width: min(100%, 380px);
-    min-height: 340px;
-    justify-self: center;
-    margin-left: auto;
-    margin-right: auto;
-    transform: none;
+    width: min(100%, 380px) !important;
+    min-height: 340px !important;
+    justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    transform: none !important;
   }
 
-  .sticker-peel-duck {
-    --sticker-width: min(74vw, 340px);
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .sticker-peel-duck {
-    cursor: default;
-  }
-
-  .sticker-peel-duck__container {
-    touch-action: manipulation;
+  .duck-sticker-peel {
+    --duck-sticker-width: min(74vw, 340px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sticker-peel-duck,
-  .sticker-peel-duck__main,
-  .sticker-peel-duck__flap {
+  .duck-sticker-peel,
+  .duck-sticker-peel__fold {
     transition: none !important;
   }
 }
