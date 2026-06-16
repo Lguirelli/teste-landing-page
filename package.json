@@ -1,8 +1,7 @@
 {
   "scripts": {
     "dev": "npx serve .",
-    "start": "npx serve .",
-    "build": "echo \"no build required\""
+    "start": "npx serve ."
   },
   "dependencies": {
     "gsap": "^3.12.5"
