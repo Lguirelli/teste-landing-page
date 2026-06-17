@@ -1483,7 +1483,99 @@ function initBlurText() {
 }
 
 
+
+
+function initIndexBorderGlow() {
+  if (!document.body.classList.contains("home-page")) return;
+
+  const selectors = [
+    ".card",
+    ".service-slide",
+    ".benefit-item",
+    "#how-it-works .how-step",
+    ".logo-box",
+    ".final-cta-box",
+    ".faq-list details",
+    ".comparison-table-shell"
+  ];
+
+  const getCenter = (element) => {
+    const rect = element.getBoundingClientRect();
+    return [rect.width / 2, rect.height / 2];
+  };
+
+  const getEdgeProximity = (element, x, y) => {
+    const [cx, cy] = getCenter(element);
+    const dx = x - cx;
+    const dy = y - cy;
+    let kx = Infinity;
+    let ky = Infinity;
+
+    if (dx !== 0) kx = cx / Math.abs(dx);
+    if (dy !== 0) ky = cy / Math.abs(dy);
+
+    return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+  };
+
+  const getCursorAngle = (element, x, y) => {
+    const [cx, cy] = getCenter(element);
+    const dx = x - cx;
+    const dy = y - cy;
+
+    if (dx === 0 && dy === 0) return 0;
+
+    const radians = Math.atan2(dy, dx);
+    let degrees = radians * (180 / Math.PI) + 90;
+
+    if (degrees < 0) degrees += 360;
+
+    return degrees;
+  };
+
+  const handlePointerMove = (event) => {
+    const element = event.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const edge = getEdgeProximity(element, x, y);
+    const angle = getCursorAngle(element, x, y);
+
+    element.style.setProperty("--edge-proximity", `${(edge * 100).toFixed(3)}`);
+    element.style.setProperty("--cursor-angle", `${angle.toFixed(3)}deg`);
+  };
+
+  document.querySelectorAll(selectors.join(",")).forEach((element) => {
+    if (element.dataset.indexGlowReady === "true") return;
+
+    element.dataset.indexGlowReady = "true";
+    element.classList.add("index-glow-box");
+
+    if (element.matches(".faq-list details")) {
+      element.classList.add("faq-card");
+    }
+
+    if (element.matches(".lead-qualifier-section .card, #lead-qualifier .card")) {
+      element.classList.add("lead-qualifier-card");
+    }
+
+    ["index-glow-border", "index-glow-fill", "index-glow-edge-light"].reverse().forEach((className) => {
+      if (element.querySelector(`:scope > .${className}`)) return;
+
+      const glowLayer = document.createElement("span");
+      glowLayer.className = className;
+      glowLayer.setAttribute("aria-hidden", "true");
+      element.insertBefore(glowLayer, element.firstChild);
+    });
+
+    element.addEventListener("pointermove", handlePointerMove, { passive: true });
+  });
+}
+
 window.addEventListener("sections:loaded", initBlurText);
+window.addEventListener("sections:loaded", initIndexBorderGlow);
+document.addEventListener("sectionsLoaded", initIndexBorderGlow);
+window.setTimeout(initIndexBorderGlow, 250);
+window.setTimeout(initIndexBorderGlow, 900);
 window.setTimeout(initBlurText, 250);
 window.setTimeout(initBlurText, 800);
 

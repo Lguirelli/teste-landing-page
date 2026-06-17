@@ -4919,3 +4919,333 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
     text-align: center !important;
   }
 }
+
+
+/* =========================
+   INDEX BORDER GLOW EFFECT
+   Adaptado do BorderGlow para HTML/CSS/JS vanilla.
+========================= */
+.home-page .index-glow-box {
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 30;
+  --color-sensitivity: calc(var(--edge-sensitivity) + 20);
+  --border-radius-glow: var(--radius);
+  --glow-padding: 34px;
+  --cone-spread: 25;
+  --fill-opacity: .34;
+  --glow-card-bg: var(--surface);
+  --glow-color: hsl(48deg 100% 65% / 92%);
+  --glow-color-60: hsl(48deg 100% 65% / 60%);
+  --glow-color-50: hsl(48deg 100% 65% / 50%);
+  --glow-color-40: hsl(48deg 100% 65% / 40%);
+  --glow-color-30: hsl(48deg 100% 65% / 30%);
+  --glow-color-20: hsl(48deg 100% 65% / 20%);
+  --glow-color-10: hsl(48deg 100% 65% / 10%);
+  --gradient-one: radial-gradient(at 80% 55%, rgba(255, 216, 77, .92) 0, transparent 50%);
+  --gradient-two: radial-gradient(at 69% 34%, rgba(217, 249, 157, .72) 0, transparent 50%);
+  --gradient-three: radial-gradient(at 8% 6%, rgba(56, 189, 248, .46) 0, transparent 50%);
+  --gradient-four: radial-gradient(at 41% 38%, rgba(255, 255, 255, .32) 0, transparent 50%);
+  --gradient-five: radial-gradient(at 86% 85%, rgba(255, 216, 77, .44) 0, transparent 50%);
+  --gradient-six: radial-gradient(at 82% 18%, rgba(217, 249, 157, .42) 0, transparent 50%);
+  --gradient-seven: radial-gradient(at 51% 4%, rgba(255, 255, 255, .25) 0, transparent 50%);
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--border-radius-glow);
+  overflow: visible;
+  transform: translate3d(0, 0, .01px);
+}
+
+.home-page .index-glow-box > * {
+  position: relative;
+  z-index: 2;
+}
+
+.home-page .index-glow-box::before,
+.home-page .index-glow-box::after,
+.home-page .index-glow-box .index-glow-edge-light {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: opacity .25s ease-out;
+}
+
+.home-page .index-glow-box::before,
+.home-page .index-glow-box::after {
+  z-index: 0;
+}
+
+.home-page .index-glow-box:not(:hover)::before,
+.home-page .index-glow-box:not(:hover)::after,
+.home-page .index-glow-box:not(:hover) .index-glow-edge-light {
+  opacity: 0;
+  transition: opacity .55s ease-in-out;
+}
+
+.home-page .index-glow-box::before {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--glow-card-bg) 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0 100%) border-box,
+    var(--gradient-one) border-box,
+    var(--gradient-two) border-box,
+    var(--gradient-three) border-box,
+    var(--gradient-four) border-box,
+    var(--gradient-five) border-box,
+    var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,
+    linear-gradient(var(--accent) 0 100%) border-box;
+  opacity: clamp(0, calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))), 1);
+  -webkit-mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+}
+
+.home-page .index-glow-box::after {
+  border: 1px solid transparent;
+  background:
+    var(--gradient-one) padding-box,
+    var(--gradient-two) padding-box,
+    var(--gradient-three) padding-box,
+    var(--gradient-four) padding-box,
+    var(--gradient-five) padding-box,
+    var(--gradient-six) padding-box,
+    var(--gradient-seven) padding-box,
+    linear-gradient(var(--accent) 0 100%) padding-box;
+  opacity: clamp(0, calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))), .7);
+  mix-blend-mode: soft-light;
+  -webkit-mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over, source-over;
+  mask-composite: subtract, add, add, add, add, add;
+}
+
+.home-page .index-glow-box .index-glow-edge-light {
+  inset: calc(var(--glow-padding) * -1);
+  z-index: 1;
+  opacity: clamp(0, calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity))), 1);
+  mix-blend-mode: plus-lighter;
+  -webkit-mask-image: conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+  mask-image: conic-gradient(from var(--cursor-angle) at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%);
+}
+
+.home-page .index-glow-box .index-glow-edge-light::before {
+  content: "";
+  position: absolute;
+  inset: var(--glow-padding);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--glow-color),
+    inset 0 0 1px 0 var(--glow-color-60),
+    inset 0 0 3px 0 var(--glow-color-50),
+    inset 0 0 6px 0 var(--glow-color-40),
+    inset 0 0 15px 0 var(--glow-color-30),
+    inset 0 0 25px 2px var(--glow-color-20),
+    inset 0 0 50px 2px var(--glow-color-10),
+    0 0 1px 0 var(--glow-color-60),
+    0 0 3px 0 var(--glow-color-50),
+    0 0 6px 0 var(--glow-color-40),
+    0 0 15px 0 var(--glow-color-30),
+    0 0 25px 2px var(--glow-color-20),
+    0 0 50px 2px var(--glow-color-10);
+}
+
+.home-page .index-glow-box.card,
+.home-page .index-glow-box.service-slide,
+.home-page .index-glow-box.benefit-item,
+.home-page #how-it-works .index-glow-box.how-step,
+.home-page .index-glow-box.final-cta-box,
+.home-page .index-glow-box.logo-box,
+.home-page .index-glow-box.lead-qualifier-card,
+.home-page .index-glow-box.faq-card,
+.home-page .index-glow-box.comparison-table-shell {
+  border-color: rgba(255, 255, 255, .14);
+}
+
+.home-page .index-glow-box.logo-box {
+  --border-radius-glow: 18px;
+  --glow-card-bg: rgba(255, 255, 255, .05);
+  --glow-padding: 26px;
+}
+
+.home-page .index-glow-box.benefit-item {
+  --border-radius-glow: 22px;
+  --glow-card-bg: rgba(20, 24, 33, .64);
+  --glow-padding: 26px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background: rgba(20, 24, 33, .42);
+}
+
+.home-page #how-it-works .index-glow-box.how-step {
+  --border-radius-glow: 24px;
+}
+
+.home-page .index-glow-box.service-slide {
+  --glow-padding: 44px;
+  --fill-opacity: .24;
+}
+
+.home-page .index-glow-box.final-cta-box {
+  --border-radius-glow: 36px;
+  --glow-card-bg: var(--surface-2);
+  --glow-padding: 52px;
+}
+
+.home-page .index-glow-box.faq-card {
+  --border-radius-glow: 18px;
+  --glow-padding: 28px;
+}
+
+.home-page .index-glow-box.comparison-table-shell {
+  --glow-card-bg: var(--surface);
+  --glow-padding: 32px;
+  --border-radius-glow: var(--radius);
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: var(--surface);
+}
+
+.home-page .index-glow-box.comparison-table-shell .comparison-table {
+  background: transparent;
+}
+
+.home-page .comparison-table-scroll {
+  position: relative;
+  z-index: 2;
+  overflow-x: auto;
+  border-radius: var(--radius);
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .home-page .index-glow-box::before,
+  .home-page .index-glow-box::after,
+  .home-page .index-glow-box .index-glow-edge-light {
+    display: none;
+  }
+}
+
+
+/* Camadas reais evitam conflito com ::before/::after já usados por alguns cards. */
+.home-page .index-glow-box > .index-glow-border,
+.home-page .index-glow-box > .index-glow-fill,
+.home-page .index-glow-box > .index-glow-edge-light {
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: opacity .25s ease-out;
+}
+
+.home-page .index-glow-box > .index-glow-border,
+.home-page .index-glow-box > .index-glow-fill {
+  inset: 0;
+  z-index: 0;
+}
+
+.home-page .index-glow-box > .index-glow-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--glow-card-bg) 0 100%) padding-box,
+    linear-gradient(rgb(255 255 255 / 0%) 0 100%) border-box,
+    var(--gradient-one) border-box,
+    var(--gradient-two) border-box,
+    var(--gradient-three) border-box,
+    var(--gradient-four) border-box,
+    var(--gradient-five) border-box,
+    var(--gradient-six) border-box,
+    var(--gradient-seven) border-box,
+    linear-gradient(var(--accent) 0 100%) border-box;
+  opacity: clamp(0, calc((var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))), 1);
+  -webkit-mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+  mask-image:
+    conic-gradient(
+      from var(--cursor-angle) at center,
+      black calc(var(--cone-spread) * 1%),
+      transparent calc((var(--cone-spread) + 15) * 1%),
+      transparent calc((100 - var(--cone-spread) - 15) * 1%),
+      black calc((100 - var(--cone-spread)) * 1%)
+    );
+}
+
+.home-page .index-glow-box > .index-glow-fill {
+  border: 1px solid transparent;
+  background:
+    var(--gradient-one) padding-box,
+    var(--gradient-two) padding-box,
+    var(--gradient-three) padding-box,
+    var(--gradient-four) padding-box,
+    var(--gradient-five) padding-box,
+    var(--gradient-six) padding-box,
+    var(--gradient-seven) padding-box,
+    linear-gradient(var(--accent) 0 100%) padding-box;
+  opacity: clamp(0, calc(var(--fill-opacity) * (var(--edge-proximity) - var(--color-sensitivity)) / (100 - var(--color-sensitivity))), .7);
+  mix-blend-mode: soft-light;
+  -webkit-mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  mask-image:
+    linear-gradient(to bottom, black, black),
+    radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%),
+    radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%),
+    radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%),
+    conic-gradient(from var(--cursor-angle) at center, transparent 5%, black 15%, black 85%, transparent 95%);
+  -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over, source-over;
+  mask-composite: subtract, add, add, add, add, add;
+}
+
+.home-page .index-glow-box:not(:hover) > .index-glow-border,
+.home-page .index-glow-box:not(:hover) > .index-glow-fill,
+.home-page .index-glow-box:not(:hover) > .index-glow-edge-light {
+  opacity: 0;
+  transition: opacity .55s ease-in-out;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .home-page .index-glow-box > .index-glow-border,
+  .home-page .index-glow-box > .index-glow-fill,
+  .home-page .index-glow-box > .index-glow-edge-light {
+    display: none;
+  }
+}
