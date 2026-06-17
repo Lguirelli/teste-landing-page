@@ -4431,37 +4431,37 @@ body.home-page .services-carousel-section .services-carousel[data-circular-servi
   display: none !important;
 }
 
-/* BlurText vanilla */
+/* BlurText vanilla / hero intro */
 [data-blur-text] {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: baseline !important;
 }
 
+.hero-copy .btn[data-blur-text] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .blur-text-segment {
   display: inline-block;
   opacity: 0;
-  filter: blur(10px);
-  transform: translate3d(0, var(--blur-text-y, -34px), 0);
+  filter: blur(5px);
+  transform: translate3d(0, var(--blur-text-y, 18px), 0);
   will-change: transform, filter, opacity;
 }
 
 [data-blur-text].is-blur-text-ready .blur-text-segment {
-  animation: blurTextReveal var(--blur-text-duration, .7s) cubic-bezier(.22, 1, .36, 1) forwards;
+  animation: blurTextReveal var(--blur-text-duration, .82s) cubic-bezier(.45, 0, .2, 1) forwards;
   animation-delay: var(--blur-text-delay, 0ms);
 }
 
 @keyframes blurTextReveal {
   0% {
     opacity: 0;
-    filter: blur(10px);
-    transform: translate3d(0, var(--blur-text-y, -34px), 0);
-  }
-
-  55% {
-    opacity: .5;
     filter: blur(5px);
-    transform: translate3d(0, var(--blur-text-mid-y, 5px), 0);
+    transform: translate3d(0, var(--blur-text-y, 18px), 0);
   }
 
   100% {

@@ -1417,52 +1417,56 @@ if (document.readyState === "loading") {
 }
 
 
-function initBlurText() {
-  const blurTextElements = [...document.querySelectorAll("[data-blur-text], body.home-page .hero-title")];
+function splitElementTextIntoWords(element, options = {}) {
+  if (!element || element.dataset.blurTextReady === "true") return;
 
-  if (!blurTextElements.length) return;
+  const originalText = element.textContent.replace(/\s+/g, " ").trim();
+
+  if (!originalText) return;
+
+  const animateBy = element.dataset.blurBy || options.animateBy || "words";
+  const direction = element.dataset.blurDirection || options.direction || "bottom";
+  const delay = Number(element.dataset.blurDelay || options.wordDelay || 54);
+  const partDelay = Number(element.dataset.blurPartDelay || options.partDelay || 0);
+  const duration = Number(element.dataset.blurDuration || options.duration || 760);
+  const segments = animateBy === "letters" ? [...originalText] : originalText.split(/\s+/);
+
+  element.dataset.blurTextReady = "true";
+  element.setAttribute("aria-label", originalText);
+  element.textContent = "";
+  element.style.setProperty("--blur-text-duration", `${duration}ms`);
+  element.style.setProperty("--blur-text-y", direction === "bottom" ? "18px" : "-18px");
+
+  segments.forEach((segment, index) => {
+    const span = document.createElement("span");
+    span.className = "blur-text-segment";
+    span.setAttribute("aria-hidden", "true");
+    span.style.setProperty("--blur-text-delay", `${partDelay + (index * delay)}ms`);
+    span.textContent = segment;
+
+    element.appendChild(span);
+
+    if (animateBy === "words" && index < segments.length - 1) {
+      element.appendChild(document.createTextNode("\u00A0"));
+    }
+  });
+}
+
+function initBlurText() {
+  const blurTextElements = [...document.querySelectorAll("[data-blur-text]:not([data-hero-intro-word])")];
 
   blurTextElements.forEach((element) => {
-    if (element.dataset.blurTextReady === "true") return;
-
-    if (!element.hasAttribute("data-blur-text")) {
-      element.setAttribute("data-blur-text", "");
-      element.dataset.blurBy = element.dataset.blurBy || "words";
-      element.dataset.blurDirection = element.dataset.blurDirection || "top";
-      element.dataset.blurDelay = element.dataset.blurDelay || "105";
-    }
-
-    const originalText = element.textContent.trim();
-    const animateBy = element.dataset.blurBy || "words";
-    const direction = element.dataset.blurDirection || "top";
-    const delay = Number(element.dataset.blurDelay || 150);
-    const duration = Number(element.dataset.blurDuration || 700);
-    const threshold = Number(element.dataset.blurThreshold || 0.1);
-    const rootMargin = element.dataset.blurRootMargin || "0px";
-    const segments = animateBy === "letters" ? [...originalText] : originalText.split(/\s+/);
-
-    element.dataset.blurTextReady = "true";
-    element.setAttribute("aria-label", originalText);
-    element.textContent = "";
-    element.style.setProperty("--blur-text-duration", `${duration}ms`);
-    element.style.setProperty("--blur-text-y", direction === "bottom" ? "34px" : "-34px");
-    element.style.setProperty("--blur-text-mid-y", direction === "bottom" ? "-5px" : "5px");
-
-    segments.forEach((segment, index) => {
-      const span = document.createElement("span");
-      span.className = "blur-text-segment";
-      span.setAttribute("aria-hidden", "true");
-      span.style.setProperty("--blur-text-delay", `${index * delay}ms`);
-      span.textContent = segment;
-
-      element.appendChild(span);
-
-      if (animateBy === "words" && index < segments.length - 1) {
-        element.appendChild(document.createTextNode("\u00A0"));
-      }
+    splitElementTextIntoWords(element, {
+      direction: element.dataset.blurDirection || "bottom",
+      wordDelay: Number(element.dataset.blurDelay || 54),
+      duration: Number(element.dataset.blurDuration || 760)
     });
 
+    if (element.dataset.blurTextReady !== "true") return;
+
     const reveal = () => element.classList.add("is-blur-text-ready");
+    const threshold = Number(element.dataset.blurThreshold || 0.1);
+    const rootMargin = element.dataset.blurRootMargin || "0px";
 
     if (!("IntersectionObserver" in window)) {
       reveal();
@@ -1482,12 +1486,53 @@ function initBlurText() {
   });
 }
 
+function initHeroIntroFade() {
+  const heroCopy = document.querySelector("body.home-page .hero.hero-with-bg .hero-copy");
 
-window.addEventListener("sections:loaded", initBlurText);
-window.setTimeout(initBlurText, 250);
-window.setTimeout(initBlurText, 800);
+  if (!heroCopy || heroCopy.dataset.heroIntroFadeReady === "true") return;
 
+  const parts = [
+    heroCopy.querySelector(".section-kicker"),
+    heroCopy.querySelector(".hero-title"),
+    heroCopy.querySelector(".hero-lead"),
+    ...heroCopy.querySelectorAll(".btn-row .btn")
+  ].filter(Boolean);
 
-document.addEventListener("sectionsLoaded", initBlurText);
-window.setTimeout(initBlurText, 1600);
-window.setTimeout(initBlurText, 2600);
+  if (!parts.length) return;
+
+  heroCopy.dataset.heroIntroFadeReady = "true";
+
+  parts.forEach((element, partIndex) => {
+    element.setAttribute("data-blur-text", "");
+    element.setAttribute("data-hero-intro-word", "true");
+    element.dataset.blurBy = "words";
+    element.dataset.blurDirection = "bottom";
+
+    splitElementTextIntoWords(element, {
+      direction: "bottom",
+      wordDelay: 46,
+      partDelay: partIndex * 135,
+      duration: 820
+    });
+  });
+
+  const revealHeroWords = () => {
+    parts.forEach((element) => element.classList.add("is-blur-text-ready"));
+  };
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(revealHeroWords);
+  });
+}
+
+function initTextAnimations() {
+  initHeroIntroFade();
+  initBlurText();
+}
+
+window.addEventListener("sectionsLoaded", initTextAnimations);
+document.addEventListener("sectionsLoaded", initTextAnimations);
+window.setTimeout(initTextAnimations, 250);
+window.setTimeout(initTextAnimations, 800);
+window.setTimeout(initTextAnimations, 1600);
+
